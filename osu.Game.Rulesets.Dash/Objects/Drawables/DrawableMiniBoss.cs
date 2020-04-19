@@ -5,8 +5,8 @@ using System;
 using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Animations;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Objects;
@@ -18,23 +18,39 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
     public class DrawableMiniBoss : DrawableDashHitObject<MiniBoss>, IKeyBindingHandler<DashAction>
     {
-        private const float base_sprite_scale = 6f;
-        private const float target_sprite_scale = 7f;
+        private const float base_sprite_scale = 1f;
+        private const float target_sprite_scale = 1.1f;
 
-        private readonly Sprite sprite;
+        private readonly TextureAnimation normalAnimation;
+        private readonly TextureAnimation hitAnimation;
+
         private readonly Container<DrawableMiniBossTick> ticks;
 
         public DrawableMiniBoss(MiniBoss hitObject)
             : base(hitObject)
         {
-            Size = new Vector2(40);
+            Size = new Vector2(200);
             Origin = Anchor.Centre;
 
-            AddInternal(sprite = new Sprite
+            AddInternal(normalAnimation = new TextureAnimation
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
                 Scale = new Vector2(base_sprite_scale),
+                RelativeSizeAxes = Axes.Both,
+                FillMode = FillMode.Fit,
+                DefaultFrameLength = 250,
+            });
+
+            AddInternal(hitAnimation = new TextureAnimation
+            {
+                Origin = Anchor.Centre,
+                Anchor = Anchor.Centre,
+                Scale = new Vector2(base_sprite_scale),
+                RelativeSizeAxes = Axes.Both,
+                FillMode = FillMode.Fit,
+                DefaultFrameLength = 250,
+                Alpha = 0f
             });
 
             AddInternal(ticks = new Container<DrawableMiniBossTick> { RelativeSizeAxes = Axes.Both });
@@ -43,7 +59,8 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            sprite.Texture = store.Get("cirno");
+            normalAnimation.AddFrames(new[] { store.Get("miniboss_1"), store.Get("miniboss_2") });
+            hitAnimation.AddFrames(new[] { store.Get("miniboss_hit_1"), store.Get("miniboss_hit_2") });
         }
 
         protected override void AddNestedHitObject(DrawableHitObject hitObject)
@@ -80,7 +97,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             base.Update();
 
             float fraction = (float)(HitObject.StartTime - Clock.CurrentTime) / 500f;
-            sprite.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
+            normalAnimation.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
 
             X = Math.Max(0, X);
 
@@ -88,6 +105,12 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 ProxyContent();
             else
                 UnproxyContent();
+        }
+
+        protected override void UpdateInitialTransforms()
+        {
+            normalAnimation.Show();
+            hitAnimation.Hide();
         }
 
         public override bool OnPressed(DashAction action) => UpdateResult(true);
@@ -123,7 +146,9 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 var numHits = ticks.Count(r => r.IsHit);
                 var completion = (float)numHits / HitObject.RequiredHits;
 
-                sprite.ScaleTo(base_sprite_scale + Math.Min(target_sprite_scale - base_sprite_scale, (target_sprite_scale - base_sprite_scale) * completion), 260, Easing.OutQuint);
+                normalAnimation.Hide();
+                hitAnimation.Show();
+                hitAnimation.ScaleTo(base_sprite_scale + Math.Min(target_sprite_scale - base_sprite_scale, (target_sprite_scale - base_sprite_scale) * completion), 260, Easing.OutQuint);
 
                 // TODO: update bonus score somehow?
 

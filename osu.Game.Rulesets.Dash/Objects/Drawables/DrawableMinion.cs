@@ -4,8 +4,9 @@
 using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
+using osu.Framework.Graphics.Animations;
 using osu.Framework.Graphics.Textures;
+using osu.Game.Rulesets.Dash.UI;
 using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 
@@ -14,23 +15,55 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
     public class DrawableMinion : DrawableLanedHit<Minion>
     {
         private readonly Random random = new Random();
-        private readonly Sprite sprite;
+        private readonly TextureAnimation normalAnimation;
+        private readonly TextureAnimation hitAnimation;
 
         public DrawableMinion(Minion hitObject)
             : base(hitObject)
         {
-            AddInternal(sprite = new Sprite
+            Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE);
+
+            AddInternal(normalAnimation = new TextureAnimation
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
-                Scale = new Vector2(3f),
+                FillMode = FillMode.Fit,
+                RelativeSizeAxes = Axes.Both,
+                DefaultFrameLength = 250,
+                // Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE)
             });
+
+            AddInternal(hitAnimation = new TextureAnimation
+            {
+                Origin = Anchor.Centre,
+                Anchor = Anchor.Centre,
+                FillMode = FillMode.Fit,
+                RelativeSizeAxes = Axes.Both,
+                DefaultFrameLength = 250,
+                // Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE),
+                Alpha = 0f
+            });
+
+            normalAnimation.IsPlaying = true;
+            hitAnimation.IsPlaying = false;
         }
 
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            sprite.Texture = store.Get("cirno");
+            switch (HitObject.Lane)
+            {
+                case LanedHitLane.Air:
+                    for (int i = 1; i <= 4; i++)
+                        normalAnimation.AddFrame(store.Get($"flying_minion_{i}"));
+                    hitAnimation.AddFrame(store.Get("flying_minion_hit"));
+                    break;
+
+                case LanedHitLane.Ground:
+                    normalAnimation.AddFrame(store.Get("ground_minion"));
+                    hitAnimation.AddFrame(store.Get("ground_minion_hit"));
+                    break;
+            }
         }
 
         protected override void Update()
@@ -38,7 +71,13 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             base.Update();
 
             float fraction = (float)(HitObject.StartTime - Clock.CurrentTime) / 500f;
-            sprite.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
+            normalAnimation.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * (HitObject.Lane == LanedHitLane.Air ? 5f : 3f));
+        }
+
+        protected override void UpdateInitialTransforms()
+        {
+            normalAnimation.Show();
+            hitAnimation.Hide();
         }
 
         protected override void UpdateStateTransforms(ArmedState state)
@@ -55,6 +94,9 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
                 case ArmedState.Hit:
                     ProxyContent();
+
+                    normalAnimation.Hide();
+                    hitAnimation.Show();
 
                     const float gravity_time = 300;
                     float randomness = -0.5f + (float)random.NextDouble();
