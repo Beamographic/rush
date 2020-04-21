@@ -36,7 +36,6 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 {
                     Anchor = Anchor.Centre,
                     Scale = new Vector2(1.5f),
-                    // FillMode = FillMode.Fit,
                     RelativeSizeAxes = Axes.Both,
                     Icon = FontAwesome.Solid.Star,
                 },

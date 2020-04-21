@@ -15,6 +15,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
+using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
@@ -35,6 +36,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         private readonly Container<DrawableNoteSheetTail> tailContainer;
 
         private readonly NoteSheetBody noteSheetBody;
+        private readonly DrawableNoteSheetCapStar holdStar;
 
         public double? HoldStartTime { get; private set; }
         public double? HoldEndTime { get; private set; }
@@ -65,10 +67,20 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                     },
                 },
                 headContainer = new Container<DrawableNoteSheetHead> { RelativeSizeAxes = Axes.Both },
-                tailContainer = new Container<DrawableNoteSheetTail> { RelativeSizeAxes = Axes.Both }
+                tailContainer = new Container<DrawableNoteSheetTail> { RelativeSizeAxes = Axes.Both },
+                holdStar = new DrawableNoteSheetCapStar
+                {
+                    Origin = Anchor.Centre,
+                    Size = new Vector2(NOTE_SHEET_SIZE),
+                    Alpha = 0f,
+                }
             });
 
-            AccentColour.BindValueChanged(evt => noteSheetBody.UpdateColours(evt.NewValue), true);
+            AccentColour.BindValueChanged(evt =>
+            {
+                noteSheetBody.UpdateColours(evt.NewValue);
+                holdStar.UpdateColour(evt.NewValue);
+            }, true);
         }
 
         protected override void AddNestedHitObject(DrawableHitObject hitObject)
@@ -146,6 +158,8 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             beginHoldAt(Time.Current - Head.HitObject.StartTime);
             Head.UpdateResult();
 
+            holdStar.Show();
+
             return true;
         }
 
@@ -215,6 +229,8 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 var targetTime = HoldEndTime ?? Time.Current;
                 var targetRatio = (float)Math.Clamp((targetTime - HitObject.StartTime) / HitObject.Duration, 0, 1);
                 bodyContainer.Width = 1 - targetRatio;
+                holdStar.X = DrawWidth * targetRatio;
+                holdStar.Y = DrawHeight / 2f;
             }
         }
 
