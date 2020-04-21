@@ -1,19 +1,26 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Bindings;
+using osu.Game.Rulesets.Dash.UI;
+using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
     public class DrawableLanedHit<TLanedHit> : DrawableDashHitObject<TLanedHit>
         where TLanedHit : LanedHit
     {
-        private bool validActionPressed;
+        private readonly Color4 airAccentColour = new Color4(0.35f, 0.75f, 1f, 1f);
+        private readonly Color4 groundAccentColour = new Color4(1f, 0.4f, 1f, 1f);
+
+        protected Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? airAccentColour : groundAccentColour;
 
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
@@ -67,10 +74,30 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             if (result == HitResult.None)
                 return;
 
-            // if (!validActionPressed)
-            //     ApplyResult(r => r.Type = HitResult.Miss);
-            // else
             ApplyResult(r => r.Type = result);
+        }
+
+        protected override void UpdateInitialTransforms()
+        {
+            base.UpdateInitialTransforms();
+
+            AccentColour.Value = LaneAccentColour;
+        }
+
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            switch (state)
+            {
+                case ArmedState.Idle:
+                    break;
+
+                case ArmedState.Hit:
+                    break;
+
+                case ArmedState.Miss:
+                    AccentColour.Value = Color4.Gray;
+                    break;
+            }
         }
     }
 }

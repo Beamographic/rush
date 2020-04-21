@@ -23,25 +23,27 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         {
             Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE);
 
-            AddInternal(normalAnimation = new TextureAnimation
+            Content.AddRange(new Drawable[]
             {
-                Origin = Anchor.Centre,
-                Anchor = Anchor.Centre,
-                FillMode = FillMode.Fit,
-                RelativeSizeAxes = Axes.Both,
-                DefaultFrameLength = 250,
-                // Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE)
-            });
-
-            AddInternal(hitAnimation = new TextureAnimation
-            {
-                Origin = Anchor.Centre,
-                Anchor = Anchor.Centre,
-                FillMode = FillMode.Fit,
-                RelativeSizeAxes = Axes.Both,
-                DefaultFrameLength = 250,
-                // Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE),
-                Alpha = 0f
+                normalAnimation = new TextureAnimation
+                {
+                    Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
+                    FillMode = FillMode.Fit,
+                    RelativeSizeAxes = Axes.Both,
+                    DefaultFrameLength = 250,
+                    // Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE)
+                },
+                hitAnimation = new TextureAnimation
+                {
+                    Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
+                    FillMode = FillMode.Fit,
+                    RelativeSizeAxes = Axes.Both,
+                    DefaultFrameLength = 250,
+                    // Size = new Vector2(DashPlayfield.HIT_TARGET_SIZE),
+                    Alpha = 0f
+                }
             });
 
             normalAnimation.IsPlaying = true;
@@ -76,6 +78,8 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
         protected override void UpdateInitialTransforms()
         {
+            base.UpdateInitialTransforms();
+
             normalAnimation.Show();
             hitAnimation.Hide();
         }
