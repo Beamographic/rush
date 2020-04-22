@@ -11,7 +11,6 @@ using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
-using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
@@ -102,24 +101,6 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             if (timeOffset >= 0)
                 // todo: implement judgement logic
                 ApplyResult(r => r.Type = HitResult.Perfect);
-        }
-
-        protected override void UpdateStateTransforms(ArmedState state)
-        {
-            const double duration = 150;
-
-            switch (state)
-            {
-                case ArmedState.Hit:
-                    this.FadeOut(duration, Easing.OutQuint).Expire();
-                    break;
-
-                case ArmedState.Miss:
-
-                    this.FadeColour(Color4.Red, duration);
-                    this.FadeOut(duration, Easing.InQuint).Expire();
-                    break;
-            }
         }
 
         public virtual bool OnPressed(DashAction action) => false;

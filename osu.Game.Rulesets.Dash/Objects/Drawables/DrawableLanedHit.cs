@@ -1,12 +1,9 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Input.Bindings;
-using osu.Game.Rulesets.Dash.UI;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -22,6 +19,22 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
         protected Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? airAccentColour : groundAccentColour;
 
+        protected Anchor LaneAnchor
+        {
+            get
+            {
+                switch (HitObject.Lane)
+                {
+                    case LanedHitLane.Air:
+                        return Direction.Value == ScrollingDirection.Left ? Anchor.TopLeft : Anchor.TopRight;
+
+                    default:
+                    case LanedHitLane.Ground:
+                        return Direction.Value == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight;
+                }
+            }
+        }
+
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
         {
@@ -31,10 +44,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         {
             base.OnDirectionChanged(e);
 
-            if (HitObject.Lane == LanedHitLane.Air)
-                Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.TopLeft : Anchor.TopRight;
-            else
-                Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight;
+            Anchor = LaneAnchor;
         }
 
         public override bool OnPressed(DashAction action)

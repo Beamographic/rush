@@ -4,6 +4,9 @@
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Game.Rulesets.Dash.UI;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Scoring;
 using osuTK;
 using osuTK.Graphics;
 
@@ -16,6 +19,9 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
         private readonly DrawableNoteSheetCapStar capStar;
         protected readonly DrawableNoteSheet NoteSheet;
+
+        [Resolved]
+        private DashPlayfield playfield { get; set; }
 
         public DrawableNoteSheetCap(DrawableNoteSheet noteSheet, TObject hitObject)
             : base(hitObject)
@@ -47,12 +53,49 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             AccentColour.BindValueChanged(evt => capStar.UpdateColour(evt.NewValue), true);
         }
 
+        protected override void UpdateInitialTransforms()
+        {
+            Scale = Vector2.One;
+            Alpha = 1f;
+        }
+
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            switch (state)
+            {
+                case ArmedState.Hit:
+                    var explosion = new DrawableNoteSheetCapStar
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = LaneAnchor,
+                        Size = Size,
+                    };
+
+                    explosion.UpdateColour(AccentColour.Value);
+
+                    playfield.EffectContainer.Add(explosion);
+
+                    const float animation_time = 200f;
+                    explosion.ScaleTo(2f, animation_time);
+                    explosion.FadeOutFromOne(animation_time);
+                    break;
+            }
+        }
+
         public void UpdateResult() => base.UpdateResult(true);
 
         public override bool OnPressed(DashAction action) => false; // Handled by the hold note
 
         public override void OnReleased(DashAction action)
         {
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            if (Judged && Result.Type != HitResult.Miss)
+                Content.X = 0;
         }
     }
 }

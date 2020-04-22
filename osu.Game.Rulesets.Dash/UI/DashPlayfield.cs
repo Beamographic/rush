@@ -23,6 +23,8 @@ namespace osu.Game.Rulesets.Dash.UI
         private readonly HitTarget hitTargetAir;
         private readonly HitTarget hitTargetGround;
 
+        internal readonly Container EffectContainer;
+
         public DashPlayfield()
         {
             InternalChildren = new Drawable[]
@@ -66,6 +68,12 @@ namespace osu.Game.Rulesets.Dash.UI
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                             Child = HitObjectContainer
                         },
+                        EffectContainer = new Container
+                        {
+                            Name = "Effects",
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                        }
                     }
                 },
                 new Container

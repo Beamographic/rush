@@ -8,7 +8,6 @@ using osu.Framework.Graphics.Shapes;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
-using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
