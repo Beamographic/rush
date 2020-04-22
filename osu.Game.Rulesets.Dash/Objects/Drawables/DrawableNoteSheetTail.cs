@@ -11,7 +11,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
     public class DrawableNoteSheetTail : DrawableNoteSheetCap<NoteSheetTail>
     {
-        private const double release_window_lenience = 1.5;
+        private const double release_window_lenience = 3;
 
         public DrawableNoteSheetTail(DrawableNoteSheet noteSheet)
             : base(noteSheet, noteSheet.HitObject.Tail)
@@ -28,7 +28,10 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             if (!userTriggered)
             {
                 if (!HitObject.HitWindows.CanBeHit(timeOffset))
+                {
                     ApplyResult(r => r.Type = HitResult.Miss);
+                    HasBroken.Value = true;
+                }
 
                 return;
             }
@@ -37,14 +40,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             if (result == HitResult.None)
                 return;
 
-            ApplyResult(r =>
-            {
-                // If the head wasn't hit or the hold note was broken, cap the max score to Meh.
-                if (result > HitResult.Meh && (!NoteSheet.Head.IsHit || NoteSheet.HasBroken))
-                    result = HitResult.Meh;
-
-                r.Type = result;
-            });
+            ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : result);
         }
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) =>

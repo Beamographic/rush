@@ -2,14 +2,18 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
     public class DrawableNoteSheetCap<TObject> : DrawableLanedHit<TObject>
         where TObject : LanedHit
     {
+        public Bindable<bool> HasBroken { get; } = new BindableBool();
+
         private readonly DrawableNoteSheetCapStar capStar;
         protected readonly DrawableNoteSheet NoteSheet;
 
@@ -26,6 +30,15 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 Anchor = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both
             };
+
+            AccentColour.ValueChanged += _ => updateDrawables();
+            HasBroken.ValueChanged += _ => updateDrawables();
+        }
+
+        private void updateDrawables()
+        {
+            var colour = HasBroken.Value ? Color4.Gray : AccentColour.Value;
+            capStar.UpdateColour(colour);
         }
 
         [BackgroundDependencyLoader]

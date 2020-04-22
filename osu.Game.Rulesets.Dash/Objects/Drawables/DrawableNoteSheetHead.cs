@@ -3,6 +3,7 @@
 
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
@@ -16,5 +17,28 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) =>
             Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
+
+        protected override void CheckForResult(bool userTriggered, double timeOffset)
+        {
+            if (AllJudged)
+                return;
+
+            if (userTriggered)
+            {
+                var result = HitObject.HitWindows.ResultFor(timeOffset);
+                if (result == HitResult.None)
+                    return;
+
+                ApplyResult(r => r.Type = result);
+
+                if (result == HitResult.Miss)
+                    HasBroken.Value = true;
+            }
+            else if (!HitObject.HitWindows.CanBeHit(timeOffset))
+            {
+                ApplyResult(r => r.Type = HitResult.Miss);
+                HasBroken.Value = true;
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace osu.Game.Rulesets.Dash.Objects
             {
                 duration = value;
                 Tail.StartTime = EndTime;
+                Body.Duration = value;
             }
         }
 
@@ -35,6 +36,8 @@ namespace osu.Game.Rulesets.Dash.Objects
                 base.StartTime = value;
                 Head.StartTime = value;
                 Tail.StartTime = EndTime;
+                Body.StartTime = value;
+                Body.EndTime = EndTime;
             }
         }
 
@@ -46,6 +49,7 @@ namespace osu.Game.Rulesets.Dash.Objects
                 base.Lane = value;
                 Head.Lane = value;
                 Tail.Lane = value;
+                Body.Lane = value;
             }
         }
 
@@ -53,10 +57,13 @@ namespace osu.Game.Rulesets.Dash.Objects
 
         public readonly NoteSheetTail Tail = new NoteSheetTail();
 
+        public readonly NoteSheetBody Body = new NoteSheetBody();
+
         protected override void CreateNestedHitObjects()
         {
             base.CreateNestedHitObjects();
 
+            AddNested(Body);
             AddNested(Head);
             AddNested(Tail);
         }

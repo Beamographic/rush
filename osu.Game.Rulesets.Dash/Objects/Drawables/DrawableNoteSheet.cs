@@ -4,12 +4,8 @@
 using System;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
-using osu.Game.Graphics;
-using osu.Game.Graphics.Backgrounds;
 using osu.Game.Rulesets.Dash.UI;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
@@ -24,24 +20,20 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
     {
         public const float NOTE_SHEET_SIZE = DashPlayfield.HIT_TARGET_SIZE * 0.75f;
 
-        public IBindable<bool> IsHitting => isHitting;
-
-        private readonly Bindable<bool> isHitting = new Bindable<bool>();
+        public Bindable<bool> HasBroken { get; } = new BindableBool();
 
         public DrawableNoteSheetHead Head => headContainer.Child;
         public DrawableNoteSheetTail Tail => tailContainer.Child;
+        public DrawableNoteSheetBody Body => bodyContainer.Child;
 
-        private readonly Container<NoteSheetBody> bodyContainer;
+        private readonly Container<DrawableNoteSheetBody> bodyContainer;
         private readonly Container<DrawableNoteSheetHead> headContainer;
         private readonly Container<DrawableNoteSheetTail> tailContainer;
 
-        private readonly NoteSheetBody noteSheetBody;
         private readonly DrawableNoteSheetCapStar holdStar;
 
         public double? HoldStartTime { get; private set; }
         public double? HoldEndTime { get; private set; }
-
-        public bool HasBroken { get; private set; }
 
         [Resolved]
         private IScrollingInfo scrollingInfo { get; set; }
@@ -53,18 +45,10 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
             Content.AddRange(new Drawable[]
             {
-                bodyContainer = new Container<NoteSheetBody>
+                bodyContainer = new Container<DrawableNoteSheetBody>
                 {
                     RelativeSizeAxes = Axes.Both,
                     Masking = true,
-                    Origin = Anchor.CentreRight,
-                    Anchor = Anchor.CentreRight,
-                    Child = noteSheetBody = new NoteSheetBody
-                    {
-                        Origin = Anchor.CentreRight,
-                        Anchor = Anchor.CentreRight,
-                        RelativeSizeAxes = Axes.Y
-                    },
                 },
                 headContainer = new Container<DrawableNoteSheetHead> { RelativeSizeAxes = Axes.Both },
                 tailContainer = new Container<DrawableNoteSheetTail> { RelativeSizeAxes = Axes.Both },
@@ -76,12 +60,11 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 }
             });
 
-            AccentColour.BindValueChanged(evt =>
-            {
-                noteSheetBody.UpdateColours(evt.NewValue);
-                holdStar.UpdateColour(evt.NewValue);
-            }, true);
+            AccentColour.ValueChanged += _ => updateHoldStar();
+            HasBroken.ValueChanged += _ => updateHoldStar();
         }
+
+        private void updateHoldStar() => holdStar.UpdateColour(HasBroken.Value ? Color4.Gray : AccentColour.Value);
 
         protected override void AddNestedHitObject(DrawableHitObject hitObject)
         {
@@ -96,6 +79,10 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 case DrawableNoteSheetTail tail:
                     tailContainer.Child = tail;
                     break;
+
+                case DrawableNoteSheetBody body:
+                    bodyContainer.Child = body;
+                    break;
             }
         }
 
@@ -104,6 +91,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             base.ClearNestedHitObjects();
             headContainer.Clear();
             tailContainer.Clear();
+            bodyContainer.Clear();
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
@@ -114,14 +102,27 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                     return new DrawableNoteSheetHead(this)
                     {
                         Anchor = Anchor.CentreLeft,
-                        AccentColour = { BindTarget = AccentColour }
+                        Origin = Anchor.Centre,
+                        AccentColour = { BindTarget = AccentColour },
+                        HasBroken = { BindTarget = HasBroken },
                     };
 
                 case NoteSheetTail _:
                     return new DrawableNoteSheetTail(this)
                     {
-                        Anchor = Anchor.CentreLeft,
-                        AccentColour = { BindTarget = AccentColour }
+                        Anchor = Anchor.CentreRight,
+                        Origin = Anchor.Centre,
+                        AccentColour = { BindTarget = AccentColour },
+                        HasBroken = { BindTarget = HasBroken },
+                    };
+
+                case NoteSheetBody _:
+                    return new DrawableNoteSheetBody(this)
+                    {
+                        Anchor = Anchor.CentreRight,
+                        Origin = Anchor.CentreRight,
+                        AccentColour = { BindTarget = AccentColour },
+                        HasBroken = { BindTarget = HasBroken },
                     };
             }
 
@@ -133,23 +134,25 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             base.OnDirectionChanged(e);
 
             Origin = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
-            noteSheetBody.Origin = noteSheetBody.Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
+            bodyContainer.Origin = bodyContainer.Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            if (Tail.AllJudged)
-                ApplyResult(r => r.Type = HitResult.Perfect);
+            if (AllJudged || timeOffset < 0)
+                return;
 
-            if (Tail.Result.Type == HitResult.Miss)
-            {
-                HasBroken = true;
-            }
+            Tail.UpdateResult();
+
+            if (Tail.IsHit && Head.IsHit && !HasBroken.Value)
+                ApplyResult(r => r.Type = HitResult.Perfect);
+            else
+                ApplyResult(r => r.Type = HitResult.Miss);
         }
 
         public override bool OnPressed(DashAction action)
         {
-            if (AllJudged)
+            if (AllJudged || HasBroken.Value)
                 return false;
 
             if (!LaneMatchesAction(action))
@@ -157,8 +160,6 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
             beginHoldAt(Time.Current - Head.HitObject.StartTime);
             Head.UpdateResult();
-
-            holdStar.Show();
 
             return true;
         }
@@ -169,112 +170,47 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 return;
 
             HoldStartTime = Time.Current;
-            isHitting.Value = true;
         }
 
         public override void OnReleased(DashAction action)
         {
-            if (AllJudged)
+            if (AllJudged || HasBroken.Value)
                 return;
 
             if (!LaneMatchesAction(action))
                 return;
 
-            // Make sure a hold was started and not ended
             if (HoldStartTime == null || HoldEndTime != null)
                 return;
 
-            Tail.UpdateResult();
-            endHold();
-
-            // If the key has been released too early, the user should not receive full score for the release
-            if (!Tail.IsHit)
-            {
-                HasBroken = true;
-                ApplyResult(r => r.Type = HitResult.Miss);
-            }
-        }
-
-        private void endHold()
-        {
             HoldEndTime = Time.Current;
-            isHitting.Value = false;
-        }
 
-        protected override void UpdateStateTransforms(ArmedState state)
-        {
-            switch (state)
-            {
-                case ArmedState.Idle:
-                    AccentColour.Value = LaneAccentColour;
-                    break;
-
-                case ArmedState.Hit:
-                    break;
-
-                case ArmedState.Miss:
-                    AccentColour.Value = Color4.Gray;
-                    break;
-            }
+            if (!Tail.HitObject.HitWindows.CanBeHit(Time.Current))
+                HasBroken.Value = true;
+            else
+                Tail.UpdateResult();
         }
 
         protected override void Update()
         {
             base.Update();
 
-            noteSheetBody.Width = DrawWidth;
+            if (Head.IsHit)
+                holdStar.Show();
+            else
+                holdStar.Hide();
+
+            float targetRatio = 0;
 
             if (HoldStartTime != null)
             {
                 var targetTime = HoldEndTime ?? Time.Current;
-                var targetRatio = (float)Math.Clamp((targetTime - HitObject.StartTime) / HitObject.Duration, 0, 1);
-                bodyContainer.Width = 1 - targetRatio;
-                holdStar.X = DrawWidth * targetRatio;
-                holdStar.Y = DrawHeight / 2f;
-            }
-        }
-
-        private class NoteSheetBody : CompositeDrawable
-        {
-            private const float border_size = 1f / 8f;
-
-            private readonly Box backgroundBox;
-            private readonly Triangles triangles;
-            private readonly Box topBox;
-            private readonly Box bottomBox;
-
-            public NoteSheetBody()
-            {
-                AddRangeInternal(new Drawable[]
-                {
-                    backgroundBox = new Box { RelativeSizeAxes = Axes.Both },
-                    triangles = new Triangles { RelativeSizeAxes = Axes.Both, Alpha = 0.8f },
-                    topBox = new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Height = border_size,
-                        Colour = Color4.White,
-                        Origin = Anchor.TopCentre,
-                        Anchor = Anchor.TopCentre,
-                    },
-                    bottomBox = new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Height = border_size,
-                        Colour = Color4.White,
-                        Origin = Anchor.BottomCentre,
-                        Anchor = Anchor.BottomCentre,
-                    }
-                });
+                targetRatio = (float)Math.Clamp((targetTime - HitObject.StartTime) / HitObject.Duration, 0, 1);
             }
 
-            public void UpdateColours(Color4 colour)
-            {
-                backgroundBox.Colour = colour.Darken(1f);
-                topBox.Colour = bottomBox.Colour = colour;
-                triangles.Colour = colour;
-                triangles.Alpha = 0.8f;
-            }
+            bodyContainer.Width = 1 - targetRatio;
+            holdStar.Y = DrawHeight / 2f;
+            holdStar.X = DrawWidth * targetRatio;
         }
     }
 }
