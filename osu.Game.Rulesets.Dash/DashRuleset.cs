@@ -2,7 +2,9 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
+using System.Drawing;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
 using osu.Game.Beatmaps;
@@ -13,6 +15,8 @@ using osu.Game.Rulesets.Dash.Beatmaps;
 using osu.Game.Rulesets.Dash.Mods;
 using osu.Game.Rulesets.Dash.UI;
 using osu.Game.Rulesets.UI;
+using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash
 {
@@ -55,12 +59,31 @@ namespace osu.Game.Rulesets.Dash
             new KeyBinding(InputKey.MouseLeft, DashAction.AirPrimary),
         };
 
-        public override Drawable CreateIcon() => new SpriteText
+        public override Drawable CreateIcon() => new DashIcon();
+
+        public class DashIcon : CompositeDrawable
         {
-            Anchor = Anchor.Centre,
-            Origin = Anchor.Centre,
-            Text = ShortName[0].ToString(),
-            Font = OsuFont.Default.With(size: 18),
-        };
+            public DashIcon()
+            {
+                AutoSizeAxes = Axes.Both;
+
+                InternalChildren = new Drawable[]
+                {
+                    new SpriteIcon
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Icon = FontAwesome.Regular.Circle,
+                    },
+                    new SpriteIcon
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Scale = new Vector2(0.6f),
+                        Icon = FontAwesome.Solid.Running,
+                    }
+                };
+            }
+        }
     }
 }
