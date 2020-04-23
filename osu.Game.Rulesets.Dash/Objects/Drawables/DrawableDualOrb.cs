@@ -11,7 +11,6 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
-using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
@@ -79,6 +78,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             base.UpdateInitialTransforms();
 
             joinBox.Colour = ColourInfo.GradientVertical(AIR_ACCENT_COLOUR, GROUND_ACCENT_COLOUR);
+            joinBox.Show();
         }
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
@@ -86,7 +86,6 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             base.OnDirectionChanged(e);
 
             Origin = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
-            // bodyContainer.Origin = bodyContainer.Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
         }
 
         public override bool OnPressed(DashAction action)
@@ -129,6 +128,27 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 else
                     r.Type = lowestResult;
             });
+        }
+
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            const float animation_time = 300f;
+
+            switch (state)
+            {
+                case ArmedState.Idle:
+                    UnproxyContent();
+                    break;
+
+                case ArmedState.Miss:
+                    this.FadeOut(animation_time);
+                    break;
+
+                case ArmedState.Hit:
+                    ProxyContent();
+                    joinBox.Hide();
+                    break;
+            }
         }
     }
 }

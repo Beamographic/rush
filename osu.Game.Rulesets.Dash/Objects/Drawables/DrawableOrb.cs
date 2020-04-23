@@ -8,6 +8,7 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Rulesets.Dash.UI;
+using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
 
@@ -69,6 +70,32 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
         public override void OnReleased(DashAction action)
         {
+        }
+
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            const float animation_time = 300f;
+
+            switch (state)
+            {
+                case ArmedState.Idle:
+                    UnproxyContent();
+                    break;
+
+                case ArmedState.Miss:
+                    this.FadeOut(animation_time);
+                    break;
+
+                case ArmedState.Hit:
+                    ProxyContent();
+
+                    float travelY = 400f * (HitObject.Lane == LanedHitLane.Air ? -1 : 1);
+
+                    this.MoveToY(travelY, animation_time, Easing.Out);
+                    this.FadeOut(animation_time);
+
+                    break;
+            }
         }
 
         protected override void Update()
