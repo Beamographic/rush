@@ -65,25 +65,43 @@ namespace osu.Game.Rulesets.Dash.Replays
         {
             for (int i = 0; i < Beatmap.HitObjects.Count; i++)
             {
-                if (!(Beatmap.HitObjects[i] is LanedHit lanedHit))
+                var current = Beatmap.HitObjects[i];
+                LanedHitLane? desiredLane;
+
+                if (current is DualOrb)
+                    desiredLane = null;
+                else if (Beatmap.HitObjects[i] is LanedHit lanedHit)
+                    desiredLane = lanedHit.Lane;
+                else
                     continue;
 
-                LanedHit nextLanedHit = GetNextObject(i) as LanedHit;
+                DashHitObject nextHit = GetNextObject(i) as DashHitObject;
 
-                double endTime = lanedHit.GetEndTime();
-                bool canDelayKeyUp = nextLanedHit == null ||
-                                     nextLanedHit.StartTime > endTime + RELEASE_DELAY;
+                double endTime = current.GetEndTime();
+                bool canDelayKeyUp = nextHit == null ||
+                                     nextHit.StartTime > endTime + RELEASE_DELAY;
 
-                double calculatedDelay = canDelayKeyUp ? RELEASE_DELAY : (nextLanedHit.StartTime - endTime) * 0.9;
+                double calculatedDelay = canDelayKeyUp ? RELEASE_DELAY : (nextHit.StartTime - endTime) * 0.9;
 
-                yield return new HitPoint { Time = lanedHit.StartTime, Lane = lanedHit.Lane };
-                yield return new ReleasePoint { Time = endTime + calculatedDelay, Lane = lanedHit.Lane };
+                if (desiredLane == null || desiredLane == LanedHitLane.Air)
+                {
+                    yield return new HitPoint { Time = current.StartTime, Lane = LanedHitLane.Air };
+                    yield return new ReleasePoint { Time = endTime + calculatedDelay, Lane = LanedHitLane.Air };
+                }
+
+                if (desiredLane == null || desiredLane == LanedHitLane.Ground)
+                {
+                    yield return new HitPoint { Time = current.StartTime, Lane = LanedHitLane.Ground };
+                    yield return new ReleasePoint { Time = endTime + calculatedDelay, Lane = LanedHitLane.Ground };
+                }
             }
 
             foreach (DashHitObject h in Beatmap.HitObjects)
             {
                 switch (h)
                 {
+                    default:
+                    case DualOrb _:
                     case LanedHit _:
                         break;
 
@@ -107,25 +125,30 @@ namespace osu.Game.Rulesets.Dash.Replays
                         }
 
                         break;
-
-                    default:
-                        // TODO: other things
-                        break;
                 }
             }
         }
 
         protected override HitObject GetNextObject(int currentIndex)
         {
-            if (!(Beatmap.HitObjects[currentIndex] is LanedHit lanedHit))
-                return null;
+            var current = Beatmap.HitObjects[currentIndex];
+            LanedHitLane? desiredLane;
 
-            var desiredLane = lanedHit.Lane;
+            if (current is DualOrb)
+                desiredLane = null;
+            else if (Beatmap.HitObjects[currentIndex] is LanedHit lanedHit)
+                desiredLane = lanedHit.Lane;
+            else
+                return null;
 
             for (int i = currentIndex + 1; i < Beatmap.HitObjects.Count; i++)
             {
-                if (Beatmap.HitObjects[i] is LanedHit nextLanedHit && nextLanedHit.Lane == desiredLane)
-                    return Beatmap.HitObjects[i];
+                switch (Beatmap.HitObjects[i])
+                {
+                    case DualOrb _:
+                    case LanedHit nextLanedHit when desiredLane == null || nextLanedHit.Lane == desiredLane:
+                        return Beatmap.HitObjects[i];
+                }
             }
 
             return null;

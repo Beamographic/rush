@@ -14,10 +14,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
     public class DrawableLanedHit<TLanedHit> : DrawableDashHitObject<TLanedHit>
         where TLanedHit : LanedHit
     {
-        private readonly Color4 airAccentColour = new Color4(0.35f, 0.75f, 1f, 1f);
-        private readonly Color4 groundAccentColour = new Color4(1f, 0.4f, 1f, 1f);
-
-        protected Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? airAccentColour : groundAccentColour;
+        protected Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
         protected Anchor LaneAnchor
         {
@@ -55,7 +52,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             return UpdateResult(true);
         }
 
-        protected virtual bool LaneMatchesAction(DashAction action)
+        public virtual bool LaneMatchesAction(DashAction action)
         {
             switch (HitObject.Lane)
             {

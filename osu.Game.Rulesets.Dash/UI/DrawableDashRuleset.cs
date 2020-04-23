@@ -48,6 +48,9 @@ namespace osu.Game.Rulesets.Dash.UI
 
                 case NoteSheet noteSheet:
                     return new DrawableNoteSheet(noteSheet);
+
+                case DualOrb dualOrb:
+                    return new DrawableDualOrb(dualOrb);
             }
 
             return null;

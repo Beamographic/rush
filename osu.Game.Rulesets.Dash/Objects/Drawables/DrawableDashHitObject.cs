@@ -11,11 +11,15 @@ using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Dash.Objects.Drawables
 {
     public abstract class DrawableDashHitObject : DrawableHitObject<DashHitObject>, IKeyBindingHandler<DashAction>
     {
+        public static readonly Color4 AIR_ACCENT_COLOUR = new Color4(0.35f, 0.75f, 1f, 1f);
+        public static readonly Color4 GROUND_ACCENT_COLOUR = new Color4(1f, 0.4f, 1f, 1f);
+
         protected readonly Container Content;
         private readonly Container proxiedContent;
 

@@ -26,9 +26,17 @@ namespace osu.Game.Rulesets.Dash.Beatmaps
         {
             var sampleLane = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_CLAP || s.Name == HitSampleInfo.HIT_WHISTLE) ? LanedHitLane.Air : LanedHitLane.Ground;
             LanedHitLane? positionLane = null;
+            bool dualOrb = false;
 
             if (original is IHasPosition hasPosition)
-                positionLane = hasPosition.Y < 200 ? LanedHitLane.Air : LanedHitLane.Ground;
+            {
+                if (hasPosition.Y < 180)
+                    positionLane = LanedHitLane.Air;
+                else if (hasPosition.Y > 220)
+                    positionLane = LanedHitLane.Ground;
+                else
+                    dualOrb = true;
+            }
 
             switch (original)
             {
@@ -54,12 +62,23 @@ namespace osu.Game.Rulesets.Dash.Beatmaps
                     break;
 
                 default:
-                    yield return new Minion
+                    if (dualOrb)
                     {
-                        Lane = positionLane ?? sampleLane,
-                        Samples = original.Samples,
-                        StartTime = original.StartTime,
-                    };
+                        yield return new DualOrb
+                        {
+                            Samples = original.Samples,
+                            StartTime = original.StartTime,
+                        };
+                    }
+                    else
+                    {
+                        yield return new Minion
+                        {
+                            Lane = positionLane ?? sampleLane,
+                            Samples = original.Samples,
+                            StartTime = original.StartTime,
+                        };
+                    }
 
                     break;
             }
