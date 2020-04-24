@@ -91,13 +91,15 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
                     const float animation_time = 200f;
 
-                    star.ScaleTo(2f, animation_time);
-                    star.FadeOutFromOne(animation_time);
+                    star.ScaleTo(2f, animation_time)
+                        .FadeOutFromOne(animation_time)
+                        .OnComplete(d => d.Expire());
 
                     flash.ScaleTo(4f, animation_time / 2)
                          .Then()
                          .ScaleTo(0.5f, animation_time / 2)
-                         .FadeOut(animation_time / 2);
+                         .FadeOut(animation_time / 2)
+                         .OnComplete(d => d.Expire());
 
                     break;
             }
