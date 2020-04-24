@@ -147,6 +147,7 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 case ArmedState.Hit:
                     ProxyContent();
                     joinBox.Hide();
+                    this.FadeOut(animation_time);
                     break;
             }
         }
