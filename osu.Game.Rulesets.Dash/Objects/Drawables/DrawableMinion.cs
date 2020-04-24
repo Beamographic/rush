@@ -18,6 +18,9 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         private readonly TextureAnimation normalAnimation;
         private readonly TextureAnimation hitAnimation;
 
+        [Resolved]
+        private DashPlayfield playfield { get; set; }
+
         public DrawableMinion(Minion hitObject)
             : base(hitObject)
         {
@@ -98,6 +101,8 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
                 case ArmedState.Hit:
                     ProxyContent();
+
+                    playfield.PlayerSprite.PlayAttackOnLane(HitObject.Lane);
 
                     normalAnimation.Hide();
                     hitAnimation.Show();

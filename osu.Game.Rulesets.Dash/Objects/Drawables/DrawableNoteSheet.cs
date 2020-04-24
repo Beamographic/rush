@@ -38,6 +38,9 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         [Resolved]
         private IScrollingInfo scrollingInfo { get; set; }
 
+        [Resolved]
+        private DashPlayfield playfield { get; set; }
+
         public DrawableNoteSheet(NoteSheet hitObject)
             : base(hitObject)
         {
@@ -161,7 +164,18 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
             beginHoldAt(Time.Current - Head.HitObject.StartTime);
             Head.UpdateResult();
 
+            if (Head.IsHit)
+                updatePlayerSprite(true);
+
             return true;
+        }
+
+        private void updatePlayerSprite(bool holding)
+        {
+            if (HitObject.Lane == LanedHitLane.Air)
+                playfield.PlayerSprite.HoldingAir = holding;
+            else
+                playfield.PlayerSprite.HoldingGround = holding;
         }
 
         private void beginHoldAt(double timeOffset)
@@ -174,13 +188,10 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
 
         public override void OnReleased(DashAction action)
         {
-            if (AllJudged || HasBroken.Value)
+            if (AllJudged || !LaneMatchesAction(action))
                 return;
 
-            if (!LaneMatchesAction(action))
-                return;
-
-            if (HoldStartTime == null || HoldEndTime != null)
+            if (HasBroken.Value || HoldStartTime == null || HoldEndTime != null)
                 return;
 
             HoldEndTime = Time.Current;

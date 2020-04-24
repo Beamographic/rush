@@ -1,11 +1,13 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osu.Game.Graphics.Backgrounds;
+using osu.Game.Rulesets.Dash.UI;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK.Graphics;
@@ -24,6 +26,9 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
         private readonly Triangles triangles;
         private readonly Box topBox;
         private readonly Box bottomBox;
+
+        [Resolved]
+        private DashPlayfield playfield { get; set; }
 
         public DrawableNoteSheetBody(DrawableNoteSheet noteSheet)
             : base(noteSheet.HitObject.Body)
@@ -88,6 +93,16 @@ namespace osu.Game.Rulesets.Dash.Objects.Drawables
                 return;
 
             ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : HitResult.Perfect);
+
+            updatePlayerSprite();
+        }
+
+        private void updatePlayerSprite()
+        {
+            if (HitObject.Lane == LanedHitLane.Air)
+                playfield.PlayerSprite.HoldingAir = false;
+            else
+                playfield.PlayerSprite.HoldingGround = false;
         }
 
         public override bool OnPressed(DashAction action) => false; // Handled by the hold note
