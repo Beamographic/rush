@@ -7,6 +7,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Animations;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Objects;
@@ -16,10 +17,11 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableMiniBoss : DrawableRushHitObject<MiniBoss>, IKeyBindingHandler<RushAction>
+    public class DrawableMiniBoss : DrawableRushHitObject<MiniBoss>
     {
         private const float base_sprite_scale = 1f;
         private const float target_sprite_scale = 1.1f;
+        private readonly Vector2 spriteSize = new Vector2(300f, 200f);
 
         private readonly TextureAnimation normalAnimation;
         private readonly TextureAnimation hitAnimation;
@@ -29,38 +31,35 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public DrawableMiniBoss(MiniBoss hitObject)
             : base(hitObject)
         {
-            Size = new Vector2(200);
+            // Size = spriteSize;
             Origin = Anchor.Centre;
 
-            AddInternal(normalAnimation = new TextureAnimation
+            AddRangeInternal(new Drawable[]
             {
-                Origin = Anchor.Centre,
-                Anchor = Anchor.Centre,
-                Scale = new Vector2(base_sprite_scale),
-                RelativeSizeAxes = Axes.Both,
-                FillMode = FillMode.Fit,
-                DefaultFrameLength = 250,
+                normalAnimation = new TextureAnimation
+                {
+                    Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
+                    Scale = new Vector2(base_sprite_scale),
+                    DefaultFrameLength = 250,
+                },
+                hitAnimation = new TextureAnimation
+                {
+                    Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
+                    Scale = new Vector2(base_sprite_scale),
+                    DefaultFrameLength = 250,
+                    Alpha = 0f
+                },
+                ticks = new Container<DrawableMiniBossTick> { RelativeSizeAxes = Axes.Both }
             });
-
-            AddInternal(hitAnimation = new TextureAnimation
-            {
-                Origin = Anchor.Centre,
-                Anchor = Anchor.Centre,
-                Scale = new Vector2(base_sprite_scale),
-                RelativeSizeAxes = Axes.Both,
-                FillMode = FillMode.Fit,
-                DefaultFrameLength = 250,
-                Alpha = 0f
-            });
-
-            AddInternal(ticks = new Container<DrawableMiniBossTick> { RelativeSizeAxes = Axes.Both });
         }
 
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            normalAnimation.AddFrames(new[] { store.Get("miniboss_1"), store.Get("miniboss_2") });
-            hitAnimation.AddFrames(new[] { store.Get("miniboss_hit_1"), store.Get("miniboss_hit_2") });
+            normalAnimation.AddFrames(new[] { store.Get("pippidon_boss_0"), store.Get("pippidon_boss_1") });
+            hitAnimation.AddFrames(new[] { store.Get("pippidon_boss_hurt_0"), store.Get("pippidon_boss_hurt_1"), store.Get("pippidon_boss_hurt_2") });
         }
 
         protected override void AddNestedHitObject(DrawableHitObject hitObject)
@@ -100,11 +99,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             normalAnimation.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
 
             X = Math.Max(0, X);
-
-            if (Time.Current >= HitObject.StartTime)
-                ProxyContent();
-            else
-                UnproxyContent();
         }
 
         protected override void UpdateInitialTransforms()
@@ -201,12 +195,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     const float gravity_time = 300;
                     const float gravity_travel_height = 500f;
 
-                    this.RotateTo(-180, gravity_time);
-                    this.MoveToY(-gravity_travel_height, gravity_time, Easing.Out)
-                        .Then()
-                        .MoveToY(gravity_travel_height * 2, gravity_time * 2, Easing.In);
+                    using (BeginAbsoluteSequence(Time.Current, true))
+                    {
+                        this.RotateTo(-180, gravity_time);
+                        this.MoveToY(-gravity_travel_height, gravity_time, Easing.Out);
+                        this.FadeOut(gravity_time);
+                    }
 
-                    this.FadeOut(300);
                     break;
             }
         }

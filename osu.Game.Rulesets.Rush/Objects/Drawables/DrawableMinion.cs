@@ -26,7 +26,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-            Content.AddRange(new Drawable[]
+            AddRangeInternal(new Drawable[]
             {
                 normalAnimation = new TextureAnimation
                 {
@@ -56,19 +56,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            switch (HitObject.Lane)
-            {
-                case LanedHitLane.Air:
-                    for (int i = 1; i <= 4; i++)
-                        normalAnimation.AddFrame(store.Get($"flying_minion_{i}"));
-                    hitAnimation.AddFrame(store.Get("flying_minion_hit"));
-                    break;
-
-                case LanedHitLane.Ground:
-                    normalAnimation.AddFrame(store.Get("ground_minion"));
-                    hitAnimation.AddFrame(store.Get("ground_minion_hit"));
-                    break;
-            }
+            string lane = HitObject.Lane == LanedHitLane.Air ? "air" : "ground";
+            normalAnimation.AddFrames(new[] { store.Get($"pippidon_{lane}_0"), store.Get($"pippidon_{lane}_0") });
+            hitAnimation.AddFrame(store.Get($"pippidon_{lane}_hit"));
         }
 
         protected override void Update()
