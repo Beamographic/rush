@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
-        public override string Description => "osu!rush";
+        public override string Description => "rush";
 
         public override string PlayingVerb => "Punching doods";
 
