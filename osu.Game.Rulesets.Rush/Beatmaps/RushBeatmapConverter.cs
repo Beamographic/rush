@@ -41,13 +41,33 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             switch (original)
             {
                 case IHasDistance hasDistance:
+                    var sheetLane = positionLane ?? sampleLane;
                     yield return new NoteSheet
                     {
-                        Lane = positionLane ?? sampleLane,
+                        Lane = sheetLane,
                         Samples = original.Samples,
                         StartTime = original.StartTime,
                         EndTime = hasDistance.EndTime
                     };
+
+                    if (hasDistance is IHasRepeats hasRepeats && hasRepeats.RepeatCount > 0)
+                    {
+                        var otherLane = sheetLane == LanedHitLane.Air ? LanedHitLane.Ground : LanedHitLane.Air;
+                        var repeatDuration = hasDistance.Duration / hasRepeats.SpanCount();
+                        var repeatCurrent = original.StartTime;
+
+                        foreach (var nodeSample in hasRepeats.NodeSamples)
+                        {
+                            yield return new Minion
+                            {
+                                Lane = otherLane,
+                                Samples = nodeSample,
+                                StartTime = repeatCurrent
+                            };
+
+                            repeatCurrent += repeatDuration;
+                        }
+                    }
 
                     break;
 
