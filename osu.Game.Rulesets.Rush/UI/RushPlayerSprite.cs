@@ -63,6 +63,9 @@ namespace osu.Game.Rulesets.Rush.UI
             this.groundY = groundY;
             this.airY = airY;
 
+            // temporarily hide the player until we can get a decent sprite
+            Alpha = 0;
+
             InternalChildren = new Drawable[]
             {
                 runningAnimation = new TextureAnimation
