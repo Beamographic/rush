@@ -2,13 +2,11 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
-using System.Drawing;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
 using osu.Game.Beatmaps;
-using osu.Game.Graphics;
 using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Rush.Beatmaps;
@@ -16,7 +14,6 @@ using osu.Game.Rulesets.Rush.Mods;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI;
 using osuTK;
-using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush
 {
