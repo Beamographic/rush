@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Project">
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyTitle>osu.Game.Rulesets.Sample</AssemblyTitle>
+    <AssemblyTitle>osu.Game.Rulesets.Rush</AssemblyTitle>
     <OutputType>Library</OutputType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <RootNamespace>osu.Game.Rulesets.Rush</RootNamespace>
@@ -10,9 +10,7 @@
     <EmbeddedResource Include="Resources\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\Samples\Gameplay" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\osu\osu.Game\osu.Game.csproj" />
+    <PackageReference Include="ppy.osu.Game" Version="2020.515.0" />
+    <PackageReference Include="ppy.osu.Framework" Version="2020.511.0" />
   </ItemGroup>
 </Project>
