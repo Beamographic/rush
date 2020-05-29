@@ -24,65 +24,41 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
         {
+            const float air_position_cutoff = 180f;
+            const float ground_position_cutoff = 220f;
+            const double etna_cutoff = 200d;
+            const double repeat_cutoff = 100d;
+
             var sampleLane = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_CLAP || s.Name == HitSampleInfo.HIT_WHISTLE) ? LanedHitLane.Air : LanedHitLane.Ground;
             LanedHitLane? positionLane = null;
-            bool dualOrb = false;
+            HitObjectType hitObjectType = HitObjectType.Minion;
+            bool bothLanes = false;
 
             if (original is IHasPosition hasPosition)
             {
-                if (hasPosition.Y < 180)
+                if (hasPosition.Y < air_position_cutoff)
                     positionLane = LanedHitLane.Air;
-                else if (hasPosition.Y > 220)
+                else if (hasPosition.Y > ground_position_cutoff)
                     positionLane = LanedHitLane.Ground;
                 else
-                    dualOrb = true;
+                    bothLanes = true;
             }
 
-            switch (original)
+            if (original is IHasEndTime hasEndTime)
             {
-                case IHasDistance hasDistance:
-                    var sheetLane = positionLane ?? sampleLane;
-                    yield return new NoteSheet
-                    {
-                        Lane = sheetLane,
-                        Samples = original.Samples,
-                        StartTime = original.StartTime,
-                        EndTime = hasDistance.EndTime
-                    };
+                // etna sliders don't convert well, so just make them regular minions
+                if (hasEndTime.Duration <= etna_cutoff)
+                    hitObjectType = HitObjectType.Minion;
+                else if (original is IHasDistance)
+                    hitObjectType = HitObjectType.NoteSheet;
+                else
+                    hitObjectType = HitObjectType.MiniBoss;
+            }
 
-                    if (hasDistance is IHasRepeats hasRepeats && hasRepeats.RepeatCount > 0)
-                    {
-                        var otherLane = sheetLane == LanedHitLane.Air ? LanedHitLane.Ground : LanedHitLane.Air;
-                        var repeatDuration = hasDistance.Duration / hasRepeats.SpanCount();
-                        var repeatCurrent = original.StartTime;
-
-                        foreach (var nodeSample in hasRepeats.NodeSamples)
-                        {
-                            yield return new Minion
-                            {
-                                Lane = otherLane,
-                                Samples = nodeSample,
-                                StartTime = repeatCurrent
-                            };
-
-                            repeatCurrent += repeatDuration;
-                        }
-                    }
-
-                    break;
-
-                case IHasEndTime hasEndTime:
-                    yield return new MiniBoss
-                    {
-                        Samples = original.Samples,
-                        StartTime = original.StartTime,
-                        EndTime = hasEndTime.EndTime
-                    };
-
-                    break;
-
-                default:
-                    if (dualOrb)
+            switch (hitObjectType)
+            {
+                case HitObjectType.Minion:
+                    if (bothLanes)
                     {
                         yield return new DualOrb
                         {
@@ -101,7 +77,91 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     }
 
                     break;
+
+                case HitObjectType.MiniBoss:
+                    yield return new MiniBoss
+                    {
+                        Samples = original.Samples,
+                        StartTime = original.StartTime,
+                        EndTime = original.GetEndTime()
+                    };
+
+                    break;
+
+                case HitObjectType.NoteSheet:
+                    var sheetLane = positionLane ?? sampleLane;
+
+                    if (bothLanes || sheetLane == LanedHitLane.Ground)
+                    {
+                        yield return new NoteSheet
+                        {
+                            Lane = LanedHitLane.Ground,
+                            Samples = original.Samples,
+                            StartTime = original.StartTime,
+                            EndTime = original.GetEndTime()
+                        };
+                    }
+
+                    if (bothLanes || sheetLane == LanedHitLane.Air)
+                    {
+                        yield return new NoteSheet
+                        {
+                            Lane = LanedHitLane.Air,
+                            Samples = bothLanes ? new List<HitSampleInfo>() : original.Samples,
+                            StartTime = original.StartTime,
+                            EndTime = original.GetEndTime()
+                        };
+                    }
+
+                    if (!bothLanes && original is IHasRepeats hasRepeats && hasRepeats.RepeatCount > 0)
+                    {
+                        var duration = original.GetEndTime() - original.StartTime;
+                        var repeatDuration = duration / hasRepeats.SpanCount();
+                        var skip = 1;
+
+                        // Currently an issue where an odd number of repeats (span count) will skip
+                        // the final minion if repeats are too short. Not sure what to do here since
+                        // it doesn't make rhythmic sense to add an extra hit object.
+                        // Examples:
+                        //   *-*-*-*-* becomes *---*---* (good)
+                        //   *-*-*-*   becomes *---*-- (looks bad) instead of *---*-* (rhythmically worse)
+                        while (repeatDuration < repeat_cutoff)
+                        {
+                            repeatDuration *= 2;
+                            skip *= 2;
+                        }
+
+                        var otherLane = sheetLane == LanedHitLane.Air ? LanedHitLane.Ground : LanedHitLane.Air;
+                        var repeatCurrent = original.StartTime;
+                        var index = -1;
+
+                        foreach (var nodeSample in hasRepeats.NodeSamples)
+                        {
+                            index++;
+
+                            if (index % skip != 0)
+                                continue;
+
+                            yield return new Minion
+                            {
+                                Lane = otherLane,
+                                Samples = nodeSample,
+                                StartTime = repeatCurrent
+                            };
+
+                            repeatCurrent += repeatDuration;
+                        }
+                    }
+
+                    break;
             }
+        }
+
+        private enum HitObjectType
+        {
+            Minion,
+            NoteSheet,
+            MiniBoss
         }
     }
 }
