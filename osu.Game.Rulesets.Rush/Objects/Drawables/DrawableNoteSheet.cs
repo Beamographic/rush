@@ -208,7 +208,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             HoldEndTime = Time.Current;
 
-            if (!Tail.HitObject.HitWindows.CanBeHit(Time.Current))
+            var tailOffset = Time.Current - Tail.HitObject.StartTime;
+            tailOffset /= DrawableNoteSheetTail.RELEASE_WINDOW_LENIENCE;
+
+            if (!Tail.HitObject.HitWindows.CanBeHit(tailOffset))
                 HasBroken.Value = true;
             else
                 Tail.UpdateResult();

@@ -11,7 +11,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableNoteSheetTail : DrawableNoteSheetCap<NoteSheetTail>
     {
-        private const double release_window_lenience = 3;
+        internal const double RELEASE_WINDOW_LENIENCE = 3;
 
         public DrawableNoteSheetTail(DrawableNoteSheet noteSheet)
             : base(noteSheet, noteSheet.HitObject.Tail)
@@ -23,7 +23,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Debug.Assert(HitObject.HitWindows != null);
 
             // Factor in the release lenience
-            timeOffset /= release_window_lenience;
+            timeOffset /= RELEASE_WINDOW_LENIENCE;
 
             if (!userTriggered)
             {
