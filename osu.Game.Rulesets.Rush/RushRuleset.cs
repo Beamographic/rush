@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Collections.Generic;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -34,13 +35,26 @@ namespace osu.Game.Rulesets.Rush
             switch (type)
             {
                 case ModType.DifficultyReduction:
-                    return new[] { new RushModNoFail() };
+                    return new Mod[]
+                    {
+                        new RushModNoFail(),
+                        new MultiMod(new RushModHalfTime(), new RushModDaycore())
+                    };
+
+                case ModType.DifficultyIncrease:
+                    return new Mod[]
+                    {
+                        new MultiMod(new RushModDoubleTime(), new RushModNightcore())
+                    };
 
                 case ModType.Automation:
-                    return new[] { new RushModAutoplay() };
+                    return new[]
+                    {
+                        new MultiMod(new RushModAutoplay(), new RushModCinema())
+                    };
 
                 default:
-                    return new Mod[] { null };
+                    return Array.Empty<Mod>();
             }
         }
 
