@@ -63,26 +63,19 @@ namespace osu.Game.Rulesets.Rush.UI
             this.groundY = groundY;
             this.airY = airY;
 
-            // temporarily hide the player until we can get a decent sprite
-            Alpha = 0;
-
             InternalChildren = new Drawable[]
             {
                 runningAnimation = new TextureAnimation
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    // FillMode = FillMode.Fit,
-                    // RelativeSizeAxes = Axes.Both,
-                    DefaultFrameLength = 30,
-                    Scale = new Vector2(0.5f)
+                    DefaultFrameLength = 50,
+                    Scale = new Vector2(1)
                 },
                 fallingAnimation = new TextureAnimation
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    // FillMode = FillMode.Fit,
-                    // RelativeSizeAxes = Axes.Both,
                     DefaultFrameLength = 50,
                     Alpha = 0f,
                     Scale = new Vector2(0.5f)
@@ -91,8 +84,6 @@ namespace osu.Game.Rulesets.Rush.UI
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    // FillMode = FillMode.Fit,
-                    // RelativeSizeAxes = Axes.Both,
                     DefaultFrameLength = 50,
                     Alpha = 0f,
                     Scale = new Vector2(0.5f)
@@ -101,8 +92,6 @@ namespace osu.Game.Rulesets.Rush.UI
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    // FillMode = FillMode.Fit,
-                    // RelativeSizeAxes = Axes.Both,
                     DefaultFrameLength = 50,
                     Alpha = 0f,
                     Scale = new Vector2(0.5f)
@@ -113,17 +102,17 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            runningAnimation.AddFrames(Enumerable.Range(0, 13).Select(i => store.Get($"Player/skeleton-03_run_{i:D2}")));
-            fallingAnimation.AddFrames(Enumerable.Range(0, 11).Select(i => store.Get($"Player/skeleton-05_fall_{i:D2}")));
-            attackAnimations[0].AddFrames(Enumerable.Range(0, 16).Select(i => store.Get($"Player/skeleton-09_attack_{i:D2}")));
-            attackAnimations[1].AddFrames(Enumerable.Range(0, 16).Select(i => store.Get($"Player/skeleton-10_attack_2_{i:D2}")));
+            runningAnimation.AddFrames(Enumerable.Range(1, 8).Select(i => store.Get($"Player/run_{i}")));
+            // fallingAnimation.AddFrames(Enumerable.Range(0, 11).Select(i => store.Get($"Player/skeleton-05_fall_{i:D2}")));
+            // attackAnimations[0].AddFrames(Enumerable.Range(0, 16).Select(i => store.Get($"Player/skeleton-09_attack_{i:D2}")));
+            // attackAnimations[1].AddFrames(Enumerable.Range(0, 16).Select(i => store.Get($"Player/skeleton-10_attack_2_{i:D2}")));
 
             runningAnimation.IsPlaying = true;
-            fallingAnimation.IsPlaying = false;
-            attackAnimations[0].IsPlaying = false;
-            attackAnimations[1].IsPlaying = false;
-            attackAnimations[0].Loop = false;
-            attackAnimations[1].Loop = false;
+            // fallingAnimation.IsPlaying = false;
+            // attackAnimations[0].IsPlaying = false;
+            // attackAnimations[1].IsPlaying = false;
+            // attackAnimations[0].Loop = false;
+            // attackAnimations[1].Loop = false;
         }
 
         public void StopAll() => InternalChildren.OfType<TextureAnimation>().ForEach(a =>
@@ -141,6 +130,9 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public void PlayFalling()
         {
+            if (fallingAnimation.FrameCount == 0)
+                return;
+
             StopAll();
             fallingAnimation.Show();
             fallingAnimation.Play();
@@ -148,6 +140,9 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public void PlayAttackOnLane(LanedHitLane lane)
         {
+            if (attackAnimations[attackIndex].FrameCount == 0)
+                return;
+
             if (holdingAir && lane == LanedHitLane.Ground)
                 ; // TODO: ghost punch the ground
             else if (holdingGround && lane == LanedHitLane.Air)
@@ -167,6 +162,9 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void updateHold()
         {
+            if (runningAnimation.IsPlaying)
+                return;
+
             if (holdingAir && holdingGround)
                 this.MoveToY(0, travel_time, Easing.OutBack);
             else if (holdingAir)
