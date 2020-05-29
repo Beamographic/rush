@@ -32,6 +32,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private readonly DrawableNoteSheetCapStar holdStar;
 
+        private int pressCount;
+
         public double? HoldStartTime { get; private set; }
         public double? HoldEndTime { get; private set; }
 
@@ -161,6 +163,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!LaneMatchesAction(action))
                 return false;
 
+            pressCount++;
+
+            if (pressCount > 1)
+                return true;
+
             beginHoldAt(Time.Current - Head.HitObject.StartTime);
             Head.UpdateResult();
 
@@ -188,7 +195,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override void OnReleased(RushAction action)
         {
-            if (AllJudged || !LaneMatchesAction(action))
+            if (!LaneMatchesAction(action))
+                return;
+
+            pressCount--;
+
+            if (pressCount > 0 || AllJudged)
                 return;
 
             if (HasBroken.Value || HoldStartTime == null || HoldEndTime != null)
