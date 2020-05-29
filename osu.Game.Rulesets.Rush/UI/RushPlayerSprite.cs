@@ -183,6 +183,10 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public bool OnPressed(RushAction action)
         {
+            // temporarily break out if running
+            if (runningAnimation.IsPlaying)
+                return false;
+
             // OnPressed/OnReleased will only ever handle actions not
             // caught by hitobjects (this is what we want)
 
