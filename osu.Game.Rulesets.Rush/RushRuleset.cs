@@ -12,7 +12,9 @@ using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Rush.Beatmaps;
 using osu.Game.Rulesets.Rush.Mods;
+using osu.Game.Rulesets.Rush.Scoring;
 using osu.Game.Rulesets.Rush.UI;
+using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI;
 using osuTK;
 
@@ -29,6 +31,8 @@ namespace osu.Game.Rulesets.Rush
         public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new RushBeatmapConverter(beatmap, this);
 
         public override DifficultyCalculator CreateDifficultyCalculator(WorkingBeatmap beatmap) => new RushDifficultyCalculator(this, beatmap);
+
+        public override HealthProcessor CreateHealthProcessor(double drainStartTime) => new RushHealthProcessor();
 
         public override IEnumerable<Mod> GetModsFor(ModType type)
         {
