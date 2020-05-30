@@ -19,6 +19,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public class DrawableNoteSheet : DrawableLanedHit<NoteSheet>
     {
         public const float NOTE_SHEET_SIZE = RushPlayfield.HIT_TARGET_SIZE * 0.75f;
+        public const float REQUIRED_COMPLETION = 0.75f;
 
         public Bindable<bool> HasBroken { get; } = new BindableBool();
 
@@ -36,6 +37,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public double? HoldStartTime { get; private set; }
         public double? HoldEndTime { get; private set; }
+        public double CompletionAmount => ((HoldEndTime ?? HoldStartTime ?? 0) - (HoldStartTime ?? 0)) / HitObject.Duration;
 
         [Resolved]
         private IScrollingInfo scrollingInfo { get; set; }
@@ -211,17 +213,20 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             var tailOffset = Time.Current - Tail.HitObject.StartTime;
             tailOffset /= DrawableNoteSheetTail.RELEASE_WINDOW_LENIENCE;
 
-            if (!Tail.HitObject.HitWindows.CanBeHit(tailOffset))
+            if (CompletionAmount < REQUIRED_COMPLETION)
                 HasBroken.Value = true;
-            else
+            else if (Tail.HitObject.HitWindows.CanBeHit(tailOffset))
+            {
                 Tail.UpdateResult();
+                HasBroken.Value = !Tail.IsHit;
+            }
         }
 
         protected override void Update()
         {
             base.Update();
 
-            if (Head.IsHit)
+            if (Head.IsHit || HasBroken.Value)
                 holdStar.Show();
             else
                 holdStar.Hide();
