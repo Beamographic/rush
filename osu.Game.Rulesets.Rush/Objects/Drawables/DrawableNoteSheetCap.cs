@@ -3,11 +3,8 @@
 
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
 using osu.Game.Rulesets.Rush.UI;
-using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
 
@@ -58,51 +55,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Scale = Vector2.One;
             Alpha = 1f;
-        }
-
-        protected override void UpdateStateTransforms(ArmedState state)
-        {
-            switch (state)
-            {
-                case ArmedState.Hit:
-                    var star = new DrawableNoteSheetCapStar
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = LaneAnchor,
-                        Size = Size,
-                    };
-
-                    var flash = new Circle
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = LaneAnchor,
-                        Size = Size,
-                        Scale = new Vector2(0.5f),
-                    };
-
-                    star.UpdateColour(AccentColour.Value);
-                    flash.Colour = AccentColour.Value.Lighten(0.5f);
-                    flash.Alpha = 0.4f;
-
-                    playfield.EffectContainer.AddRange(new Drawable[]
-                    {
-                        star, flash
-                    });
-
-                    const float animation_time = 200f;
-
-                    star.ScaleTo(2f, animation_time)
-                        .FadeOutFromOne(animation_time)
-                        .OnComplete(d => d.Expire());
-
-                    flash.ScaleTo(4f, animation_time / 2)
-                         .Then()
-                         .ScaleTo(0.5f, animation_time / 2)
-                         .FadeOut(animation_time / 2)
-                         .OnComplete(d => d.Expire());
-
-                    break;
-            }
         }
 
         public void UpdateResult() => base.UpdateResult(true);

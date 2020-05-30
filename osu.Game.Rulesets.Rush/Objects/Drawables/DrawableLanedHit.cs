@@ -11,12 +11,12 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>
+    public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
         where TLanedHit : LanedHit
     {
-        protected Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
+        public Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
-        protected Anchor LaneAnchor
+        public Anchor LaneAnchor
         {
             get
             {

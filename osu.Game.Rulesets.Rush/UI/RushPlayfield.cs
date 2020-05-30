@@ -2,9 +2,15 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Textures;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects;
+using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
 
@@ -104,6 +110,78 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
+        }
+
+        public override void Add(DrawableHitObject hitObject)
+        {
+            hitObject.OnNewResult += onNewResult;
+
+            base.Add(hitObject);
+        }
+
+        public override bool Remove(DrawableHitObject hitObject)
+        {
+            if (!base.Remove(hitObject))
+                return false;
+
+            hitObject.OnNewResult -= onNewResult;
+            return true;
+        }
+
+        private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
+        {
+            if (!result.IsHit)
+                return;
+
+            switch (judgedObject.HitObject)
+            {
+                case NoteSheetHead _:
+                case NoteSheetTail _:
+                    var drawableLanedHit = (IDrawableLanedHit)judgedObject;
+
+                    var star = new DrawableNoteSheetCapStar
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = drawableLanedHit.LaneAnchor,
+                        Size = judgedObject.Size,
+                    };
+
+                    var flash = new Circle
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = drawableLanedHit.LaneAnchor,
+                        Size = judgedObject.Size,
+                        Scale = new Vector2(0.5f),
+                    };
+
+                    star.UpdateColour(drawableLanedHit.LaneAccentColour);
+                    flash.Colour = drawableLanedHit.LaneAccentColour.Lighten(0.5f);
+                    flash.Alpha = 0.4f;
+
+                    EffectContainer.AddRange(new Drawable[]
+                    {
+                        star, flash
+                    });
+
+                    const float animation_time = 200f;
+
+                    star.ScaleTo(2f, animation_time)
+                        .FadeOutFromOne(animation_time)
+                        .OnComplete(d => d.Expire());
+
+                    flash.ScaleTo(4f, animation_time / 2)
+                         .Then()
+                         .ScaleTo(0.5f, animation_time / 2)
+                         .FadeOut(animation_time / 2)
+                         .OnComplete(d => d.Expire());
+
+                    break;
+            }
+
+            if (!judgedObject.DisplayResult || !DisplayJudgements.Value)
+                return;
+
+            // TODO: display judgment text etc.
         }
     }
 }
