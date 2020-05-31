@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Diagnostics;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
@@ -20,6 +21,8 @@ namespace osu.Game.Rulesets.Rush.UI
     [Cached]
     public class RushPlayfield : ScrollingPlayfield
     {
+        private readonly Random random = new Random();
+
         public const float DEFAULT_HEIGHT = 178;
         public const float HIT_TARGET_OFFSET = 120;
         public const float HIT_TARGET_SIZE = 100;
@@ -191,11 +194,16 @@ namespace osu.Game.Rulesets.Rush.UI
                 case Orb _:
                     Debug.Assert(drawableLanedHit != null, nameof(drawableLanedHit) + " != null");
 
+                    // some random rotation and scale for variety
+                    var startScale = 0.9f + random.NextDouble() * 0.2f;
+                    var rotation = random.NextDouble() * 360;
                     var explosion = new DefaultHitExplosion(drawableLanedHit.LaneAccentColour)
                     {
                         Origin = Anchor.Centre,
                         Anchor = drawableLanedHit.LaneAnchor,
                         Size = new Vector2(200, 200),
+                        Scale = new Vector2((float)startScale),
+                        Rotation = (float)rotation
                     };
 
                     underEffectContainer.Add(explosion);
