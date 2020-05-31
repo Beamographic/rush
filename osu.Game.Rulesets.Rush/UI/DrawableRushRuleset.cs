@@ -21,15 +21,15 @@ namespace osu.Game.Rulesets.Rush.UI
     [Cached]
     public class DrawableRushRuleset : DrawableScrollingRuleset<RushHitObject>
     {
-        protected override bool UserScrollSpeedAdjustment => false;
+        protected override bool UserScrollSpeedAdjustment => true;
 
-        protected override ScrollVisualisationMethod VisualisationMethod => ScrollVisualisationMethod.Constant;
+        protected override ScrollVisualisationMethod VisualisationMethod => ScrollVisualisationMethod.Sequential;
 
         public DrawableRushRuleset(RushRuleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod> mods = null)
             : base(ruleset, beatmap, mods)
         {
             Direction.Value = ScrollingDirection.Left;
-            TimeRange.Value = 750;
+            TimeRange.Value = 2500;
         }
 
         protected override Playfield CreatePlayfield() => new RushPlayfield();
