@@ -1,10 +1,17 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Diagnostics;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Textures;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects;
+using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
 
@@ -20,7 +27,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public RushPlayerSprite PlayerSprite { get; }
 
-        internal readonly Container EffectContainer;
+        private readonly Container underEffectContainer;
+        private readonly Container overEffectContainer;
 
         public RushPlayfield()
         {
@@ -58,6 +66,12 @@ namespace osu.Game.Rulesets.Rush.UI
                                 },
                             }
                         },
+                        underEffectContainer = new Container
+                        {
+                            Name = "Under Effects",
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                        },
                         new Container
                         {
                             Name = "Hit Objects",
@@ -65,9 +79,9 @@ namespace osu.Game.Rulesets.Rush.UI
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                             Child = HitObjectContainer
                         },
-                        EffectContainer = new Container
+                        overEffectContainer = new Container
                         {
-                            Name = "Effects",
+                            Name = "Over Effects",
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                         }
@@ -104,6 +118,98 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
+        }
+
+        public override void Add(DrawableHitObject hitObject)
+        {
+            hitObject.OnNewResult += onNewResult;
+
+            base.Add(hitObject);
+        }
+
+        public override bool Remove(DrawableHitObject hitObject)
+        {
+            if (!base.Remove(hitObject))
+                return false;
+
+            hitObject.OnNewResult -= onNewResult;
+            return true;
+        }
+
+        private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
+        {
+            if (!result.IsHit)
+                return;
+
+            var drawableLanedHit = judgedObject as IDrawableLanedHit;
+
+            switch (judgedObject.HitObject)
+            {
+                case NoteSheetHead _:
+                case NoteSheetTail _:
+                    Debug.Assert(drawableLanedHit != null, nameof(drawableLanedHit) + " != null");
+
+                    var star = new DrawableNoteSheetCapStar
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = drawableLanedHit.LaneAnchor,
+                        Size = judgedObject.Size,
+                    };
+
+                    var flash = new Circle
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = drawableLanedHit.LaneAnchor,
+                        Size = judgedObject.Size,
+                        Scale = new Vector2(0.5f),
+                    };
+
+                    star.UpdateColour(drawableLanedHit.LaneAccentColour);
+                    flash.Colour = drawableLanedHit.LaneAccentColour.Lighten(0.5f);
+                    flash.Alpha = 0.4f;
+
+                    overEffectContainer.AddRange(new Drawable[]
+                    {
+                        star, flash
+                    });
+
+                    const float animation_time = 200f;
+
+                    star.ScaleTo(2f, animation_time)
+                        .FadeOutFromOne(animation_time)
+                        .OnComplete(d => d.Expire());
+
+                    flash.ScaleTo(4f, animation_time / 2)
+                         .Then()
+                         .ScaleTo(0.5f, animation_time / 2)
+                         .FadeOut(animation_time / 2)
+                         .OnComplete(d => d.Expire());
+
+                    break;
+
+                case Minion _:
+                case Orb _:
+                    Debug.Assert(drawableLanedHit != null, nameof(drawableLanedHit) + " != null");
+
+                    var explosion = new DefaultHitExplosion(drawableLanedHit.LaneAccentColour)
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = drawableLanedHit.LaneAnchor,
+                        Size = new Vector2(200, 200),
+                    };
+
+                    underEffectContainer.Add(explosion);
+
+                    explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f);
+                    explosion.Delay(200).Expire(true);
+
+                    break;
+            }
+
+            if (!judgedObject.DisplayResult || !DisplayJudgements.Value)
+                return;
+
+            // TODO: display judgment text etc.
         }
     }
 }
