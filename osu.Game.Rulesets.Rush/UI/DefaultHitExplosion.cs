@@ -56,8 +56,8 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            colouredExplosion.Texture = store.Get("exp");
-            whiteExplosion.Texture = store.Get("exp");
+            colouredExplosion.Texture = store.Get("Effects/explosion");
+            whiteExplosion.Texture = store.Get("Effects/explosion");
         }
 
         protected class Sparks : CompositeDrawable

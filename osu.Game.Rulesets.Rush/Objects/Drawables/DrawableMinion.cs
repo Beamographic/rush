@@ -57,8 +57,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private void load(TextureStore store)
         {
             string lane = HitObject.Lane == LanedHitLane.Air ? "air" : "ground";
-            normalAnimation.AddFrames(new[] { store.Get($"pippidon_{lane}_0"), store.Get($"pippidon_{lane}_0") });
-            hitAnimation.AddFrame(store.Get($"pippidon_{lane}_hit"));
+            normalAnimation.AddFrames(new[] { store.Get($"Minion/pippidon_{lane}_0"), store.Get($"Minion/pippidon_{lane}_0") });
+            hitAnimation.AddFrame(store.Get($"Minion/pippidon_{lane}_hit"));
         }
 
         protected override void Update()

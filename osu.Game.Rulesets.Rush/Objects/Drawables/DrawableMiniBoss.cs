@@ -56,8 +56,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            normalAnimation.AddFrames(new[] { store.Get("pippidon_boss_0"), store.Get("pippidon_boss_1") });
-            hitAnimation.AddFrames(new[] { store.Get("pippidon_boss_hurt_0"), store.Get("pippidon_boss_hurt_1"), store.Get("pippidon_boss_hurt_2") });
+            normalAnimation.AddFrames(new[] { store.Get("MiniBoss/pippidon_boss_0"), store.Get("MiniBoss/pippidon_boss_1") });
+            hitAnimation.AddFrames(new[] { store.Get("MiniBoss/pippidon_boss_hurt_0"), store.Get("MiniBoss/pippidon_boss_hurt_1"), store.Get("MiniBoss/pippidon_boss_hurt_2") });
         }
 
         protected override void AddNestedHitObject(DrawableHitObject hitObject)
