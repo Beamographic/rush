@@ -51,6 +51,9 @@ namespace osu.Game.Rulesets.Rush.UI
 
                 case DualOrb dualOrb:
                     return new DrawableDualOrb(dualOrb);
+
+                case Sawblade sawblade:
+                    return new DrawableSawblade(sawblade);
             }
 
             return null;

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Game.Audio;
@@ -24,13 +25,17 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
         {
+            Random random = new Random((int)original.StartTime);
+
             const float air_position_cutoff = 180f;
             const float ground_position_cutoff = 220f;
             const double etna_cutoff = 200d;
             const double repeat_cutoff = 100d;
+            const double sawblade_cutoff = 0.9f;
+            const double airsawblade_cutoff = 0.95f;
 
             var sampleLane = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_CLAP || s.Name == HitSampleInfo.HIT_WHISTLE) ? LanedHitLane.Air : LanedHitLane.Ground;
-            LanedHitLane? positionLane = null;
+            LanedHitLane? positionLane = null, sawbladeLane = null;
             HitObjectType hitObjectType = HitObjectType.Minion;
             bool bothLanes = false;
 
@@ -55,8 +60,41 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     hitObjectType = HitObjectType.MiniBoss;
             }
 
+            // temporary sawblade selection logic
+            // 1) can only convert minions or dual orbs
+            // 2) ground sawblades are more common than air sawblades
+            // 3) air sawblades can only exist during kiai sections
+            if (hitObjectType == HitObjectType.Minion)
+            {
+                var rnd = random.NextDouble();
+                sawbladeLane = LanedHitLane.Ground;
+                if (rnd >= sawblade_cutoff)
+                    hitObjectType = HitObjectType.Sawblade;
+                if (original.Kiai && rnd >= airsawblade_cutoff)
+                    sawbladeLane = LanedHitLane.Air;
+            }
+
             switch (hitObjectType)
             {
+                case HitObjectType.Sawblade:
+                    if (bothLanes)
+                    {
+                        yield return new Minion
+                        {
+                            Lane = (sawbladeLane ?? sampleLane).Opposite(),
+                            Samples = original.Samples,
+                            StartTime = original.StartTime
+                        };
+                    }
+
+                    yield return new Sawblade
+                    {
+                        Lane = sawbladeLane ?? sampleLane,
+                        StartTime = original.StartTime
+                    };
+
+                    break;
+
                 case HitObjectType.Minion:
                     if (bothLanes)
                     {
@@ -131,7 +169,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                             skip *= 2;
                         }
 
-                        var otherLane = sheetLane == LanedHitLane.Air ? LanedHitLane.Ground : LanedHitLane.Air;
+                        var otherLane = sheetLane.Opposite();
                         var repeatCurrent = original.StartTime;
                         var index = -1;
 
@@ -161,7 +199,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         {
             Minion,
             NoteSheet,
-            MiniBoss
+            MiniBoss,
+            Sawblade
         }
     }
 }

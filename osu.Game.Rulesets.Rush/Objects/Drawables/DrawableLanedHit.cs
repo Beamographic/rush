@@ -14,7 +14,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
         where TLanedHit : LanedHit
     {
-        public Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
+        public virtual Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
         public Anchor LaneAnchor =>
             HitObject.Lane switch

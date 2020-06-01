@@ -15,4 +15,9 @@ namespace osu.Game.Rulesets.Rush.Objects
         /// </summary>
         Ground,
     }
+
+    public static class LanedHitLaneExtensions
+    {
+        public static LanedHitLane Opposite(this LanedHitLane lane) => lane == LanedHitLane.Air ? LanedHitLane.Ground : LanedHitLane.Air;
+    }
 }
