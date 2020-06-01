@@ -5,6 +5,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Rush.UI;
+using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
 using osuTK.Graphics;
 
@@ -58,6 +59,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         public void UpdateResult() => base.UpdateResult(true);
+
+        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
+        {
+        }
 
         public override bool OnPressed(RushAction action) => false; // Handled by the hold note
 

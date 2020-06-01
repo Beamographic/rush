@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Bindables;
-using osu.Framework.Graphics;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 
@@ -40,7 +39,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : result);
         }
 
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) =>
-            Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
+        // FIXME: should logically be TrailingAnchor, not sure why it renders incorrectly
+        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = LeadingAnchor;
     }
 }

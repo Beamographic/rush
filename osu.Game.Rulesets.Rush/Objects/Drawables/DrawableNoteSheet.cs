@@ -108,7 +108,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 case NoteSheetHead _:
                     return new DrawableNoteSheetHead(this)
                     {
-                        Anchor = Anchor.CentreLeft,
+                        Anchor = LeadingAnchor,
                         Origin = Anchor.Centre,
                         AccentColour = { BindTarget = AccentColour },
                         HasBroken = { BindTarget = HasBroken },
@@ -117,7 +117,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 case NoteSheetTail _:
                     return new DrawableNoteSheetTail(this)
                     {
-                        Anchor = Anchor.CentreRight,
+                        Anchor = TrailingAnchor,
                         Origin = Anchor.Centre,
                         AccentColour = { BindTarget = AccentColour },
                         HasBroken = { BindTarget = HasBroken },
@@ -126,8 +126,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 case NoteSheetBody _:
                     return new DrawableNoteSheetBody(this)
                     {
-                        Anchor = Anchor.CentreRight,
-                        Origin = Anchor.CentreRight,
+                        Anchor = TrailingAnchor,
+                        Origin = TrailingAnchor,
                         AccentColour = { BindTarget = AccentColour },
                         HasBroken = { BindTarget = HasBroken },
                     };
@@ -140,8 +140,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.OnDirectionChanged(e);
 
-            Origin = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
-            bodyContainer.Origin = bodyContainer.Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
+            Origin = LeadingAnchor;
+            bodyContainer.Origin = bodyContainer.Anchor = TrailingAnchor;
+            tailContainer.Origin = tailContainer.Anchor = TrailingAnchor;
+            headContainer.Origin = headContainer.Anchor = LeadingAnchor;
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)

@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Bindables;
-using osu.Framework.Graphics;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 
@@ -14,9 +13,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             : base(noteSheet, noteSheet.HitObject.Head)
         {
         }
-
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) =>
-            Anchor = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
@@ -40,5 +36,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 HasBroken.Value = true;
             }
         }
+
+        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = LeadingAnchor;
     }
 }
