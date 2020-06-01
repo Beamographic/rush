@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: dotnet build osu.Game.Rulesets.Rush --configuration Release -p:version=${{env.CURRENT_TAG}} --no-restore
     - name: Get osu! version
-      uses: mavrosxristoforos/get-xml-info@latest
+      uses: mavrosxristoforos/get-xml-info@1.0
       with:
         xml-file: osu.Game.Rulesets.Rush/osu.Game.Rulesets.Rush.csproj
         xpath: //PackageReference[@Include='ppy.osu.Game'][1]/@Version
