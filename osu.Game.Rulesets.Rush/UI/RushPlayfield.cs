@@ -15,6 +15,7 @@ using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
@@ -32,6 +33,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private readonly Container underEffectContainer;
         private readonly Container overEffectContainer;
+        private readonly Container halfPaddingOverEffectContainer;
 
         public RushPlayfield()
         {
@@ -87,6 +89,12 @@ namespace osu.Game.Rulesets.Rush.UI
                             Name = "Over Effects",
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                        },
+                        halfPaddingOverEffectContainer = new Container
+                        {
+                            Name = "Over Effects (No Padding)",
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 2f }
                         }
                     }
                 },
@@ -127,6 +135,9 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             hitObject.OnNewResult += onNewResult;
 
+            if (hitObject is DrawableMiniBoss drawableMiniBoss)
+                drawableMiniBoss.Attacked += onMiniBossAttacked;
+
             base.Add(hitObject);
         }
 
@@ -136,7 +147,20 @@ namespace osu.Game.Rulesets.Rush.UI
                 return false;
 
             hitObject.OnNewResult -= onNewResult;
+
+            if (hitObject is DrawableMiniBoss drawableMiniBoss)
+                drawableMiniBoss.Attacked -= onMiniBossAttacked;
+
             return true;
+        }
+
+        private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss)
+        {
+            var explosion = createHitExplosion(Color4.Yellow.Darken(0.5f), drawableMiniBoss.Anchor);
+            explosion.Scale *= 1.5f;
+            halfPaddingOverEffectContainer.Add(explosion);
+            explosion.ScaleTo(explosion.Scale * 0.5f, 200f).FadeOutFromOne(200f);
+            explosion.Delay(200).Expire(true);
         }
 
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
@@ -194,20 +218,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 case Orb _:
                     Debug.Assert(drawableLanedHit != null, nameof(drawableLanedHit) + " != null");
 
-                    // some random rotation and scale for variety
-                    var startScale = 0.9f + random.NextDouble() * 0.2f;
-                    var rotation = random.NextDouble() * 360;
-                    var explosion = new DefaultHitExplosion(drawableLanedHit.LaneAccentColour)
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = drawableLanedHit.LaneAnchor,
-                        Size = new Vector2(200, 200),
-                        Scale = new Vector2((float)startScale),
-                        Rotation = (float)rotation
-                    };
-
+                    var explosion = createHitExplosion(drawableLanedHit.LaneAccentColour, drawableLanedHit.LaneAnchor);
                     underEffectContainer.Add(explosion);
-
                     explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f);
                     explosion.Delay(200).Expire(true);
 
@@ -218,6 +230,22 @@ namespace osu.Game.Rulesets.Rush.UI
                 return;
 
             // TODO: display judgment text etc.
+        }
+
+        private Drawable createHitExplosion(Color4 colour, Anchor anchor = Anchor.Centre)
+        {
+            // some random rotation and scale for variety
+            var startScale = 0.9f + random.NextDouble() * 0.2f;
+            var rotation = random.NextDouble() * 360;
+
+            return new DefaultHitExplosion(colour)
+            {
+                Origin = Anchor.Centre,
+                Anchor = anchor,
+                Size = new Vector2(200, 200),
+                Scale = new Vector2((float)startScale),
+                Rotation = (float)rotation
+            };
         }
     }
 }

@@ -26,6 +26,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private readonly Container<DrawableMiniBossTick> ticks;
 
+        public event Action<DrawableMiniBoss> Attacked;
+
         public DrawableMiniBoss(MiniBoss hitObject)
             : base(hitObject)
         {
@@ -146,6 +148,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
                 // if (numHits == HitObject.RequiredHits)
                 //     ApplyResult(r => r.Type = HitResult.Great);
+                OnAttacked(this);
             }
             else
             {
@@ -203,5 +206,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     break;
             }
         }
+
+        protected virtual void OnAttacked(DrawableMiniBoss drawableMiniBoss) => Attacked?.Invoke(drawableMiniBoss);
     }
 }
