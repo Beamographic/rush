@@ -64,15 +64,15 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             // 1) can only convert minions or dual orbs
             // 2) ground sawblades are more common than air sawblades
             // 3) air sawblades can only exist during kiai sections
-            if (hitObjectType == HitObjectType.Minion)
-            {
-                var rnd = random.NextDouble();
-                sawbladeLane = LanedHitLane.Ground;
-                if (rnd >= sawblade_cutoff)
-                    hitObjectType = HitObjectType.Sawblade;
-                if (original.Kiai && rnd >= airsawblade_cutoff)
-                    sawbladeLane = LanedHitLane.Air;
-            }
+            // if (hitObjectType == HitObjectType.Minion)
+            // {
+            //     var rnd = random.NextDouble();
+            //     sawbladeLane = LanedHitLane.Ground;
+            //     if (rnd >= sawblade_cutoff)
+            //         hitObjectType = HitObjectType.Sawblade;
+            //     if (original.Kiai && rnd >= airsawblade_cutoff)
+            //         sawbladeLane = LanedHitLane.Air;
+            // }
 
             switch (hitObjectType)
             {
