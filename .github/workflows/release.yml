@@ -19,11 +19,6 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build osu.Game.Rulesets.Rush --configuration Release -p:version=${{env.CURRENT_TAG}} --no-restore
-    - name: Get osu! version
-      uses: mavrosxristoforos/get-xml-info@1.0
-      with:
-        xml-file: osu.Game.Rulesets.Rush/osu.Game.Rulesets.Rush.csproj
-        xpath: //PackageReference[@Include='ppy.osu.Game'][1]/@Version
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -34,7 +29,6 @@ jobs:
         release_name: ${{ github.ref }}
         body: |
           Tagged release ${{ github.ref }}
-          Compatible with osu!lazer ${{ steps.getxml.outputs.info }}
         draft: true
         prerelease: true
     - name: Upload Release Asset
