@@ -175,18 +175,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             beginHoldAt(Time.Current - Head.HitObject.StartTime);
             Head.UpdateResult();
 
-            if (Head.IsHit)
-                updatePlayerSprite(true);
-
             return true;
-        }
-
-        private void updatePlayerSprite(bool holding)
-        {
-            if (HitObject.Lane == LanedHitLane.Air)
-                playfield.PlayerSprite.HoldingAir = holding;
-            else
-                playfield.PlayerSprite.HoldingGround = holding;
         }
 
         private void beginHoldAt(double timeOffset)

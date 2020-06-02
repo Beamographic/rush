@@ -26,12 +26,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private readonly Container<DrawableMiniBossTick> ticks;
 
-        public event Action<DrawableMiniBoss> Attacked;
+        public event Action<DrawableMiniBoss, double> Attacked;
 
         public DrawableMiniBoss(MiniBoss hitObject)
             : base(hitObject)
         {
-            // Size = spriteSize;
             Origin = Anchor.Centre;
 
             AddRangeInternal(new Drawable[]
@@ -108,13 +107,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         public override bool OnPressed(RushAction action) => UpdateResult(true);
-        // {
-        //     if (Time.Current < HitObject.StartTime)
-        //         return false;
-        //
-        //     UpdateResult(true);
-        //     return true;
-        // }
 
         public override void OnReleased(RushAction action)
         {
@@ -146,9 +138,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
                 // TODO: update bonus score somehow?
 
-                // if (numHits == HitObject.RequiredHits)
-                //     ApplyResult(r => r.Type = HitResult.Great);
-                OnAttacked(this);
+                if (HitObject.HitWindows.CanBeHit(timeOffset))
+                    OnAttacked(this, timeOffset);
             }
             else
             {
@@ -207,6 +198,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
         }
 
-        protected virtual void OnAttacked(DrawableMiniBoss drawableMiniBoss) => Attacked?.Invoke(drawableMiniBoss);
+        protected virtual void OnAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset) => Attacked?.Invoke(drawableMiniBoss, timeOffset);
     }
 }

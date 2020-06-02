@@ -93,16 +93,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return;
 
             ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : HitResult.Perfect);
-
-            updatePlayerSprite();
-        }
-
-        private void updatePlayerSprite()
-        {
-            if (HitObject.Lane == LanedHitLane.Air)
-                playfield.PlayerSprite.HoldingAir = false;
-            else
-                playfield.PlayerSprite.HoldingGround = false;
         }
 
         public override bool OnPressed(RushAction action) => false; // Handled by the hold note

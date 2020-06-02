@@ -1,62 +1,83 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Animations;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Textures;
-using osu.Framework.Input.Bindings;
+using osu.Framework.Utils;
+using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
+using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class RushPlayerSprite : CompositeDrawable, IKeyBindingHandler<RushAction>
+    public class RushPlayerSprite : CompositeDrawable
     {
-        private const float punch_time = 300f;
-        private const float travel_time = 150f;
+        private const float jump_duration = 300f;
+        private const float fall_delay = 500f;
+        private const float fall_duration = 300f;
+        private const float travel_duration = 150f;
 
         private readonly TextureAnimation runningAnimation;
-        private readonly TextureAnimation fallingAnimation;
-        private readonly TextureAnimation[] attackAnimations = new TextureAnimation[2];
 
-        private int attackIndex;
+        private PlayerTargetLane target;
+
+        public PlayerTargetLane Target
+        {
+            get => target;
+            set
+            {
+                if (value == target)
+                    return;
+
+                target = value;
+
+                switch (value)
+                {
+                    case PlayerTargetLane.None:
+                        fall();
+                        break;
+
+                    case PlayerTargetLane.HoldAir:
+                    case PlayerTargetLane.AttackAir:
+                        easeToAir();
+                        break;
+
+                    case PlayerTargetLane.HoldGround:
+                    case PlayerTargetLane.AttackGround:
+                        easeToGround();
+                        break;
+
+                    case PlayerTargetLane.HoldBoth:
+                    case PlayerTargetLane.AttackBoth:
+                    case PlayerTargetLane.MiniBoss:
+                        easeToCentre();
+                        break;
+
+                    case PlayerTargetLane.GhostAir:
+                        easeToGround();
+                        // TODO: show ghost player
+                        break;
+
+                    case PlayerTargetLane.GhostGround:
+                        easeToAir();
+                        // TODO: show ghost player
+                        break;
+                }
+
+                Target = value & ~PlayerTargetLane.AttackBoth;
+            }
+        }
 
         private readonly float groundY;
         private readonly float airY;
-
-        private bool holdingAir;
-
-        public bool HoldingAir
-        {
-            get => holdingAir;
-            set
-            {
-                if (holdingAir == value)
-                    return;
-
-                holdingAir = value;
-                updateHold();
-            }
-        }
-
-        private bool holdingGround;
-
-        public bool HoldingGround
-        {
-            get => holdingGround;
-            set
-            {
-                if (holdingGround == value)
-                    return;
-
-                holdingGround = value;
-                updateHold();
-            }
-        }
 
         public RushPlayerSprite(float groundY, float airY)
         {
@@ -65,54 +86,26 @@ namespace osu.Game.Rulesets.Rush.UI
 
             InternalChildren = new Drawable[]
             {
-                runningAnimation = new TextureAnimation
+                new Circle
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    DefaultFrameLength = 50,
-                    Scale = new Vector2(1)
-                },
-                fallingAnimation = new TextureAnimation
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    DefaultFrameLength = 50,
-                    Alpha = 0f,
-                    Scale = new Vector2(0.5f)
-                },
-                attackAnimations[0] = new TextureAnimation
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    DefaultFrameLength = 50,
-                    Alpha = 0f,
-                    Scale = new Vector2(0.5f)
-                },
-                attackAnimations[1] = new TextureAnimation
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    DefaultFrameLength = 50,
-                    Alpha = 0f,
-                    Scale = new Vector2(0.5f)
+                    Size = new Vector2(100f)
                 }
+                // runningAnimation = new TextureAnimation
+                // {
+                //     Origin = Anchor.Centre,
+                //     Anchor = Anchor.Centre,
+                //     DefaultFrameLength = 50,
+                //     Scale = new Vector2(1)
+                // },
             };
         }
 
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
-            runningAnimation.AddFrames(Enumerable.Range(1, 8).Select(i => store.Get($"Player/run_{i}")));
-            // fallingAnimation.AddFrames(Enumerable.Range(0, 11).Select(i => store.Get($"Player/skeleton-05_fall_{i:D2}")));
-            // attackAnimations[0].AddFrames(Enumerable.Range(0, 16).Select(i => store.Get($"Player/skeleton-09_attack_{i:D2}")));
-            // attackAnimations[1].AddFrames(Enumerable.Range(0, 16).Select(i => store.Get($"Player/skeleton-10_attack_2_{i:D2}")));
-
-            runningAnimation.IsPlaying = true;
-            // fallingAnimation.IsPlaying = false;
-            // attackAnimations[0].IsPlaying = false;
-            // attackAnimations[1].IsPlaying = false;
-            // attackAnimations[0].Loop = false;
-            // attackAnimations[1].Loop = false;
+            // runningAnimation.AddFrames(Enumerable.Range(1, 8).Select(i => store.Get($"Player/run_{i}")));
         }
 
         public void StopAll() => InternalChildren.OfType<TextureAnimation>().ForEach(a =>
@@ -121,119 +114,142 @@ namespace osu.Game.Rulesets.Rush.UI
             a.Hide();
         });
 
-        public void PlayRunning()
+        /// <summary>
+        /// Handles any leftover actions that were not consumed by hitobjects.
+        /// Allows the player to jump over sawblades or punch the ground.
+        /// </summary>
+        public bool HandleAction(RushAction action)
         {
-            StopAll();
-            runningAnimation.Show();
-            runningAnimation.Play();
-        }
-
-        public void PlayFalling()
-        {
-            if (fallingAnimation.FrameCount == 0)
-                return;
-
-            StopAll();
-            fallingAnimation.Show();
-            fallingAnimation.Play();
-        }
-
-        public void PlayAttackOnLane(LanedHitLane lane)
-        {
-            if (attackAnimations[attackIndex].FrameCount == 0)
-                return;
-
-            if (holdingAir && lane == LanedHitLane.Ground)
-                ; // TODO: ghost punch the ground
-            else if (holdingGround && lane == LanedHitLane.Air)
-                ; // TODO: ghost punch the air
-            else
-            {
-                StopAll();
-
-                attackAnimations[attackIndex].Show();
-                attackAnimations[attackIndex].Play();
-                attackIndex = (attackIndex + 1) % attackAnimations.Length;
-
-                var targetY = lane == LanedHitLane.Air ? airY : groundY;
-                this.MoveToY(targetY, travel_time, Easing.Out);
-            }
-        }
-
-        private void updateHold()
-        {
-            if (runningAnimation.IsPlaying)
-                return;
-
-            if (holdingAir && holdingGround)
-                this.MoveToY(0, travel_time, Easing.OutBack);
-            else if (holdingAir)
-                this.MoveToY(airY, travel_time, Easing.OutBack);
-            else if (holdingGround)
-                this.MoveToY(groundY, travel_time, Easing.OutBack);
-            else
-            {
-                PlayFalling();
-                this.MoveToY(groundY, travel_time, Easing.Out);
-                return;
-            }
-
-            // TODO: play hovering animation
-        }
-
-        public bool OnPressed(RushAction action)
-        {
-            // temporarily break out if running
-            if (runningAnimation.IsPlaying)
+            if (Target != PlayerTargetLane.None)
                 return false;
 
-            // OnPressed/OnReleased will only ever handle actions not
-            // caught by hitobjects (this is what we want)
+            var eq = Precision.AlmostEquals(Y, groundY);
 
-            if (holdingAir || holdingGround)
-                return false;
+            if ((action == RushAction.AirPrimary || action == RushAction.AirSecondary) && eq)
+                jump();
+            else if ((action == RushAction.GroundPrimary || action == RushAction.GroundSecondary) && !eq)
+                Target |= PlayerTargetLane.AttackGround;
 
-            switch (action)
+            return true;
+        }
+
+        private void jump()
+        {
+            ClearTransforms();
+            this.MoveToY(airY, jump_duration, Easing.Out)
+                .Then().Delay(fall_delay)
+                .Then().MoveToY(groundY, fall_duration, Easing.In);
+        }
+
+        private void fall(bool immediately = false)
+        {
+            using (BeginDelayedSequence(immediately ? 0 : fall_delay))
+                this.MoveToY(groundY, fall_duration, Easing.In);
+        }
+
+        private void easeTo(float y)
+        {
+            ClearTransforms();
+
+            if (Precision.AlmostEquals(Y, y))
+                Y = y;
+            else
+                this.MoveToY(y, travel_duration, Easing.OutQuint);
+        }
+
+        private void easeToCentre() => easeTo((airY + groundY) / 2f);
+
+        private void easeToAir() => easeTo(airY);
+
+        private void easeToGround() => easeTo(groundY);
+
+        public void HandleResult(DrawableRushHitObject judgedObject, JudgementResult result)
+        {
+            switch (judgedObject.HitObject)
             {
-                default:
-                case RushAction.AirPrimary:
-                case RushAction.AirSecondary:
-                    if (!runningAnimation.IsPlaying)
-                        return false;
+                case NoteSheetHead head:
+                    Target = Target.WithHoldLane(head.Lane, result.IsHit);
+                    break;
 
-                    ClearTransforms();
+                case NoteSheetTail _:
+                case NoteSheetBody _:
+                    if (judgedObject.HitObject is NoteSheetBody && result.IsHit)
+                        break;
 
-                    this.MoveToY(airY, travel_time, Easing.Out)
-                        .Then().Delay(punch_time)
-                        .Then().MoveToY(groundY, travel_time, Easing.In)
-                        .OnComplete(_ => PlayRunning());
+                    var lanedHit = (LanedHit)judgedObject.HitObject;
 
-                    // TODO: play jump/fall animations
+                    Target = Target.WithHoldLane(lanedHit.Lane, false);
+
+                    // special case, need to ensure that we always drop to the ground if there are no holds
+                    if ((Target & PlayerTargetLane.HoldBoth) == 0)
+                        easeToGround();
 
                     break;
 
-                case RushAction.GroundPrimary:
-                case RushAction.GroundSecondary:
-                    if (runningAnimation.IsPlaying)
-                        return false;
+                case Minion minion when result.IsHit:
+                    Target = Target.WithAttackLane(minion.Lane, true);
+                    break;
 
-                    ClearTransforms();
+                case DualOrb dualOrb:
+                    DrawableDualOrb ddo = (DrawableDualOrb)judgedObject;
+                    Target = Target.WithAttackLane(dualOrb.Air.Lane, ddo.Air.Result.IsHit).WithAttackLane(dualOrb.Ground.Lane, ddo.Ground.Result.IsHit);
+                    break;
 
-                    this.MoveToY(groundY, travel_time, Easing.In)
-                        .Then().Delay(punch_time)
-                        .Then().MoveToY(groundY)
-                        .OnComplete(_ => PlayRunning());
-
-                    // TODO: play punch ground animation
-
+                case MiniBoss _:
+                    Target = PlayerTargetLane.None;
+                    fall(true);
                     break;
             }
+        }
+    }
 
-            return false;
+    [Flags]
+    public enum PlayerTargetLane
+    {
+        None = 0,
+
+        HoldAir = 1 << 0,
+        HoldGround = 1 << 1,
+        HoldBoth = HoldAir | HoldGround,
+
+        AttackAir = 1 << 2,
+        AttackGround = 1 << 3,
+        AttackBoth = AttackAir | AttackGround,
+
+        GhostAir = HoldGround | AttackAir,
+        GhostGround = HoldAir | AttackGround,
+
+        MiniBoss = 1 << 4,
+    }
+
+    public static class PlayerTargetLaneExtensions
+    {
+        public static PlayerTargetLane WithHoldLane(this PlayerTargetLane current, LanedHitLane lane, bool held)
+        {
+            switch (lane)
+            {
+                case LanedHitLane.Air:
+                    return held ? current | PlayerTargetLane.HoldAir : current & ~PlayerTargetLane.HoldAir;
+
+                case LanedHitLane.Ground:
+                    return held ? current | PlayerTargetLane.HoldGround : current & ~PlayerTargetLane.HoldGround;
+            }
+
+            return current;
         }
 
-        public void OnReleased(RushAction action)
+        public static PlayerTargetLane WithAttackLane(this PlayerTargetLane current, LanedHitLane lane, bool attack)
         {
+            switch (lane)
+            {
+                case LanedHitLane.Air:
+                    return attack ? current | PlayerTargetLane.AttackAir : current & ~PlayerTargetLane.AttackAir;
+
+                case LanedHitLane.Ground:
+                    return attack ? current | PlayerTargetLane.AttackGround : current & ~PlayerTargetLane.AttackGround;
+            }
+
+            return current;
         }
     }
 }

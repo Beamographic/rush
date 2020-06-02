@@ -35,7 +35,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     FillMode = FillMode.Fit,
                     RelativeSizeAxes = Axes.Both,
                     DefaultFrameLength = 250,
-                    // Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE)
                 },
                 hitAnimation = new TextureAnimation
                 {
@@ -44,7 +43,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     FillMode = FillMode.Fit,
                     RelativeSizeAxes = Axes.Both,
                     DefaultFrameLength = 250,
-                    // Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE),
                     Alpha = 0f
                 }
             });
@@ -91,8 +89,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
                 case ArmedState.Hit:
                     ProxyContent();
-
-                    playfield.PlayerSprite.PlayAttackOnLane(HitObject.Lane);
 
                     normalAnimation.Hide();
                     hitAnimation.Show();

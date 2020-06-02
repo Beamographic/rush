@@ -9,6 +9,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Textures;
+using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
@@ -20,7 +21,7 @@ using osuTK.Graphics;
 namespace osu.Game.Rulesets.Rush.UI
 {
     [Cached]
-    public class RushPlayfield : ScrollingPlayfield
+    public class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>
     {
         private readonly Random random = new Random();
 
@@ -154,17 +155,21 @@ namespace osu.Game.Rulesets.Rush.UI
             return true;
         }
 
-        private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss)
+        private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset)
         {
             var explosion = createHitExplosion(Color4.Yellow.Darken(0.5f), drawableMiniBoss.Anchor);
             explosion.Scale *= 1.5f;
             halfPaddingOverEffectContainer.Add(explosion);
             explosion.ScaleTo(explosion.Scale * 0.5f, 200f).FadeOutFromOne(200f);
             explosion.Delay(200).Expire(true);
+
+            PlayerSprite.Target = PlayerTargetLane.MiniBoss;
         }
 
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
+            PlayerSprite.HandleResult((DrawableRushHitObject)judgedObject, result);
+
             if (!result.IsHit)
                 return;
 
@@ -246,6 +251,12 @@ namespace osu.Game.Rulesets.Rush.UI
                 Scale = new Vector2((float)startScale),
                 Rotation = (float)rotation
             };
+        }
+
+        public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
+
+        public void OnReleased(RushAction action)
+        {
         }
     }
 }
