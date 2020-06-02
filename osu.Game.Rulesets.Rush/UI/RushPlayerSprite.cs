@@ -12,6 +12,7 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Utils;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osuTK;
@@ -200,6 +201,24 @@ namespace osu.Game.Rulesets.Rush.UI
                     fall(true);
                     break;
             }
+        }
+
+        public bool CollidesWith(HitObject hitObject)
+        {
+            const float hitbox_range = 50f;
+
+            switch (hitObject)
+            {
+                case MiniBoss _:
+                    return true;
+
+                case LanedHit lanedHit:
+                    // sawblades appear on the opposite side
+                    var lane = lanedHit is Sawblade ? lanedHit.Lane.Opposite() : lanedHit.Lane;
+                    return Math.Abs(Y - (lane == LanedHitLane.Air ? airY : groundY)) < hitbox_range;
+            }
+
+            return false;
         }
     }
 

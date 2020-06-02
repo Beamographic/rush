@@ -36,6 +36,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new RushFramedReplayInputHandler(replay);
 
+        public new RushPlayfield Playfield => (RushPlayfield)base.Playfield;
+
         public override DrawableHitObject<RushHitObject> CreateDrawableRepresentation(RushHitObject h)
         {
             switch (h)
