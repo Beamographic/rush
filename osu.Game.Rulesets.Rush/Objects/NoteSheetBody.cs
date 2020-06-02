@@ -5,7 +5,7 @@ using osu.Game.Rulesets.Objects.Types;
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class NoteSheetBody : LanedHit, IHasEndTime
+    public class NoteSheetBody : LanedHit, IHasDuration
     {
         public double EndTime
         {

@@ -8,7 +8,7 @@ using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class MiniBoss : RushHitObject, IHasEndTime
+    public class MiniBoss : RushHitObject, IHasDuration
     {
         public static readonly int DEFAULT_REQUIRED_HITS = 5;
 

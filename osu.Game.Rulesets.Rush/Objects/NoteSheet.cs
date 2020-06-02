@@ -7,7 +7,7 @@ using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class NoteSheet : LanedHit, IHasEndTime
+    public class NoteSheet : LanedHit, IHasDuration
     {
         public double EndTime
         {

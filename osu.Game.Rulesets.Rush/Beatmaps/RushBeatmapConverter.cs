@@ -49,7 +49,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     bothLanes = true;
             }
 
-            if (original is IHasEndTime hasEndTime)
+            if (original is IHasDuration hasEndTime)
             {
                 // etna sliders don't convert well, so just make them regular minions
                 if (hasEndTime.Duration <= etna_cutoff)
