@@ -205,7 +205,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public bool CollidesWith(HitObject hitObject)
         {
-            const float hitbox_range = 50f;
+            const float hitbox_range = 25f;
 
             switch (hitObject)
             {

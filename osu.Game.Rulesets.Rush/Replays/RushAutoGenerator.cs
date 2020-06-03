@@ -35,10 +35,10 @@ namespace osu.Game.Rulesets.Rush.Replays
             RushAction nextAir = RushAction.AirPrimary;
             RushAction nextGround = RushAction.GroundPrimary;
 
+            int airCount = 0, groundCount = 0;
+
             foreach (var group in pointGroups)
             {
-                int airCount = 0, groundCount = 0;
-
                 foreach (var point in group)
                 {
                     switch (point)
@@ -93,6 +93,9 @@ namespace osu.Game.Rulesets.Rush.Replays
 
         private IEnumerable<IActionPoint> generateActionPoints()
         {
+            const double sawblade_safety = 200;
+            double lastAirHit = -1000, lastGroundHit = -1000;
+
             for (int i = 0; i < Beatmap.HitObjects.Count; i++)
             {
                 var current = Beatmap.HitObjects[i];
@@ -101,7 +104,13 @@ namespace osu.Game.Rulesets.Rush.Replays
                 if (current is DualOrb)
                     desiredLane = null;
                 else if (current is Sawblade sawblade)
+                {
                     desiredLane = sawblade.Lane.Opposite();
+                    // don't bother if we're probably already in right lane
+                    if (desiredLane == LanedHitLane.Air && current.StartTime < lastAirHit + sawblade_safety
+                        || desiredLane == LanedHitLane.Ground && current.StartTime < lastGroundHit + sawblade_safety)
+                        continue;
+                }
                 else if (current is LanedHit lanedHit)
                     desiredLane = lanedHit.Lane;
                 else
@@ -117,12 +126,14 @@ namespace osu.Game.Rulesets.Rush.Replays
 
                 if (desiredLane == null || desiredLane == LanedHitLane.Air)
                 {
+                    lastAirHit = endTime;
                     yield return new HitPoint { Time = current.StartTime, Lane = LanedHitLane.Air };
                     yield return new ReleasePoint { Time = endTime + calculatedDelay, Lane = LanedHitLane.Air };
                 }
 
                 if (desiredLane == null || desiredLane == LanedHitLane.Ground)
                 {
+                    lastGroundHit = endTime;
                     yield return new HitPoint { Time = current.StartTime, Lane = LanedHitLane.Ground };
                     yield return new ReleasePoint { Time = endTime + calculatedDelay, Lane = LanedHitLane.Ground };
                 }
