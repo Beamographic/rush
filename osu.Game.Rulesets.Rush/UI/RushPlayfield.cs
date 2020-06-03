@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets.Rush.UI
         public const float DEFAULT_HEIGHT = 178;
         public const float HIT_TARGET_OFFSET = 120;
         public const float HIT_TARGET_SIZE = 100;
-        public const float PLAYER_OFFSET = 100;
+        public const float PLAYER_OFFSET = 130;
 
         public RushPlayerSprite PlayerSprite { get; }
 
