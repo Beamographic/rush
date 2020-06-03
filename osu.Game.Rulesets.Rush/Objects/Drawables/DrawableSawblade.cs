@@ -1,6 +1,7 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -8,6 +9,7 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Rulesets.Rush.UI;
+using osu.Game.Rulesets.Scoring;
 using osuTK;
 using osuTK.Graphics;
 
@@ -16,6 +18,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public class DrawableSawblade : DrawableLanedHit<Sawblade>
     {
         private readonly Saw saw;
+
+        [Resolved]
+        private RushPlayfield playfield { get; set; }
 
         // Sawblade uses the reverse lane colour to indicate which key the player should tap to avoid it
         public override Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Ground ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
@@ -33,11 +38,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
-                    Masking = true,
+                    Masking = hitObject.Lane == LanedHitLane.Ground,
                     Child = saw = new Saw
                     {
                         Origin = Anchor.Centre,
-                        Anchor = hitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.Centre,
+                        Anchor = hitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,
                         RelativeSizeAxes = Axes.Both,
                         Size = new Vector2(0.8f)
                     }
@@ -50,6 +55,23 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private void updateDrawables()
         {
             saw.UpdateColour(AccentColour.Value);
+        }
+
+        // Sawblade doesn't handle user presses at all.
+        public override bool OnPressed(RushAction action) => false;
+
+        protected override void CheckForResult(bool userTriggered, double timeOffset)
+        {
+            if (userTriggered || timeOffset < 0 || AllJudged)
+                return;
+
+            if (HitObject.HitWindows.CanBeHit(timeOffset))
+                return;
+
+            if (playfield.PlayerSprite.CollidesWith(HitObject))
+                ApplyResult(r => r.Type = HitResult.Miss);
+            else
+                ApplyResult(r => r.Type = HitResult.Perfect);
         }
 
         protected class Saw : CompositeDrawable

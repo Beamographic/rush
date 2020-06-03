@@ -37,20 +37,50 @@ namespace osu.Game.Rulesets.Rush.Replays
 
             foreach (var group in pointGroups)
             {
+                int airCount = 0, groundCount = 0;
+
                 foreach (var point in group)
                 {
                     switch (point)
                     {
                         case HitPoint _:
-                            actions.Add(point.Lane == LanedHitLane.Air ? nextAir : nextGround);
+                            if (point.Lane == LanedHitLane.Air)
+                            {
+                                airCount++;
+                                if (airCount == 1)
+                                    actions.Add(nextAir);
+                            }
+                            else
+                            {
+                                groundCount++;
+                                if (groundCount == 1)
+                                    actions.Add(nextGround);
+                            }
+
                             break;
 
                         case ReleasePoint _:
-                            actions.Remove(point.Lane == LanedHitLane.Air ? nextAir : nextGround);
                             if (point.Lane == LanedHitLane.Air)
-                                nextAir = nextAir == RushAction.AirPrimary ? RushAction.AirSecondary : RushAction.AirPrimary;
+                            {
+                                airCount--;
+
+                                if (airCount == 0)
+                                {
+                                    actions.Remove(nextAir);
+                                    nextAir = nextAir == RushAction.AirPrimary ? RushAction.AirSecondary : RushAction.AirPrimary;
+                                }
+                            }
                             else
-                                nextGround = nextGround == RushAction.GroundPrimary ? RushAction.GroundSecondary : RushAction.GroundPrimary;
+                            {
+                                groundCount--;
+
+                                if (groundCount == 0)
+                                {
+                                    actions.Remove(nextGround);
+                                    nextGround = nextGround == RushAction.GroundPrimary ? RushAction.GroundSecondary : RushAction.GroundPrimary;
+                                }
+                            }
+
                             break;
                     }
                 }
@@ -70,7 +100,9 @@ namespace osu.Game.Rulesets.Rush.Replays
 
                 if (current is DualOrb)
                     desiredLane = null;
-                else if (Beatmap.HitObjects[i] is LanedHit lanedHit)
+                else if (current is Sawblade sawblade)
+                    desiredLane = sawblade.Lane.Opposite();
+                else if (current is LanedHit lanedHit)
                     desiredLane = lanedHit.Lane;
                 else
                     continue;

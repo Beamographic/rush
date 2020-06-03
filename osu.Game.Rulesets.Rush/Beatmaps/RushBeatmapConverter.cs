@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
@@ -23,6 +24,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         // https://github.com/ppy/osu/tree/master/osu.Game/Rulesets/Objects/Types
         public override bool CanConvert() => true;
 
+        [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
         protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
         {
             Random random = new Random((int)original.StartTime);
@@ -60,19 +62,18 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     hitObjectType = HitObjectType.MiniBoss;
             }
 
-            // temporary sawblade selection logic
-            // 1) can only convert minions or dual orbs
-            // 2) ground sawblades are more common than air sawblades
-            // 3) air sawblades can only exist during kiai sections
-            // if (hitObjectType == HitObjectType.Minion)
-            // {
-            //     var rnd = random.NextDouble();
-            //     sawbladeLane = LanedHitLane.Ground;
-            //     if (rnd >= sawblade_cutoff)
-            //         hitObjectType = HitObjectType.Sawblade;
-            //     if (original.Kiai && rnd >= airsawblade_cutoff)
-            //         sawbladeLane = LanedHitLane.Air;
-            // }
+            // for now, sawblades can be manually selected by applying all hitsounds
+            if (hitObjectType == HitObjectType.Minion)
+            {
+                var hasClap = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_CLAP);
+                var hasWhistle = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_WHISTLE);
+                var hasFinish = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_FINISH);
+
+                if (hasClap && hasWhistle && hasFinish)
+                {
+                    hitObjectType = HitObjectType.Sawblade;
+                }
+            }
 
             switch (hitObjectType)
             {
@@ -81,15 +82,15 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     {
                         yield return new Minion
                         {
-                            Lane = (sawbladeLane ?? sampleLane).Opposite(),
-                            Samples = original.Samples,
+                            Lane = positionLane ?? sampleLane,
+                            // Samples = original.Samples, FIXME: samples will be awful
                             StartTime = original.StartTime
                         };
                     }
 
                     yield return new Sawblade
                     {
-                        Lane = sawbladeLane ?? sampleLane,
+                        Lane = (positionLane ?? sampleLane).Opposite(),
                         StartTime = original.StartTime
                     };
 

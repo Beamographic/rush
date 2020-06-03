@@ -21,9 +21,9 @@ namespace osu.Game.Rulesets.Rush.UI
 {
     public class RushPlayerSprite : CompositeDrawable
     {
-        private const float jump_duration = 300f;
-        private const float fall_delay = 500f;
-        private const float fall_duration = 300f;
+        private const float jump_duration = 150f;
+        private const float fall_delay = 300f;
+        private const float fall_duration = 150f;
         private const float travel_duration = 150f;
 
         private readonly TextureAnimation runningAnimation;
@@ -213,9 +213,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     return true;
 
                 case LanedHit lanedHit:
-                    // sawblades appear on the opposite side
-                    var lane = lanedHit is Sawblade ? lanedHit.Lane.Opposite() : lanedHit.Lane;
-                    return Math.Abs(Y - (lane == LanedHitLane.Air ? airY : groundY)) < hitbox_range;
+                    return Math.Abs(Y - (lanedHit.Lane == LanedHitLane.Air ? airY : groundY)) <= hitbox_range;
             }
 
             return false;
