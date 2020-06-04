@@ -34,6 +34,8 @@ namespace osu.Game.Rulesets.Rush
 
         public override HealthProcessor CreateHealthProcessor(double drainStartTime) => new RushHealthProcessor();
 
+        public override ScoreProcessor CreateScoreProcessor() => new RushScoreProcessor();
+
         public override IEnumerable<Mod> GetModsFor(ModType type)
         {
             switch (type)

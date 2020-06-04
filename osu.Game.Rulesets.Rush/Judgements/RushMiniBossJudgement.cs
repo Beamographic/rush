@@ -5,6 +5,5 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class RushMiniBossJudgement : RushJudgement
     {
-        public int NumberOfHits;
     }
 }
