@@ -124,6 +124,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                         {
                             Lane = positionLane ?? sampleLane,
                             StartTime = original.StartTime,
+                            Samples = original.Samples,
                         };
                     }
                     else
@@ -208,6 +209,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                                 yield return new Heart
                                 {
                                     Lane = otherLane,
+                                    Samples = nodeSample,
                                     StartTime = repeatCurrent,
                                 };
                             }
