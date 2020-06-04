@@ -119,17 +119,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             if (userTriggered && timeOffset < 0)
             {
-                DrawableMiniBossTick nextTick = null;
-
-                foreach (var t in ticks)
-                {
-                    if (!t.IsHit)
-                    {
-                        nextTick = t;
-                        break;
-                    }
-                }
-
+                var nextTick = ticks.FirstOrDefault(t => !t.IsHit);
                 nextTick?.TriggerResult(HitResult.Perfect);
 
                 var numHits = ticks.Count(r => r.IsHit);
@@ -157,9 +147,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 }
 
                 var hitResult = numHits == HitObject.RequiredHits
-                    ? HitResult.Great
+                    ? HitResult.Perfect
                     : numHits > HitObject.RequiredHits / 2
-                        ? HitResult.Good
+                        ? HitResult.Great
                         : HitResult.Miss;
 
                 ApplyResult(r => r.Type = hitResult);

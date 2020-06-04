@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Game.Beatmaps;
@@ -15,7 +14,6 @@ namespace osu.Game.Rulesets.Rush.Replays
     public class RushAutoGenerator : AutoGenerator
     {
         public const double RELEASE_DELAY = 20;
-        private const double miniboss_punch_delay = 100;
 
         public new Beatmap<RushHitObject> Beatmap => (Beatmap<RushHitObject>)base.Beatmap;
 
@@ -152,7 +150,7 @@ namespace osu.Game.Rulesets.Rush.Replays
                         var currentTime = miniBoss.StartTime;
                         var endTime = miniBoss.GetEndTime();
                         var duration = endTime - currentTime;
-                        var punchTime = Math.Min(duration / miniBoss.RequiredHits, miniboss_punch_delay + RELEASE_DELAY);
+                        var punchTime = duration / (miniBoss.RequiredHits * 2f);
 
                         bool alternate = true;
 
@@ -160,9 +158,11 @@ namespace osu.Game.Rulesets.Rush.Replays
                         {
                             yield return new HitPoint { Time = currentTime, Lane = alternate ? LanedHitLane.Ground : LanedHitLane.Air };
 
-                            currentTime += punchTime;
+                            currentTime += punchTime / 2f;
 
                             yield return new ReleasePoint { Time = currentTime, Lane = alternate ? LanedHitLane.Ground : LanedHitLane.Air };
+
+                            currentTime += punchTime / 2f;
 
                             alternate = !alternate;
                         }
