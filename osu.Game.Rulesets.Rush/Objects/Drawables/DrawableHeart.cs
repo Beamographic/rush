@@ -41,19 +41,20 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             var result = HitObject.HitWindows.ResultFor(timeOffset);
 
-            // if we've manually hit it, assume it's ok
-            if (userTriggered && result != HitResult.None)
+            if (userTriggered)
             {
-                ApplyResult(r => r.Type = HitResult.Perfect);
+                if (result != HitResult.None)
+                    ApplyResult(r => r.Type = HitResult.Perfect);
+
                 return;
             }
 
-            // if we haven't reached the perfect range, do nothing
-            if (timeOffset < 0 && result != HitResult.Perfect)
+            // if we haven't passed the hitobject time, do nothing
+            if (timeOffset < 0)
                 return;
 
             // if we've passed the object and can longer hit it, miss
-            if (timeOffset >= 0 && !HitObject.HitWindows.CanBeHit(timeOffset))
+            if (result == HitResult.None)
                 ApplyResult(r => r.Type = HitResult.Miss);
 
             // else if we're still able to hit it, check if the player is in the correct lane
