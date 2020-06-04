@@ -28,6 +28,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public Anchor TrailingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
 
+        public LanedHitLane Lane => HitObject.Lane;
+
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
         {

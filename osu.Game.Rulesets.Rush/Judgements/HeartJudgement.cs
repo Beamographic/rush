@@ -7,5 +7,7 @@ namespace osu.Game.Rulesets.Rush.Judgements
     {
         public override bool AffectsCombo => false;
         public override bool IsBonus => true;
+
+        public override double HealthPoints => 50;
     }
 }

@@ -8,26 +8,14 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class RushJudgement : Judgement
     {
-        protected override int NumericResultFor(HitResult result)
-        {
-            switch (result)
+        protected override int NumericResultFor(HitResult result) =>
+            result switch
             {
-                default:
-                    return 0;
+                HitResult.Great => 200,
+                HitResult.Perfect => 300,
+                _ => 0
+            };
 
-                case HitResult.Meh:
-                    return 50;
-
-                case HitResult.Ok:
-                    return 100;
-
-                case HitResult.Good:
-                    return 200;
-
-                case HitResult.Great:
-                case HitResult.Perfect:
-                    return 300;
-            }
-        }
+        public virtual double HealthPoints => -10;
     }
 }

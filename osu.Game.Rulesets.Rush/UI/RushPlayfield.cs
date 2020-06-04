@@ -7,10 +7,12 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.UI;
@@ -37,6 +39,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container underEffectContainer;
         private readonly Container overEffectContainer;
         private readonly Container halfPaddingOverEffectContainer;
+        private readonly Container overPlayerEffectsContainer;
         private readonly JudgementContainer<DrawableRushJudgement> judgementContainer;
 
         public RushPlayfield()
@@ -81,7 +84,7 @@ namespace osu.Game.Rulesets.Rush.UI
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                         },
-                        judgementContainer = new JudgementContainer<DrawableRushJudgement>()
+                        judgementContainer = new JudgementContainer<DrawableRushJudgement>
                         {
                             Name = "Judgement",
                             RelativeSizeAxes = Axes.Both,
@@ -102,7 +105,7 @@ namespace osu.Game.Rulesets.Rush.UI
                         },
                         halfPaddingOverEffectContainer = new Container
                         {
-                            Name = "Over Effects (No Padding)",
+                            Name = "Over Effects (Half Padding)",
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 2f }
                         }
@@ -130,6 +133,12 @@ namespace osu.Game.Rulesets.Rush.UI
                                 Position = new Vector2(PLAYER_OFFSET, DEFAULT_HEIGHT),
                                 Scale = new Vector2(0.75f),
                             },
+                            overPlayerEffectsContainer = new Container
+                            {
+                                Origin = Anchor.Centre,
+                                Anchor = Anchor.Centre,
+                                RelativeSizeAxes = Axes.Both,
+                            }
                         }
                     }
                 }
@@ -178,6 +187,9 @@ namespace osu.Game.Rulesets.Rush.UI
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
             DrawableRushHitObject rushJudgedObject = (DrawableRushHitObject)judgedObject;
+            int healthAmount = (int)((result.Judgement as RushJudgement)?.HealthPoints ?? 0);
+            var healthPosition = new Vector2(overPlayerEffectsContainer.DrawWidth * 0.75f, overPlayerEffectsContainer.DrawHeight * 0.5f);
+
             PlayerSprite.HandleResult(rushJudgedObject, result);
 
             const float animation_time = 200f;
@@ -233,9 +245,25 @@ namespace osu.Game.Rulesets.Rush.UI
                         underEffectContainer.Add(explosion);
                         explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f).OnComplete(d => d.Expire());
                     }
-                    else
+                    else if (PlayerSprite.CollidesWith(result.HitObject))
                     {
-                        // TODO: ouch!!!
+                        var damageText = new SpriteText
+                        {
+                            Origin = Anchor.Centre,
+                            Colour = Color4.Red,
+                            Font = FontUsage.Default.With(size: 40),
+                            Scale = new Vector2(1.2f),
+                            Text = $"{healthAmount:D}",
+                            Position = healthPosition,
+                        };
+
+                        overPlayerEffectsContainer.Add(damageText);
+
+                        damageText.ScaleTo(1f, animation_time)
+                                  .Then()
+                                  .FadeOutFromOne(animation_time)
+                                  .MoveToOffset(new Vector2(0f, -20f), animation_time)
+                                  .OnComplete(d => d.Expire());
                     }
 
                     break;
@@ -249,11 +277,29 @@ namespace osu.Game.Rulesets.Rush.UI
                         Scale = new Vector2(0.5f)
                     };
 
+                    var healthIncrease = new SpriteText
+                    {
+                        Origin = Anchor.Centre,
+                        Colour = Color4.Green,
+                        Font = FontUsage.Default.With(size: 40),
+                        Scale = new Vector2(1.2f),
+                        Text = $"+{healthAmount:D}",
+                        Position = healthPosition,
+                    };
+
                     overEffectContainer.Add(heartFlash);
 
                     heartFlash.ScaleTo(1.25f, animation_time)
                               .FadeOutFromOne(animation_time)
                               .OnComplete(d => d.Expire());
+
+                    overPlayerEffectsContainer.Add(healthIncrease);
+
+                    healthIncrease.ScaleTo(1f, animation_time)
+                                  .Then()
+                                  .FadeOutFromOne(animation_time)
+                                  .MoveToOffset(new Vector2(0f, -20f), animation_time)
+                                  .OnComplete(d => d.Expire());
 
                     // TODO: green floating plus signs
 

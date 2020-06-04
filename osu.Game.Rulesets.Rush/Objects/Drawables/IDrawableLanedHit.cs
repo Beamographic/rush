@@ -10,5 +10,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         Color4 LaneAccentColour { get; }
         Anchor LaneAnchor { get; }
+        LanedHitLane Lane { get; }
     }
 }
