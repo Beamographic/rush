@@ -36,13 +36,9 @@ namespace osu.Game.Rulesets.Rush.UI
             };
         }
 
-        protected override void OnNewBeat(int beatIndex, TimingControlPoint timingPoint, EffectControlPoint effectPoint, TrackAmplitudes amplitudes)
-        {
-            base.OnNewBeat(beatIndex, timingPoint, effectPoint, amplitudes);
-
+        protected override void OnNewBeat(int beatIndex, TimingControlPoint timingPoint, EffectControlPoint effectPoint, TrackAmplitudes amplitudes) =>
             this.ScaleTo(1.2f)
                 .Then()
                 .ScaleTo(1f, timingPoint.BeatLength, Easing.Out);
-        }
     }
 }

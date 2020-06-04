@@ -200,20 +200,28 @@ namespace osu.Game.Rulesets.Rush.UI
                     Target = PlayerTargetLane.None;
                     fall(true);
                     break;
+
+                case Heart heart when result.IsHit:
+                    Target = Target.WithAttackLane(heart.Lane, true);
+                    break;
             }
         }
 
         public bool CollidesWith(HitObject hitObject)
         {
-            const float hitbox_range = 25f;
+            const float damage_range = 25f;
+            const float heart_range = 50f;
 
             switch (hitObject)
             {
                 case MiniBoss _:
                     return true;
 
+                case Heart heart:
+                    return Math.Abs(Y - (heart.Lane == LanedHitLane.Air ? airY : groundY)) <= heart_range;
+
                 case LanedHit lanedHit:
-                    return Math.Abs(Y - (lanedHit.Lane == LanedHitLane.Air ? airY : groundY)) <= hitbox_range;
+                    return Math.Abs(Y - (lanedHit.Lane == LanedHitLane.Air ? airY : groundY)) <= damage_range;
             }
 
             return false;

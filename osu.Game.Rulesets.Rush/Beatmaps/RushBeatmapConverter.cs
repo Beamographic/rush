@@ -15,9 +15,21 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 {
     public class RushBeatmapConverter : BeatmapConverter<RushHitObject>
     {
+        private const float approximate_heart_distance = 30000f;
+
+        private double nextHeart;
+
         public RushBeatmapConverter(IBeatmap beatmap, Ruleset ruleset)
             : base(beatmap, ruleset)
         {
+        }
+
+        protected override Beatmap<RushHitObject> ConvertBeatmap(IBeatmap original)
+        {
+            var firstObject = original.HitObjects.FirstOrDefault()?.StartTime ?? 0;
+            nextHeart = firstObject + approximate_heart_distance;
+
+            return base.ConvertBeatmap(original);
         }
 
         // todo: Check for conversion types that should be supported (ie. Beatmap.HitObjects.Any(h => h is IHasXPosition))
@@ -105,6 +117,15 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                             StartTime = original.StartTime,
                         };
                     }
+                    else if (original.StartTime >= nextHeart)
+                    {
+                        nextHeart += approximate_heart_distance;
+                        yield return new Heart
+                        {
+                            Lane = positionLane ?? sampleLane,
+                            StartTime = original.StartTime,
+                        };
+                    }
                     else
                     {
                         yield return new Minion
@@ -181,12 +202,24 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                             if (index % skip != 0)
                                 continue;
 
-                            yield return new Minion
+                            if (repeatCurrent >= nextHeart)
                             {
-                                Lane = otherLane,
-                                Samples = nodeSample,
-                                StartTime = repeatCurrent
-                            };
+                                nextHeart += approximate_heart_distance;
+                                yield return new Heart
+                                {
+                                    Lane = otherLane,
+                                    StartTime = repeatCurrent,
+                                };
+                            }
+                            else
+                            {
+                                yield return new Minion
+                                {
+                                    Lane = otherLane,
+                                    Samples = nodeSample,
+                                    StartTime = repeatCurrent
+                                };
+                            }
 
                             repeatCurrent += repeatDuration;
                         }

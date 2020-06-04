@@ -30,23 +30,16 @@ namespace osu.Game.Rulesets.Rush.Scoring
             PlayerHealthPercentage = playerHealthPercentage;
         }
 
-        protected override double GetHealthIncreaseFor(JudgementResult result)
-        {
-            if (result.IsHit)
+        protected override double GetHealthIncreaseFor(JudgementResult result) =>
+            result.HitObject switch
             {
-                // TODO: handle hearts
-                return 0;
-            }
-
-            return result.HitObject switch
-            {
-                Sawblade _ => healthForPoints(sawblade_points),
-                Minion _ when collidesWith(result.HitObject) => healthForPoints(minion_points),
-                Orb _ when collidesWith(result.HitObject) => healthForPoints(orb_points),
-                MiniBoss _ => healthForPoints(miniboss_points),
+                Heart _ when result.IsHit => healthForPoints(heart_points),
+                Sawblade _ when !result.IsHit => healthForPoints(sawblade_points),
+                Minion _ when !result.IsHit && collidesWith(result.HitObject) => healthForPoints(minion_points),
+                Orb _ when !result.IsHit && collidesWith(result.HitObject) => healthForPoints(orb_points),
+                MiniBoss _ when !result.IsHit => healthForPoints(miniboss_points),
                 _ => 0
             };
-        }
 
         private bool collidesWith(HitObject hitObject) => drawableRushRuleset.Playfield.PlayerSprite.CollidesWith(hitObject);
     }
