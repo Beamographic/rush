@@ -114,7 +114,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            if (userTriggered)
+            if (AllJudged)
+                return;
+
+            if (userTriggered && timeOffset < 0)
             {
                 DrawableMiniBossTick nextTick = null;
 
@@ -127,7 +130,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     }
                 }
 
-                nextTick?.TriggerResult(HitResult.Great);
+                nextTick?.TriggerResult(HitResult.Perfect);
 
                 var numHits = ticks.Count(r => r.IsHit);
                 var completion = (float)numHits / HitObject.RequiredHits;
@@ -136,16 +139,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 hitAnimation.Show();
                 hitAnimation.ScaleTo(base_sprite_scale + Math.Min(target_sprite_scale - base_sprite_scale, (target_sprite_scale - base_sprite_scale) * completion), 260, Easing.OutQuint);
 
-                // TODO: update bonus score somehow?
-
-                if (HitObject.HitWindows.CanBeHit(timeOffset))
-                    OnAttacked(this, timeOffset);
+                OnAttacked(this, timeOffset);
             }
-            else
+            else if (!userTriggered && timeOffset >= 0)
             {
-                if (timeOffset < 0)
-                    return;
-
                 int numHits = 0;
 
                 foreach (var tick in ticks)
