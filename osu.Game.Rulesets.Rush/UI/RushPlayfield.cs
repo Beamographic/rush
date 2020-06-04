@@ -13,6 +13,7 @@ using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
 using osuTK.Graphics;
@@ -28,12 +29,15 @@ namespace osu.Game.Rulesets.Rush.UI
         public const float HIT_TARGET_OFFSET = 120;
         public const float HIT_TARGET_SIZE = 100;
         public const float PLAYER_OFFSET = 130;
+        public const float JUDGEMENT_OFFSET = 100;
+        public const float JUDGEMENT_MOVEMENT = 300;
 
         public RushPlayerSprite PlayerSprite { get; }
 
         private readonly Container underEffectContainer;
         private readonly Container overEffectContainer;
         private readonly Container halfPaddingOverEffectContainer;
+        private readonly JudgementContainer<DrawableRushJudgement> judgementContainer;
 
         public RushPlayfield()
         {
@@ -74,6 +78,12 @@ namespace osu.Game.Rulesets.Rush.UI
                         underEffectContainer = new Container
                         {
                             Name = "Under Effects",
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                        },
+                        judgementContainer = new JudgementContainer<DrawableRushJudgement>()
+                        {
+                            Name = "Judgement",
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                         },
@@ -167,31 +177,30 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
-            PlayerSprite.HandleResult((DrawableRushHitObject)judgedObject, result);
-
-            if (!result.IsHit)
-                return;
+            DrawableRushHitObject rushJudgedObject = (DrawableRushHitObject)judgedObject;
+            PlayerSprite.HandleResult(rushJudgedObject, result);
 
             const float animation_time = 200f;
+            const float judgement_time = 250f;
 
-            var drawableLanedHit = judgedObject as IDrawableLanedHit;
+            var drawableLanedHit = rushJudgedObject as IDrawableLanedHit;
 
-            switch (judgedObject.HitObject)
+            switch (rushJudgedObject.HitObject)
             {
-                case NoteSheetHead _:
-                case NoteSheetTail _:
+                case NoteSheetHead _ when result.IsHit:
+                case NoteSheetTail _ when result.IsHit:
                     var star = new DrawableNoteSheetCapStar
                     {
                         Origin = Anchor.Centre,
                         Anchor = drawableLanedHit!.LaneAnchor,
-                        Size = judgedObject.Size,
+                        Size = rushJudgedObject.Size,
                     };
 
                     var flash = new Circle
                     {
                         Origin = Anchor.Centre,
                         Anchor = drawableLanedHit!.LaneAnchor,
-                        Size = judgedObject.Size,
+                        Size = rushJudgedObject.Size,
                         Scale = new Vector2(0.5f),
                     };
 
@@ -218,18 +227,25 @@ namespace osu.Game.Rulesets.Rush.UI
 
                 case Minion _:
                 case Orb _:
-                    var explosion = createHitExplosion(drawableLanedHit!.LaneAccentColour, drawableLanedHit.LaneAnchor);
-                    underEffectContainer.Add(explosion);
-                    explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f).OnComplete(d => d.Expire());
+                    if (result.IsHit)
+                    {
+                        var explosion = createHitExplosion(drawableLanedHit!.LaneAccentColour, drawableLanedHit.LaneAnchor);
+                        underEffectContainer.Add(explosion);
+                        explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f).OnComplete(d => d.Expire());
+                    }
+                    else
+                    {
+                        // TODO: ouch!!!
+                    }
 
                     break;
 
-                case Heart _:
+                case Heart _ when result.IsHit:
                     var heartFlash = new DrawableHeartIcon
                     {
                         Origin = Anchor.Centre,
                         Anchor = drawableLanedHit!.LaneAnchor,
-                        Size = judgedObject.Size,
+                        Size = rushJudgedObject.Size,
                         Scale = new Vector2(0.5f)
                     };
 
@@ -239,14 +255,57 @@ namespace osu.Game.Rulesets.Rush.UI
                               .FadeOutFromOne(animation_time)
                               .OnComplete(d => d.Expire());
 
+                    // TODO: green floating plus signs
+
                     break;
             }
 
-            if (!judgedObject.DisplayResult || !DisplayJudgements.Value)
+            if (!rushJudgedObject.DisplayResult || !DisplayJudgements.Value)
                 return;
 
-            // TODO: display judgment text etc.
+            DrawableRushJudgement judgementDrawable = null;
+
+            switch (rushJudgedObject.HitObject)
+            {
+                case NoteSheet _:
+                    break;
+
+                case Heart _:
+                    break;
+
+                case Sawblade sawblade:
+                    judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
+                    {
+                        Origin = Anchor.Centre,
+                        Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
+                        Scale = new Vector2(1.2f)
+                    };
+
+                    break;
+
+                case LanedHit lanedHit:
+                    judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
+                    {
+                        Origin = Anchor.Centre,
+                        Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
+                        Scale = new Vector2(1.5f)
+                    };
+
+                    break;
+            }
+
+            if (judgementDrawable != null)
+            {
+                judgementContainer.Add(judgementDrawable);
+
+                judgementDrawable.ScaleTo(1f, judgement_time)
+                                 .Then()
+                                 .MoveToOffset(new Vector2(-JUDGEMENT_MOVEMENT, 0f), judgement_time, Easing.In)
+                                 .OnComplete(d => d.Expire());
+            }
         }
+
+        private float judgementPositionForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? -JUDGEMENT_OFFSET : judgementContainer.DrawHeight - JUDGEMENT_OFFSET;
 
         private Drawable createHitExplosion(Color4 colour, Anchor anchor = Anchor.Centre)
         {
