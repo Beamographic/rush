@@ -4,13 +4,11 @@
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Track;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Graphics.Containers;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
 using osuTK;
-using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -67,27 +65,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             public BeatingHeart()
             {
-                Children = new Drawable[]
+                Child = new DrawableHeartIcon
                 {
-                    new SpriteIcon
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = Anchor.Centre,
-                        RelativeSizeAxes = Axes.Both,
-                        FillMode = FillMode.Fit,
-                        Icon = FontAwesome.Solid.Heart,
-                        Colour = Color4.Red,
-                    },
-                    new SpriteIcon
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = Anchor.Centre,
-                        RelativeSizeAxes = Axes.Both,
-                        FillMode = FillMode.Fit,
-                        Icon = FontAwesome.Solid.Heart,
-                        Size = new Vector2(0.7f),
-                        Colour = Color4.DeepPink
-                    }
+                    Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
+                    RelativeSizeAxes = Axes.Both,
                 };
             }
 

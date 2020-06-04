@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Diagnostics;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -173,25 +172,25 @@ namespace osu.Game.Rulesets.Rush.UI
             if (!result.IsHit)
                 return;
 
+            const float animation_time = 200f;
+
             var drawableLanedHit = judgedObject as IDrawableLanedHit;
 
             switch (judgedObject.HitObject)
             {
                 case NoteSheetHead _:
                 case NoteSheetTail _:
-                    Debug.Assert(drawableLanedHit != null, nameof(drawableLanedHit) + " != null");
-
                     var star = new DrawableNoteSheetCapStar
                     {
                         Origin = Anchor.Centre,
-                        Anchor = drawableLanedHit.LaneAnchor,
+                        Anchor = drawableLanedHit!.LaneAnchor,
                         Size = judgedObject.Size,
                     };
 
                     var flash = new Circle
                     {
                         Origin = Anchor.Centre,
-                        Anchor = drawableLanedHit.LaneAnchor,
+                        Anchor = drawableLanedHit!.LaneAnchor,
                         Size = judgedObject.Size,
                         Scale = new Vector2(0.5f),
                     };
@@ -204,8 +203,6 @@ namespace osu.Game.Rulesets.Rush.UI
                     {
                         star, flash
                     });
-
-                    const float animation_time = 200f;
 
                     star.ScaleTo(2f, animation_time)
                         .FadeOutFromOne(animation_time)
@@ -221,12 +218,26 @@ namespace osu.Game.Rulesets.Rush.UI
 
                 case Minion _:
                 case Orb _:
-                    Debug.Assert(drawableLanedHit != null, nameof(drawableLanedHit) + " != null");
-
-                    var explosion = createHitExplosion(drawableLanedHit.LaneAccentColour, drawableLanedHit.LaneAnchor);
+                    var explosion = createHitExplosion(drawableLanedHit!.LaneAccentColour, drawableLanedHit.LaneAnchor);
                     underEffectContainer.Add(explosion);
-                    explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f);
-                    explosion.Delay(200).Expire(true);
+                    explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f).OnComplete(d => d.Expire());
+
+                    break;
+
+                case Heart _:
+                    var heartFlash = new DrawableHeartIcon
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = drawableLanedHit!.LaneAnchor,
+                        Size = judgedObject.Size,
+                        Scale = new Vector2(0.5f)
+                    };
+
+                    overEffectContainer.Add(heartFlash);
+
+                    heartFlash.ScaleTo(1.25f, animation_time)
+                              .FadeOutFromOne(animation_time)
+                              .OnComplete(d => d.Expire());
 
                     break;
             }
