@@ -16,8 +16,14 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
     public class RushBeatmapConverter : BeatmapConverter<RushHitObject>
     {
         private const float approximate_heart_distance = 30000f;
+        private const float minimum_dual_orb_distance = 250f;
+        private const float minimum_sawblade_distance = 250f;
 
         private double nextHeart;
+
+        private double lastDualOrb;
+        private double lastAirSawblade;
+        private double lastGroundSawblade;
 
         public RushBeatmapConverter(IBeatmap beatmap, Ruleset ruleset)
             : base(beatmap, ruleset)
@@ -28,6 +34,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         {
             var firstObject = original.HitObjects.FirstOrDefault()?.StartTime ?? 0;
             nextHeart = firstObject + approximate_heart_distance;
+            lastDualOrb = 0;
+            lastAirSawblade = 0;
+            lastGroundSawblade = 0;
 
             return base.ConvertBeatmap(original);
         }
@@ -88,27 +97,41 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             switch (hitObjectType)
             {
                 case HitObjectType.Sawblade:
+                    var sawbladeLane = (positionLane ?? sampleLane).Opposite();
+
                     if (bothLanes)
                     {
                         yield return new Minion
                         {
-                            Lane = positionLane ?? sampleLane,
+                            Lane = sawbladeLane.Opposite(),
                             // Samples = original.Samples, FIXME: samples will be awful
                             StartTime = original.StartTime
                         };
                     }
 
+                    var lastThisLane = sawbladeLane == LanedHitLane.Air ? lastAirSawblade : lastGroundSawblade;
+                    var lastOtherLane = sawbladeLane == LanedHitLane.Air ? lastGroundSawblade : lastAirSawblade;
+
+                    if (original.StartTime - lastThisLane < minimum_sawblade_distance * 2 || original.StartTime - lastOtherLane < minimum_sawblade_distance)
+                        break;
+
+                    if (sawbladeLane == LanedHitLane.Air)
+                        lastAirSawblade = original.StartTime;
+                    else
+                        lastGroundSawblade = original.StartTime;
+
                     yield return new Sawblade
                     {
-                        Lane = (positionLane ?? sampleLane).Opposite(),
+                        Lane = sawbladeLane,
                         StartTime = original.StartTime
                     };
 
                     break;
 
                 case HitObjectType.Minion:
-                    if (bothLanes)
+                    if (bothLanes && original.StartTime - lastDualOrb >= minimum_dual_orb_distance)
                     {
+                        lastDualOrb = original.StartTime;
                         yield return new DualOrb
                         {
                             Samples = original.Samples,
