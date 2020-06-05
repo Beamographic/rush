@@ -45,11 +45,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             const float ground_position_cutoff = 220f;
             const double etna_cutoff = 200d;
             const double repeat_cutoff = 100d;
-            const double sawblade_cutoff = 0.9f;
-            const double airsawblade_cutoff = 0.95f;
 
             var sampleLane = original.Samples.Any(s => s.Name == HitSampleInfo.HIT_CLAP || s.Name == HitSampleInfo.HIT_WHISTLE) ? LanedHitLane.Air : LanedHitLane.Ground;
-            LanedHitLane? positionLane = null, sawbladeLane = null;
+            LanedHitLane? positionLane = null;
             HitObjectType hitObjectType = HitObjectType.Minion;
             bool bothLanes = false;
 
