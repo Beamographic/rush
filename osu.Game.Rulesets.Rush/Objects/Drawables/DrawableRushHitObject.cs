@@ -8,6 +8,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Input.Bindings;
+using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -19,6 +20,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         public static readonly Color4 AIR_ACCENT_COLOUR = new Color4(0.35f, 0.75f, 1f, 1f);
         public static readonly Color4 GROUND_ACCENT_COLOUR = new Color4(1f, 0.4f, 1f, 1f);
+        public static readonly float LIFETIME_END_DELAY = 500f;
 
         protected readonly Container Content;
         private readonly Container proxiedContent;
@@ -26,6 +28,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private readonly Container nonProxiedContent;
 
         protected readonly IBindable<ScrollingDirection> Direction = new Bindable<ScrollingDirection>();
+
+        protected virtual bool ExpireOnHit => true;
+        protected virtual bool ExpireOnMiss => false;
 
         protected DrawableRushHitObject(RushHitObject hitObject)
             : base(hitObject)
@@ -111,6 +116,40 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public virtual void OnReleased(RushAction action)
         {
+        }
+
+        protected override void UpdateInitialTransforms()
+        {
+            base.UpdateInitialTransforms();
+
+            UnproxyContent();
+        }
+
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            switch (state)
+            {
+                case ArmedState.Idle:
+                    UnproxyContent();
+                    break;
+
+                case ArmedState.Miss:
+                    AccentColour.Value = Color4.Gray;
+                    ProxyContent();
+
+                    if (!ExpireOnMiss)
+                        LifetimeEnd = HitObject.GetEndTime() + LIFETIME_END_DELAY;
+
+                    break;
+
+                case ArmedState.Hit:
+                    ProxyContent();
+
+                    if (!ExpireOnHit)
+                        LifetimeEnd = HitObject.GetEndTime() + LIFETIME_END_DELAY;
+
+                    break;
+            }
         }
 
         private class ProxiedContentContainer : Container

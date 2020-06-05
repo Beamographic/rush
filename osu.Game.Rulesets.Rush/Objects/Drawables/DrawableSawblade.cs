@@ -25,12 +25,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         // Sawblade uses the reverse lane colour to indicate which key the player should tap to avoid it
         public override Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Ground ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
+        protected override bool ExpireOnHit => false;
+        protected override bool ExpireOnMiss => false;
+
         public DrawableSawblade(Sawblade hitObject)
             : base(hitObject)
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
-            AddRangeInternal(new[]
+            Content.AddRange(new[]
             {
                 new Container
                 {

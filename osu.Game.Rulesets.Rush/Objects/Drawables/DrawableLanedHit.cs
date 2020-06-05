@@ -91,14 +91,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void UpdateStateTransforms(ArmedState state)
         {
+            base.UpdateStateTransforms(state);
+
             switch (state)
             {
-                case ArmedState.Idle:
-                    break;
-
-                case ArmedState.Hit:
-                    break;
-
                 case ArmedState.Miss:
                     AccentColour.Value = Color4.Gray;
                     break;

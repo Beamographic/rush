@@ -26,7 +26,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-            AddRangeInternal(new Drawable[]
+            Content.AddRange(new Drawable[]
             {
                 normalAnimation = new TextureAnimation
                 {
@@ -77,19 +77,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void UpdateStateTransforms(ArmedState state)
         {
+            base.UpdateStateTransforms(state);
+
             switch (state)
             {
-                case ArmedState.Idle:
-                    UnproxyContent();
-                    break;
-
-                case ArmedState.Miss:
-                    this.FadeOut(300);
-                    break;
-
                 case ArmedState.Hit:
-                    ProxyContent();
-
                     normalAnimation.Hide();
                     hitAnimation.Show();
 

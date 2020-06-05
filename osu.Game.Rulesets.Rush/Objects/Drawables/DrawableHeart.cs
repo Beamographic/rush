@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
-            AddRangeInternal(new[]
+            Content.AddRange(new[]
             {
                 new BeatingHeart
                 {

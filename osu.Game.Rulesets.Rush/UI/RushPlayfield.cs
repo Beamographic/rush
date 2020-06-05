@@ -40,6 +40,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container overEffectContainer;
         private readonly Container halfPaddingOverEffectContainer;
         private readonly Container overPlayerEffectsContainer;
+        private readonly ProxyContainer proxiedHitObjects;
         private readonly JudgementContainer<DrawableRushJudgement> judgementContainer;
 
         public RushPlayfield()
@@ -96,6 +97,11 @@ namespace osu.Game.Rulesets.Rush.UI
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                             Child = HitObjectContainer
+                        },
+                        proxiedHitObjects = new ProxyContainer
+                        {
+                            Name = "Proxied Hit Objects",
+                            RelativeSizeAxes = Axes.Both,
                         },
                         overEffectContainer = new Container
                         {
@@ -156,6 +162,13 @@ namespace osu.Game.Rulesets.Rush.UI
 
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
+
+            switch (hitObject)
+            {
+                case DrawableRushHitObject drho:
+                    proxiedHitObjects.Add(drho.CreateProxiedContent());
+                    break;
+            }
 
             base.Add(hitObject);
         }
@@ -373,6 +386,16 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public void OnReleased(RushAction action)
         {
+        }
+
+        private class ProxyContainer : LifetimeManagementContainer
+        {
+            public new MarginPadding Padding
+            {
+                set => base.Padding = value;
+            }
+
+            public void Add(Drawable proxy) => AddInternal(proxy);
         }
     }
 }
