@@ -10,17 +10,17 @@ WIP but playable.
 
 ## Installation
 
-Prebuilt binary releases are avalaible if you're looking for testing the ruleset or don't possess a developpment environment:
+Prebuilt binary releases are available if you're looking for testing the ruleset or don't possess a developpment environment:
 | [Releases Page](https://github.com/swoolcock/rush/releases/) |
 | -------------|
 
-**NOTE**: For the moment, only desktop platform (Windows, mac OSX, Linux) are supported.
+**NOTE**: For the moment, only desktop platforms (Windows, mac OSX, Linux) are supported.
 
 The ruleset consists of a single DLL file that you'll need to drop in the `rulesets` directory of osu!lazer data directory.
 
 ### Installation instructions
 
-1. Navigate to the osu!lazer data directory. You can navigate to it by opening  the osu! settings panel and using "open osu! folder" button. Alternatively you can directly navigate to the `rulesets` folder via your OS directory explorer at the following locations:
+1. Navigate to the osu!lazer data directory. You can navigate to it by opening the osu! settings panel and using "open osu! folder" button. Alternatively you can directly navigate to the `rulesets` folder via your OS directory explorer at the following locations:
     - `%AppData%/osu/rulesets` on Windows
     - `~/.local/share/osu/rulesets` on Linux / mac OSX 
 
