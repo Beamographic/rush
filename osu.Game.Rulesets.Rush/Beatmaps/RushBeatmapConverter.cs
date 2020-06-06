@@ -23,7 +23,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private const double suggest_probability = 0.2;
         private const double kiai_multiplier = 3;
 
-        private const double sawblade_safety_time = 300;
+        private const double sawblade_same_lane_safety_time = 100;
+        private const double sawblade_fall_safety_near_time = 80;
+        private const double sawblade_fall_safety_far_time = 600;
         private const double min_sawblade_time = 500;
         private const double min_heart_time = 30000;
         private const double min_orb_time = 500;
@@ -102,7 +104,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
             // if we don't have a lane and not too close to a sawblade, allow adding a double hit
             if (lane == null
-                && original.StartTime - lastSawbladeTime >= sawblade_safety_time
+                && original.StartTime - lastSawbladeTime >= sawblade_same_lane_safety_time
                 && flags.HasFlag(HitObjectFlags.AllowDoubleHit)
                 && original.StartTime >= nextDualOrbTime
                 && random.NextDouble() < orb_probability)
@@ -119,9 +121,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             // if we still haven't selected a lane at this point, do it based on position, defaulting to ground
             var finalLane = lane ?? laneForHitObject(original) ?? LanedHitLane.Ground;
 
-            bool sawbladeAdded = false;
+            var timeSinceLastSawblade = original.StartTime - lastSawbladeTime;
+            var tooCloseToLastSawblade = finalLane == lastSawbladeLane && timeSinceLastSawblade < sawblade_same_lane_safety_time;
 
-            var tooCloseToLastSawblade = finalLane == lastSawbladeLane && original.StartTime - lastSawbladeTime < sawblade_safety_time;
+            bool sawbladeAdded = false;
 
             // if we are allowed to add or replace a sawblade, potentially do it
             if ((flags & HitObjectFlags.AllowSawbladeAddOrReplace) != 0 && original.StartTime >= nextSawbladeTime && kiaiMultiplier * random.NextDouble() < sawblade_probability)
@@ -133,9 +136,16 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 if (original.StartTime - nextSawbladeTime < 2 * min_sawblade_time)
                     sawbladeLane = lastSawbladeLane?.Opposite() ?? LanedHitLane.Ground;
 
+                // if the new sawblade is too close to the previous hit in the same lane, skip it
+                var tooCloseToSameLane = previousLane == null || previousLane == sawbladeLane && original.StartTime - previousSourceTime < sawblade_same_lane_safety_time;
+
+                // if a ground sawblade is too far from the previous hit in the air lane, skip it (as the player may not have time to jump upon landing)
+                var canFallOntoSawblade = previousLane == LanedHitLane.Air && sawbladeLane == LanedHitLane.Ground && original.StartTime - previousSourceTime > sawblade_fall_safety_near_time
+                                          && original.StartTime - previousSourceTime < sawblade_fall_safety_far_time;
+
                 // air sawblades may only appear in a kiai section, and not too close to a hit in the same lane (or laneless)
-                if ((previousLane != null && sawbladeLane != previousLane || original.StartTime - previousSourceTime > sawblade_safety_time)
-                    && (sawbladeLane == LanedHitLane.Ground || original.Kiai))
+                // also need to account for a gap where the player may fall onto the blade
+                if (!tooCloseToSameLane && !canFallOntoSawblade && (sawbladeLane == LanedHitLane.Ground || original.Kiai))
                 {
                     sawbladeAdded = true;
                     lastSawbladeLane = sawbladeLane;
