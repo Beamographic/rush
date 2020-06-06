@@ -242,7 +242,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             else
             {
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.ForceSameLane;
-                flags |= HitObjectFlags.LowProbability | HitObjectFlags.AllowSawbladeReplace | HitObjectFlags.AllowDoubleHit;
+                flags |= HitObjectFlags.LowProbability | HitObjectFlags.AllowDoubleHit;
+                flags |= HitObjectFlags.AllowSawbladeAdd;
+                // flags |= HitObjectFlags.AllowSawbladeReplace; FIXME: for now, always add rather than replace
             }
 
             // new combo should never be low probability
