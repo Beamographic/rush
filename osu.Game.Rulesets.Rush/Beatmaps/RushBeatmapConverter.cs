@@ -19,9 +19,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         private const double skip_probability = 0.1;
         private const double sawblade_probability = 0.1;
-        private const double orb_probability = 0.1;
-        private const double suggest_probability = 0.2;
-        private const double kiai_multiplier = 3;
+        private const double orb_probability = 0.2;
+        private const double suggest_probability = 0.1;
+        private const double kiai_multiplier = 4;
 
         private const double sawblade_same_lane_safety_time = 100;
         private const double sawblade_fall_safety_near_time = 80;
