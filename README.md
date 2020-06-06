@@ -20,7 +20,7 @@ The ruleset consists of a single DLL file that you'll need to place in the `rule
 
 ### Installation instructions
 
-1. Navigate to the osu!lazer data directory. You can navigate to it by opening the settings panel on osu!lazer and clicking on the "open osu! folder" button. Alternatively you can directly navigate to the `rulesets` directory via your OS directory explorer at the following locations:
+1. Navigate to the osu!lazer data directory. You can do so by opening the settings panel in osu!lazer and clicking on the "open osu! folder" button. Alternatively you can directly navigate to the `rulesets` directory via your OS directory explorer at the following locations:
     - `%AppData%/osu/rulesets` on Windows
     - `~/.local/share/osu/rulesets` on Linux / mac OSX 
 
