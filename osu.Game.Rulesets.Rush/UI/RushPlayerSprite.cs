@@ -15,6 +15,7 @@ using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
@@ -115,6 +116,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 Anchor = Anchor.Centre,
                 DefaultFrameLength = 1000f / 16f,
                 Loop = false,
+                Scale = new Vector2(2),
                 Alpha = 0,
             };
 
