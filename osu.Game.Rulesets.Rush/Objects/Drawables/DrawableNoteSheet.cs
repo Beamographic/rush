@@ -234,5 +234,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             holdStar.Y = DrawHeight / 2f;
             holdStar.X = DrawWidth * targetRatio;
         }
+
+        public override void PlaySamples()
+        {
+            // nested hitobjects will play samples
+        }
     }
 }

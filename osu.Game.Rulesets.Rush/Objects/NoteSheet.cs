@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Linq;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.Scoring;
@@ -66,6 +67,17 @@ namespace osu.Game.Rulesets.Rush.Objects
             AddNested(Body);
             AddNested(Head);
             AddNested(Tail);
+
+            updateNestedSamples();
+        }
+
+        private void updateNestedSamples()
+        {
+            if (Samples.Count == 0)
+                return;
+
+            Head.Samples = Samples.Take(1).ToList();
+            Tail.Samples = Samples.TakeLast(1).ToList();
         }
 
         public override Judgement CreateJudgement() => new IgnoreJudgement();
