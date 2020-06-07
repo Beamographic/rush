@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private const double suggest_probability = 0.1;
         private const double notesheet_start_probability = 0.5;
         private const double notesheet_end_probability = 0.2;
-        private const double notesheet_dual_probability = 0.3;
+        private const double notesheet_dual_probability = 0.1;
         private const double kiai_multiplier = 4;
 
         private const double sawblade_same_lane_safety_time = 100;
@@ -32,7 +32,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private const double min_heart_time = 30000;
         private const double min_orb_time = 500;
         private const double max_sheet_length = 2000;
-        private const double min_sheet_length = 150;
+        private const double min_sheet_length = 120;
+        private const double notesheet_snap_time = 40;
 
         private double nextHeartTime;
         private double nextDualOrbTime;
@@ -131,20 +132,14 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 // randomly pick a lane from what's available
                 var endLane = currentNoteSheets.Count == 1 ? currentNoteSheets.Single().Key : random.NextDouble() < 0.5 ? LanedHitLane.Ground : LanedHitLane.Air;
 
-                // check if the sheet is long enough, if not attempt to grab the opposite lane if it exists
-                var sheetToEnd = currentNoteSheets[endLane].Duration > min_sheet_length
-                    ? endLane
-                    : currentNoteSheets[endLane.Opposite()] != null && currentNoteSheets[endLane.Opposite()].Duration > min_sheet_length
-                        ? endLane.Opposite()
-                        : (LanedHitLane?)null;
-
-                // if we're allowed to end the sheet at its current length, do so
-                if (sheetToEnd != null && currentNoteSheets[sheetToEnd.Value] != null)
+                // try to snap the endpoint to the current note
+                if (original is IHasDistance && Math.Abs(original.StartTime - currentNoteSheets[endLane].EndTime) <= notesheet_snap_time)
                 {
-                    // yield return currentNoteSheets[sheetToEnd.Value]; FIXME
-
-                    currentNoteSheets.Remove(sheetToEnd.Value);
+                    currentNoteSheets[endLane].EndTime = original.StartTime;
+                    lane = endLane.Opposite();
                 }
+
+                currentNoteSheets.Remove(endLane);
             }
 
             // if we should start a notesheet...
@@ -153,6 +148,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 LanedHitLane? extraLane = null;
                 LanedHitLane sheetLane;
                 NoteSheet sheet = null;
+                bool addToFirst = true;
 
                 // if no sheets active
                 if (currentNoteSheets.Count == 0)
@@ -162,8 +158,6 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
                     // create a sheet
                     currentNoteSheets[sheetLane] = sheet = createNoteSheet(original, sheetLane);
-
-                    // add things to the other lane
                     extraLane = sheetLane.Opposite();
                 }
                 // if there is one sheet active
@@ -172,38 +166,23 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     // get the free lane
                     sheetLane = currentNoteSheets.Single().Key.Opposite();
 
-                    // potentially end the existing sheet
-                    if (flags.HasFlag(HitObjectFlags.ForceEndNotesheet) || flags.HasFlag(HitObjectFlags.SuggestEndNotesheet) && random.NextDouble() < notesheet_end_probability)
-                    {
-                        currentNoteSheets[sheetLane.Opposite()].EndTime = original.StartTime;
-                        // yield return currentNoteSheets[sheetLane.Opposite()]; //FIXME
+                    // end the existing sheet
+                    currentNoteSheets[sheetLane.Opposite()].EndTime = original.StartTime;
+                    currentNoteSheets.Remove(sheetLane.Opposite());
 
-                        currentNoteSheets.Remove(sheetLane.Opposite());
-                    }
-
-                    // if we ended it, we should definitely create a new sheet
-                    // if we didn't end it, only potentially create a new sheet, and only if we don't have repeats
-                    if (currentNoteSheets.Count == 0 || !(original is IHasRepeats) && random.NextDouble() < notesheet_dual_probability)
-                    {
-                        currentNoteSheets[sheetLane] = sheet = createNoteSheet(original, sheetLane);
-
-                        // any other objects should be added to the opposite lane
-                        extraLane = sheetLane.Opposite();
-                    }
-                    else
-                        // didn't add a sheet, so free to add objects to this lane
-                        extraLane = sheetLane;
+                    // create a new sheet
+                    currentNoteSheets[sheetLane] = sheet = createNoteSheet(original, sheetLane);
+                    extraLane = sheetLane.Opposite();
+                    addToFirst = false;
                 }
-                // if two sheets active
+                // if two sheets active... just end one
                 else
                 {
                     // use the suggested lane or randomly select one
                     sheetLane = lane ?? (random.NextDouble() < 0.5 ? LanedHitLane.Ground : LanedHitLane.Air);
 
-                    // end the opposite lane
-                    currentNoteSheets[sheetLane.Opposite()].EndTime = original.StartTime;
-                    // yield return currentNoteSheets[sheetLane.Opposite()]; //FIXME
-
+                    // end it
+                    currentNoteSheets[sheetLane].EndTime = original.StartTime;
                     currentNoteSheets.Remove(sheetLane.Opposite());
                 }
 
@@ -211,69 +190,18 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 if (sheet != null)
                     yield return sheet;
 
-                // if still two sheets active, we're done
+                // if still two sheets active for some reason, we're done
                 if (currentNoteSheets.Count == 2)
                 {
                     updatePrevious(sheetLane, flags);
                     yield break;
                 }
 
-                // TODO: add extra objects to the lane without a sheet
+                // add extra objects to the lane without a sheet
+                if (original is IHasRepeats hasRepeats && extraLane != null)
+                {
 
-                // potentially end the opposite sheet
-                // if (sheetCount > 0 && ( random.NextDouble() < notesheet_end_probability))
-                // {
-                //     if (sheetLane == LanedHitLane.Air && currentGroundNoteSheet != null)
-                //         currentGroundNoteSheet.EndTime = original.StartTime;
-                //     else if (sheetLane == LanedHitLane.Ground && currentAirNoteSheet != null)
-                //         currentAirNoteSheet.EndTime = original.StartTime;
-                //
-                // }
-                //
-                // sheet = createNoteSheet(original, sheetLane);
-
-                // LanedHitLane? sheetLane;
-                // if (currentAirNoteSheet != null)
-                //     sheetLane = LanedHitLane.Ground;
-                // else if (currentGroundNoteSheet != null)
-                //     sheetLane = LanedHitLane.Air;
-                // else
-                //     sheetLane = laneForHitObject(original) ?? LanedHitLane.Ground;
-                //
-                // if (flags.HasFlag(HitObjectFlags.SuggestStartNotesheet) && sheetCount == 1 || original is IHasRepeats)
-                // {
-                //     yield return createNormalHit(original, sheetLane.Value);
-                //
-                // }
-                // if (sheetLane == LanedHitLane.Air)
-                // {
-                //     if (original is IHasRepeats hasRepeats)
-                //     {
-                //
-                //     }
-                //
-                //     currentAirNoteSheet = new NoteSheet
-                //     {
-                //         StartTime = original.StartTime,
-                //         EndTime = original.GetEndTime(),
-                //         Samples = original.Samples,
-                //         Lane = LanedHitLane.Air
-                //     };
-                //
-                //     yield return currentAirNoteSheet;
-                // }
-                // else if (sheetLane == LanedHitLane.Ground)
-                // {
-                //     currentGroundNoteSheet = new NoteSheet
-                //     {
-                //         StartTime = original.StartTime,
-                //         EndTime = original.GetEndTime(),
-                //         Samples = original.Samples,
-                //         Lane = LanedHitLane.Ground
-                //     };
-                //
-                //     yield return currentGroundNoteSheet;
-                // }
+                }
 
                 updatePrevious(sheetLane, flags);
                 yield break;
@@ -281,18 +209,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
             // if either of the sheets are too long, end them where they are
             if (currentNoteSheets.ContainsKey(LanedHitLane.Air) && currentNoteSheets[LanedHitLane.Air].Duration >= max_sheet_length)
-            {
-                // yield return currentNoteSheets[LanedHitLane.Air]; //FIXME
-
                 currentNoteSheets.Remove(LanedHitLane.Air);
-            }
 
             if (currentNoteSheets.ContainsKey(LanedHitLane.Ground) && currentNoteSheets[LanedHitLane.Ground].Duration >= max_sheet_length)
-            {
-                // yield return currentNoteSheets[LanedHitLane.Ground]; //FIXME
-
                 currentNoteSheets.Remove(LanedHitLane.Ground);
-            }
 
             // if not too close to a sawblade, allow adding a double hit
             if (original.StartTime - lastSawbladeTime >= sawblade_same_lane_safety_time
@@ -440,10 +360,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             // sliders should force a notesheet to start or end
             if (hitObject is IHasDuration hasDuration && hitObject is IHasDistance && hasDuration.Duration >= min_sheet_length)
             {
-                if (currentNoteSheets.Count == 2)
-                    flags |= HitObjectFlags.ForceStartNotesheet | HitObjectFlags.ForceEndNotesheet;
-                else
-                    flags |= HitObjectFlags.ForceStartNotesheet | HitObjectFlags.SuggestEndNotesheet;
+                // if (currentNoteSheets.Count == 2)
+                //     flags |= HitObjectFlags.ForceStartNotesheet | HitObjectFlags.ForceEndNotesheet;
+                // else
+                flags |= HitObjectFlags.ForceStartNotesheet | HitObjectFlags.ForceEndNotesheet;
             }
 
             // TimingControlPoint timingPoint = beatmap.ControlPointInfo.TimingPointAt(hitObject.StartTime);
@@ -465,7 +385,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             {
                 // more than 140 bpm
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.SuggestNotSameLane;
-                flags |= HitObjectFlags.LowProbability | HitObjectFlags.AllowSawbladeAdd;
+                // flags |= HitObjectFlags.LowProbability;
+                flags |= HitObjectFlags.AllowSawbladeAdd;
                 flags |= HitObjectFlags.ForceEndNotesheet;
             }
             else if (timeSeparation <= 125)
@@ -473,7 +394,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 // more than 120 bpm
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.SuggestNotSameLane;
                 flags |= HitObjectFlags.AllowSawbladeAdd;
-                flags |= HitObjectFlags.SuggestEndNotesheet;
+                flags |= HitObjectFlags.ForceEndNotesheet;
             }
             else if (timeSeparation <= 135 && positionSeparation < 20)
             {
@@ -485,7 +406,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             else
             {
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.ForceSameLane;
-                flags |= HitObjectFlags.LowProbability | HitObjectFlags.AllowDoubleHit;
+                // flags |= HitObjectFlags.LowProbability;
+                flags |= HitObjectFlags.AllowDoubleHit;
                 flags |= HitObjectFlags.AllowSawbladeAdd;
                 flags |= HitObjectFlags.ForceEndNotesheet;
                 // flags |= HitObjectFlags.AllowSawbladeReplace; FIXME: for now, always add rather than replace
