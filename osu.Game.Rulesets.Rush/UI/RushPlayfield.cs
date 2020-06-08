@@ -47,104 +47,136 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             InternalChildren = new Drawable[]
             {
-                new Container
+                new GridContainer
                 {
-                    Name = "Right Area",
-                    RelativeSizeAxes = Axes.X,
-                    Size = new Vector2(1, DEFAULT_HEIGHT),
-                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                    Origin = Anchor.CentreLeft,
-                    Anchor = Anchor.CentreLeft,
-                    Children = new Drawable[]
+                    RelativeSizeAxes = Axes.Both,
+                    RowDimensions = new[]
                     {
-                        new Container
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                            Children = new Drawable[]
-                            {
-                                new HitTarget
-                                {
-                                    Anchor = Anchor.TopLeft,
-                                    Origin = Anchor.Centre,
-                                    Size = new Vector2(HIT_TARGET_SIZE),
-                                    FillMode = FillMode.Fit
-                                },
-                                new HitTarget
-                                {
-                                    Anchor = Anchor.BottomLeft,
-                                    Origin = Anchor.Centre,
-                                    Size = new Vector2(HIT_TARGET_SIZE),
-                                    FillMode = FillMode.Fit
-                                },
-                            }
-                        },
-                        underEffectContainer = new Container
-                        {
-                            Name = "Under Effects",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                        },
-                        judgementContainer = new JudgementContainer<DrawableRushJudgement>
-                        {
-                            Name = "Judgement",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                        },
-                        new Container
-                        {
-                            Name = "Hit Objects",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                            Child = HitObjectContainer
-                        },
-                        proxiedHitObjects = new ProxyContainer
-                        {
-                            Name = "Proxied Hit Objects",
-                            RelativeSizeAxes = Axes.Both,
-                        },
-                        overEffectContainer = new Container
-                        {
-                            Name = "Over Effects",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                        },
-                        halfPaddingOverEffectContainer = new Container
-                        {
-                            Name = "Over Effects (Half Padding)",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 2f }
-                        }
-                    }
-                },
-                new Container
-                {
-                    Name = "Left Area",
-                    RelativeSizeAxes = Axes.Y,
-                    Size = new Vector2(HIT_TARGET_OFFSET, 1),
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft,
-                    Child = new Container
+                        new Dimension(GridSizeMode.Distributed), // Top empty area
+                        new Dimension(GridSizeMode.Absolute, DEFAULT_HEIGHT), // Playfield area
+                        new Dimension(GridSizeMode.Distributed), // Ground area, extends to overall height
+                    },
+                    Content = new[]
                     {
-                        Name = "Left Play Zone",
-                        RelativeSizeAxes = Axes.X,
-                        Size = new Vector2(1, DEFAULT_HEIGHT),
-                        Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft,
-                        Children = new Drawable[]
+                        new[]
                         {
-                            PlayerSprite = new RushPlayerSprite(DEFAULT_HEIGHT, 0)
+                            Empty()
+                        },
+                        new Drawable[]
+                        {
+                            new Container
                             {
-                                Origin = Anchor.Centre,
-                                Position = new Vector2(PLAYER_OFFSET, DEFAULT_HEIGHT),
-                                Scale = new Vector2(0.75f),
-                            },
-                            overPlayerEffectsContainer = new Container
-                            {
-                                Origin = Anchor.Centre,
-                                Anchor = Anchor.Centre,
+                                Name = "Playfield area",
                                 RelativeSizeAxes = Axes.Both,
-                            }
+                                Children = new[]
+                                {
+                                    new Container
+                                    {
+                                        Name = "Left area",
+                                        Width = HIT_TARGET_OFFSET,
+                                        RelativeSizeAxes = Axes.Y,
+                                        Anchor = Anchor.CentreLeft,
+                                        Origin = Anchor.CentreLeft,
+                                        Depth = -1,
+                                        Child = new Container
+                                        {
+                                            Name = "Left Play Zone",
+                                            RelativeSizeAxes = Axes.Both,
+                                            Anchor = Anchor.CentreLeft,
+                                            Origin = Anchor.CentreLeft,
+                                            Children = new Drawable[]
+                                            {
+                                                PlayerSprite = new RushPlayerSprite(DEFAULT_HEIGHT, 0)
+                                                {
+                                                    Origin = Anchor.Centre,
+                                                    Position = new Vector2(PLAYER_OFFSET, DEFAULT_HEIGHT),
+                                                    Scale = new Vector2(0.75f),
+                                                },
+                                                overPlayerEffectsContainer = new Container
+                                                {
+                                                    Origin = Anchor.Centre,
+                                                    Anchor = Anchor.Centre,
+                                                    RelativeSizeAxes = Axes.Both,
+                                                }
+                                            }
+                                        },
+                                    },
+                                    new Container
+                                    {
+                                        Name = "Right area",
+                                        RelativeSizeAxes = Axes.Both,
+                                        Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                                        Anchor = Anchor.CentreLeft,
+                                        Origin = Anchor.CentreLeft,
+                                        Children = new Drawable[]
+                                        {
+                                            new Container
+                                            {
+                                                Name = "Hit target indicators",
+                                                RelativeSizeAxes = Axes.Both,
+                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                                                Children = new Drawable[]
+                                                {
+                                                    new HitTarget
+                                                    {
+                                                        Anchor = Anchor.TopLeft,
+                                                        Origin = Anchor.Centre,
+                                                        Size = new Vector2(HIT_TARGET_SIZE),
+                                                        FillMode = FillMode.Fit
+                                                    },
+                                                    new HitTarget
+                                                    {
+                                                        Anchor = Anchor.BottomLeft,
+                                                        Origin = Anchor.Centre,
+                                                        Size = new Vector2(HIT_TARGET_SIZE),
+                                                        FillMode = FillMode.Fit
+                                                    },
+                                                }
+                                            },
+                                            underEffectContainer = new Container
+                                            {
+                                                Name = "Under Effects",
+                                                RelativeSizeAxes = Axes.Both,
+                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                                            },
+                                            judgementContainer = new JudgementContainer<DrawableRushJudgement>
+                                            {
+                                                Name = "Judgement",
+                                                RelativeSizeAxes = Axes.Both,
+                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                                            },
+                                            new Container
+                                            {
+                                                Name = "Hit Objects",
+                                                RelativeSizeAxes = Axes.Both,
+                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                                                Child = HitObjectContainer
+                                            },
+                                            proxiedHitObjects = new ProxyContainer
+                                            {
+                                                Name = "Proxied Hit Objects",
+                                                RelativeSizeAxes = Axes.Both,
+                                            },
+                                            overEffectContainer = new Container
+                                            {
+                                                Name = "Over Effects",
+                                                RelativeSizeAxes = Axes.Both,
+                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
+                                            },
+                                            halfPaddingOverEffectContainer = new Container
+                                            {
+                                                Name = "Over Effects (Half Padding)",
+                                                RelativeSizeAxes = Axes.Both,
+                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 2f }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                        },
+                        new[]
+                        {
+                            Empty(),
                         }
                     }
                 }
