@@ -267,9 +267,9 @@ namespace osu.Game.Rulesets.Rush.UI
                     Target = Target.WithAttackLane(minion.Lane, true);
                     break;
 
-                case DualOrb dualOrb:
-                    DrawableDualOrb ddo = (DrawableDualOrb)judgedObject;
-                    Target = Target.WithAttackLane(dualOrb.Air.Lane, ddo.Air.Result.IsHit).WithAttackLane(dualOrb.Ground.Lane, ddo.Ground.Result.IsHit);
+                case DualHit dualHit:
+                    DrawableDualHit ddh = (DrawableDualHit)judgedObject;
+                    Target = Target.WithAttackLane(dualHit.Air.Lane, ddh.Air.Result.IsHit).WithAttackLane(dualHit.Ground.Lane, ddh.Ground.Result.IsHit);
                     break;
 
                 case MiniBoss _:

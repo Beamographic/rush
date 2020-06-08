@@ -51,8 +51,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 case NoteSheet noteSheet:
                     return new DrawableNoteSheet(noteSheet);
 
-                case DualOrb dualOrb:
-                    return new DrawableDualOrb(dualOrb);
+                case DualHit dualHit:
+                    return new DrawableDualHit(dualHit);
 
                 case Sawblade sawblade:
                     return new DrawableSawblade(sawblade);
