@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             int minions = HitObjects.Count(s => s is Minion);
             int notesheets = HitObjects.Count(s => s is NoteSheet);
             int sawblades = HitObjects.Count(s => s is Sawblade);
-            int dualorbs = HitObjects.Count(s => s is DualOrb);
+            int dualhits = HitObjects.Count(s => s is DualOrb);
             int minibosses = HitObjects.Count(s => s is MiniBoss);
             int hearts = HitObjects.Count(s => s is Heart);
 
@@ -36,8 +36,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Dual Orb Count",
-                    Content = dualorbs.ToString(),
+                    Name = @"Dual Hit Count",
+                    Content = dualhits.ToString(),
                     Icon = FontAwesome.Solid.Cog
                 },
                 new BeatmapStatistic
