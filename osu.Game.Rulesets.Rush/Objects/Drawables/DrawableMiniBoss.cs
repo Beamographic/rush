@@ -114,7 +114,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            if (AllJudged)
+            if (Time.Current < HitObject.StartTime || AllJudged)
                 return;
 
             if (userTriggered && timeOffset < 0)
