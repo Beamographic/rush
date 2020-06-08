@@ -19,7 +19,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         private const double skip_probability = 0.1;
         private const double sawblade_probability = 0.1;
-        private const double orb_probability = 0.2;
+        private const double dualhit_probability = 0.2;
         private const double suggest_probability = 0.1;
         private const double notesheet_start_probability = 0.5;
         private const double notesheet_end_probability = 0.2;
@@ -31,13 +31,13 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private const double sawblade_fall_safety_far_time = 600;
         private const double min_sawblade_time = 500;
         private const double min_heart_time = 30000;
-        private const double min_orb_time = 500;
+        private const double min_dualhit_time = 500;
         private const double max_sheet_length = 2000;
         private const double min_sheet_length = 120;
         private const double min_repeat_time = 100;
 
         private double nextHeartTime;
-        private double nextDualOrbTime;
+        private double nextDualHitTime;
         private double nextSawbladeTime;
 
         private double lastSawbladeTime;
@@ -60,7 +60,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         {
             var firstObject = original.HitObjects.FirstOrDefault()?.StartTime ?? 0;
             nextHeartTime = firstObject + min_heart_time;
-            nextDualOrbTime = firstObject + min_orb_time;
+            nextDualHitTime = firstObject + min_dualhit_time;
             nextSawbladeTime = firstObject + min_sawblade_time;
 
             var beatmap = base.ConvertBeatmap(original);
@@ -211,11 +211,11 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             // if not too close to a sawblade, allow adding a double hit
             if (original.StartTime - lastSawbladeTime >= sawblade_same_lane_safety_time
                 && flags.HasFlag(HitObjectFlags.AllowDoubleHit)
-                && original.StartTime >= nextDualOrbTime
-                && random.NextDouble() < orb_probability)
+                && original.StartTime >= nextDualHitTime
+                && random.NextDouble() < dualhit_probability)
             {
-                nextDualOrbTime = original.StartTime + min_orb_time;
-                yield return createDualOrb(original);
+                nextDualHitTime = original.StartTime + min_dualhit_time;
+                yield return createDualHit(original);
 
                 updatePrevious(null, flags);
                 yield break;
@@ -331,8 +331,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 Lane = lane
             };
 
-        private DualOrb createDualOrb(HitObject original) =>
-            new DualOrb
+        private DualHit createDualHit(HitObject original) =>
+            new DualHit
             {
                 StartTime = original.StartTime,
                 Samples = original.Samples

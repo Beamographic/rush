@@ -14,16 +14,16 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableDualOrb : DrawableRushHitObject<DualOrb>
+    public class DrawableDualHit : DrawableRushHitObject<DualHit>
     {
-        private readonly Container<DrawableOrb> airOrbContainer;
-        private readonly Container<DrawableOrb> groundOrbContainer;
+        private readonly Container<DrawableDualHitPart> airHitContainer;
+        private readonly Container<DrawableDualHitPart> groundHitContainer;
         private readonly Box joinBox;
 
-        public DrawableOrb Air => airOrbContainer.Child;
-        public DrawableOrb Ground => groundOrbContainer.Child;
+        public DrawableDualHitPart Air => airHitContainer.Child;
+        public DrawableDualHitPart Ground => groundHitContainer.Child;
 
-        public DrawableDualOrb(DualOrb hitObject)
+        public DrawableDualHit(DualHit hitObject)
             : base(hitObject)
         {
             RelativeSizeAxes = Axes.Y;
@@ -38,8 +38,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     RelativeSizeAxes = Axes.Y,
                     Size = new Vector2(10f, 1f)
                 },
-                airOrbContainer = new Container<DrawableOrb> { RelativeSizeAxes = Axes.Both },
-                groundOrbContainer = new Container<DrawableOrb> { RelativeSizeAxes = Axes.Both },
+                airHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
+                groundHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
             });
         }
 
@@ -49,8 +49,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             switch (hitObject)
             {
-                case DrawableOrb orb:
-                    (orb.HitObject.Lane == LanedHitLane.Air ? airOrbContainer : groundOrbContainer).Add(orb);
+                case DrawableDualHitPart part:
+                    (part.HitObject.Lane == LanedHitLane.Air ? airHitContainer : groundHitContainer).Add(part);
                     break;
             }
         }
@@ -58,16 +58,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            airOrbContainer.Clear();
-            groundOrbContainer.Clear();
+            airHitContainer.Clear();
+            groundHitContainer.Clear();
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
         {
             switch (hitObject)
             {
-                case Orb orb:
-                    return new DrawableOrb(orb);
+                case DualHitPart part:
+                    return new DrawableDualHitPart(part);
             }
 
             return base.CreateNestedHitObject(hitObject);

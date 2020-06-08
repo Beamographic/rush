@@ -283,7 +283,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     break;
 
                 case Minion _:
-                case Orb _:
+                case DualHitPart _:
                     if (result.IsHit)
                     {
                         var explosion = createHitExplosion(drawableLanedHit!.LaneAccentColour, drawableLanedHit.LaneAnchor);

@@ -14,22 +14,22 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableOrb : DrawableLanedHit<Orb>
+    public class DrawableDualHitPart : DrawableLanedHit<DualHitPart>
     {
         private const double rotation_time = 1000;
 
-        private readonly SpriteIcon orbSpriteIcon;
+        private readonly SpriteIcon gearSpriteIcon;
         private readonly Box background;
         private readonly Triangles triangles;
 
-        public DrawableOrb(Orb hitObject)
+        public DrawableDualHitPart(DualHitPart hitObject)
             : base(hitObject)
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
             Content.AddRange(new Drawable[]
             {
-                orbSpriteIcon = new SpriteIcon
+                gearSpriteIcon = new SpriteIcon
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
@@ -61,7 +61,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             background.Colour = colour.Darken(0.5f);
             triangles.Colour = colour;
             triangles.Alpha = 0.8f;
-            orbSpriteIcon.Colour = colour.Lighten(0.5f);
+            gearSpriteIcon.Colour = colour.Lighten(0.5f);
         }
 
         public void UpdateResult() => base.UpdateResult(true);
@@ -102,7 +102,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.Update();
 
-            orbSpriteIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
+            gearSpriteIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
         }
     }
 }

@@ -3,7 +3,7 @@
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class DualOrb : RushHitObject
+    public class DualHit : RushHitObject
     {
         public override double StartTime
         {
@@ -15,8 +15,8 @@ namespace osu.Game.Rulesets.Rush.Objects
             }
         }
 
-        public readonly Orb Air = new Orb { Lane = LanedHitLane.Air };
-        public readonly Orb Ground = new Orb { Lane = LanedHitLane.Ground };
+        public readonly DualHitPart Air = new DualHitPart { Lane = LanedHitLane.Air };
+        public readonly DualHitPart Ground = new DualHitPart { Lane = LanedHitLane.Ground };
 
         protected override void CreateNestedHitObjects()
         {

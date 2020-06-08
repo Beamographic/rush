@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             int minions = HitObjects.Count(s => s is Minion);
             int notesheets = HitObjects.Count(s => s is NoteSheet);
             int sawblades = HitObjects.Count(s => s is Sawblade);
-            int dualhits = HitObjects.Count(s => s is DualOrb);
+            int dualhits = HitObjects.Count(s => s is DualHit);
             int minibosses = HitObjects.Count(s => s is MiniBoss);
             int hearts = HitObjects.Count(s => s is Heart);
 

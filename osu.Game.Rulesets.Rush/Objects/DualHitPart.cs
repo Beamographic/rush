@@ -3,7 +3,7 @@
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class Orb : LanedHit
+    public class DualHitPart : LanedHit
     {
     }
 }

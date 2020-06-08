@@ -38,7 +38,7 @@ namespace osu.Game.Rulesets.Rush.Scoring
                 MiniBoss _ when !result.IsHit => healthAmount,
                 // requires collision
                 Minion _ when !result.IsHit && collidesWith(result.HitObject) => healthAmount,
-                Orb _ when !result.IsHit && collidesWith(result.HitObject) => healthAmount,
+                DualHitPart _ when !result.IsHit && collidesWith(result.HitObject) => healthAmount,
                 // default
                 _ => 0
             };

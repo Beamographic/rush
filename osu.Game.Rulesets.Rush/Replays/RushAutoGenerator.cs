@@ -99,7 +99,7 @@ namespace osu.Game.Rulesets.Rush.Replays
                 var current = Beatmap.HitObjects[i];
                 LanedHitLane? desiredLane;
 
-                if (current is DualOrb)
+                if (current is DualHit)
                     desiredLane = null;
                 else if (current is Sawblade sawblade)
                 {
@@ -142,7 +142,7 @@ namespace osu.Game.Rulesets.Rush.Replays
                 switch (h)
                 {
                     default:
-                    case DualOrb _:
+                    case DualHit _:
                     case LanedHit _:
                         break;
 
@@ -177,7 +177,7 @@ namespace osu.Game.Rulesets.Rush.Replays
             var current = Beatmap.HitObjects[currentIndex];
             LanedHitLane? desiredLane;
 
-            if (current is DualOrb)
+            if (current is DualHit)
                 desiredLane = null;
             else if (Beatmap.HitObjects[currentIndex] is LanedHit lanedHit)
                 desiredLane = lanedHit.Lane;
@@ -188,7 +188,7 @@ namespace osu.Game.Rulesets.Rush.Replays
             {
                 switch (Beatmap.HitObjects[i])
                 {
-                    case DualOrb _:
+                    case DualHit _:
                     case LanedHit nextLanedHit when desiredLane == null || nextLanedHit.Lane == desiredLane:
                         return Beatmap.HitObjects[i];
                 }
