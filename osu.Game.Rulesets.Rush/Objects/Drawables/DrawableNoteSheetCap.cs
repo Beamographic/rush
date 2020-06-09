@@ -63,13 +63,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.UpdateStateTransforms(state);
 
-            switch (state)
-            {
-                case ArmedState.Hit:
-                case ArmedState.Miss:
-                    Hide();
-                    break;
-            }
+            if (state == ArmedState.Hit)
+                Hide();
         }
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);

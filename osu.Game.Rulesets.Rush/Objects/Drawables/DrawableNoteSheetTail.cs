@@ -18,17 +18,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            // Factor in the release lenience
-            timeOffset /= RELEASE_WINDOW_LENIENCE;
-
+            // for now let's give the player an automatic perfect if they hold the note (like in a certain other rhythm game)
             if (!userTriggered)
             {
-                if (!HitObject.HitWindows.CanBeHit(timeOffset))
-                {
-                    ApplyResult(r => r.Type = HitResult.Miss);
-                    HasBroken.Value = true;
-                }
-
+                if (timeOffset >= 0)
+                    ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : HitResult.Perfect);
                 return;
             }
 
@@ -36,7 +30,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (result == HitResult.None)
                 return;
 
-            ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : result);
+            // ...and an automatic perfect if they release within any "hit" judged period
+            ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : HitResult.Perfect);
         }
 
         // FIXME: should logically be TrailingAnchor, not sure why it renders incorrectly

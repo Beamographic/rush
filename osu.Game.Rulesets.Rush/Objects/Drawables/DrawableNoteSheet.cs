@@ -68,7 +68,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             });
 
             AccentColour.ValueChanged += _ => updateHoldStar();
-            HasBroken.ValueChanged += _ => updateHoldStar();
+
+            HasBroken.ValueChanged += _ =>
+            {
+                if (HasBroken.Value && HoldStartTime != null && HoldEndTime == null)
+                    HoldEndTime = Time.Current;
+
+                updateHoldStar();
+            };
         }
 
         private void updateHoldStar() => holdStar.UpdateColour(HasBroken.Value ? Color4.Gray : AccentColour.Value);
@@ -195,7 +202,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             pressCount--;
 
-            if (pressCount > 0 || AllJudged)
+            if (pressCount > 0)
                 return;
 
             if (HasBroken.Value || HoldStartTime == null || HoldEndTime != null)
@@ -219,7 +226,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.Update();
 
-            if (Head.IsHit || HasBroken.Value)
+            if (Head.IsHit && !Tail.AllJudged || HasBroken.Value)
                 holdStar.Show();
             else
                 holdStar.Hide();
