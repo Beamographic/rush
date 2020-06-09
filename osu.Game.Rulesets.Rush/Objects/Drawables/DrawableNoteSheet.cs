@@ -177,18 +177,23 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (pressCount > 1)
                 return true;
 
-            if (Head.UpdateResult(true))
+            if (!Head.AllJudged && !Head.UpdateResult(true))
+                return false;
+
+            if (Head.IsHit)
             {
                 pressCount++;
                 beginHoldAt(Time.Current - Head.HitObject.StartTime);
-                return true;
             }
 
-            return false;
+            return true;
         }
 
         private void beginHoldAt(double timeOffset)
         {
+            if (HoldStartTime != null)
+                return;
+
             if (timeOffset < -Head.HitObject.HitWindows.WindowFor(HitResult.Miss))
                 return;
 
