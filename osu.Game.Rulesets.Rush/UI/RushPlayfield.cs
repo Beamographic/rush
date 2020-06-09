@@ -15,6 +15,7 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
@@ -174,9 +175,17 @@ namespace osu.Game.Rulesets.Rush.UI
                                 }
                             },
                         },
-                        new[]
+                        new Drawable[]
                         {
-                            Empty(),
+                            new Container
+                            {
+                                Name = "Ground area",
+                                RelativeSizeAxes = Axes.Both,
+                                // Due to the size of the player sprite, we have to push the ground even more to the bottom.
+                                Padding = new MarginPadding { Top = 50f },
+                                Depth = float.MaxValue,
+                                Child = new GroundDisplay(),
+                            }
                         }
                     }
                 }
