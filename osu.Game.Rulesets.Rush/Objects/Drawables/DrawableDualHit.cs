@@ -93,14 +93,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (AllJudged)
                 return false;
 
-            if (!Air.AllJudged && Air.LaneMatchesAction(action))
-                Air.UpdateResult(true);
-            else if (!Ground.AllJudged && Ground.LaneMatchesAction(action))
-                Ground.UpdateResult(true);
-            else
-                return false;
+            var airResult = !Air.AllJudged && Air.LaneMatchesAction(action) && Air.UpdateResult(true);
+            var groundResult = !Ground.AllJudged && Ground.LaneMatchesAction(action) && Ground.UpdateResult(true);
 
-            return Air.AllJudged && Ground.AllJudged && UpdateResult(true);
+            if (Air.AllJudged && Ground.AllJudged)
+                return UpdateResult(true);
+
+            return airResult || groundResult;
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
