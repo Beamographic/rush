@@ -58,7 +58,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Alpha = 1f;
         }
 
-        public void UpdateResult() => base.UpdateResult(true);
+        public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {

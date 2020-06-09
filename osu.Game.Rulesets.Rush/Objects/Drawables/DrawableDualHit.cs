@@ -94,16 +94,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return false;
 
             if (!Air.AllJudged && Air.LaneMatchesAction(action))
-                Air.UpdateResult();
+                Air.UpdateResult(true);
             else if (!Ground.AllJudged && Ground.LaneMatchesAction(action))
-                Ground.UpdateResult();
+                Ground.UpdateResult(true);
             else
                 return false;
 
-            if (Air.AllJudged && Ground.AllJudged)
-                UpdateResult(true);
-
-            return true;
+            return Air.AllJudged && Ground.AllJudged && UpdateResult(true);
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
@@ -111,19 +108,25 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (AllJudged)
                 return;
 
-            if (!Air.AllJudged || !Ground.AllJudged)
+            if (!userTriggered && timeOffset < 0)
                 return;
 
-            // If we missed both air and ground, it's an overall miss.
-            // If we missed only one of them, it's an overall Meh.
+            if (!Ground.AllJudged)
+                Ground.UpdateResult(false);
+
+            if (!Air.AllJudged)
+                Air.UpdateResult(false);
+
+            if (Air.Result.Type == HitResult.None || Ground.Result.Type == HitResult.None)
+                return;
+
+            // If we missed either, it's an overall miss.
             // If we hit both, the overall judgement is the lowest score of the two.
             ApplyResult(r =>
             {
                 var lowestResult = Air.Result.Type < Ground.Result.Type ? Air.Result.Type : Ground.Result.Type;
 
-                if (Air.IsHit != Ground.IsHit)
-                    r.Type = HitResult.Meh;
-                else if (!Air.IsHit && !Ground.IsHit)
+                if (!Air.IsHit && !Ground.IsHit)
                     r.Type = HitResult.Miss;
                 else
                     r.Type = lowestResult;

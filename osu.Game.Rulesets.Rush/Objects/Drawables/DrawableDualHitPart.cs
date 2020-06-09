@@ -64,7 +64,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             gearSpriteIcon.Colour = colour.Lighten(0.5f);
         }
 
-        public void UpdateResult() => base.UpdateResult(true);
+        public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
 
         public override bool OnPressed(RushAction action) => false;
 
