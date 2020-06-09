@@ -4,6 +4,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
@@ -56,6 +57,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Scale = Vector2.One;
             Alpha = 1f;
+        }
+
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            base.UpdateStateTransforms(state);
+
+            switch (state)
+            {
+                case ArmedState.Hit:
+                case ArmedState.Miss:
+                    Hide();
+                    break;
+            }
         }
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
