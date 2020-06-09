@@ -4,6 +4,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
@@ -58,7 +59,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Alpha = 1f;
         }
 
-        public void UpdateResult() => base.UpdateResult(true);
+        protected override void UpdateStateTransforms(ArmedState state)
+        {
+            base.UpdateStateTransforms(state);
+
+            if (state == ArmedState.Hit)
+                Hide();
+        }
+
+        public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {

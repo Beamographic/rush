@@ -322,6 +322,30 @@ namespace osu.Game.Rulesets.Rush.UI
 
                     break;
 
+                case Sawblade _:
+                    if (PlayerSprite.CollidesWith(result.HitObject))
+                    {
+                        var damageText = new SpriteText
+                        {
+                            Origin = Anchor.Centre,
+                            Colour = Color4.Red,
+                            Font = FontUsage.Default.With(size: 40),
+                            Scale = new Vector2(1.2f),
+                            Text = $"{healthAmount:D}",
+                            Position = healthPosition,
+                        };
+
+                        overPlayerEffectsContainer.Add(damageText);
+
+                        damageText.ScaleTo(1f, animation_time)
+                                  .Then()
+                                  .FadeOutFromOne(animation_time)
+                                  .MoveToOffset(new Vector2(0f, -20f), animation_time)
+                                  .OnComplete(d => d.Expire());
+                    }
+
+                    break;
+
                 case Heart _ when result.IsHit:
                     var heartFlash = new DrawableHeartIcon
                     {

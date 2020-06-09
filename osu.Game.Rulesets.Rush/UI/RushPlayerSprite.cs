@@ -21,11 +21,47 @@ namespace osu.Game.Rulesets.Rush.UI
 {
     public class RushPlayerSprite : CompositeDrawable
     {
-        private const float jump_duration = 150f;
+        /// <summary>
+        /// The time in milliseconds for a jump to reach maximum height
+        /// </summary>
+        private const float jump_duration = 100f;
+
+        /// <summary>
+        /// The time in milliseconds between a jump action and when the player will begin to fall.
+        /// </summary>
         private const float fall_delay = 300f;
-        private const float fall_duration = 150f;
-        private const float travel_duration = 150f;
+
+        /// <summary>
+        /// The time in milliseconds for the player to fall to the ground (from any Y position!)
+        /// </summary>
+        private const float fall_duration = 100f;
+
+        /// <summary>
+        /// The time in milliseconds for the player to move to the enemy to attack.
+        /// Note that this is purely visual, attacks always happen exactly when the user presses the action.
+        /// </summary>
+        private const float travel_duration = 120f;
+
+        /// <summary>
+        /// The minimum time in milliseconds that the current non-running animation will play for before
+        /// resetting to the running animation (if the player is on the ground).
+        /// </summary>
         private const float run_reset_delay = 200f;
+
+        /// <summary>
+        /// The fraction of the total play height that the player must be from the ground to be able to jump.
+        /// </summary>
+        private const float jump_fraction = 0.2f;
+
+        /// <summary>
+        /// The fraction of the total play height that the player must be from a sawblade or enemy to take damage.
+        /// </summary>
+        private const float damage_range_fraction = 0.15f;
+
+        /// <summary>
+        /// The fraction of the total play height that the player must be from a missed heart to still receive it.
+        /// </summary>
+        private const float heart_range_fraction = 0.2f;
 
         private readonly Dictionary<PlayerAnimation, TextureAnimation> textureAnimations = new Dictionary<PlayerAnimation, TextureAnimation>();
 
@@ -101,6 +137,10 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly float groundY;
         private readonly float airY;
 
+        private float playHeight => Math.Abs(groundY - airY);
+        private float distanceToGround => Math.Abs(Y - groundY);
+        private float distanceToAir => Math.Abs(Y - airY);
+
         public RushPlayerSprite(float groundY, float airY)
         {
             this.groundY = groundY;
@@ -142,41 +182,6 @@ namespace osu.Game.Rulesets.Rush.UI
             a.Hide();
         });
 
-        // private void playRunning()
-        // {
-        //     StopAll();
-        //     textureAnimations[PlayerAnimation.Run].Show();
-        //     textureAnimations[PlayerAnimation.Run].Restart();
-        // }
-        //
-        // private void playJumping()
-        // {
-        //     StopAll();
-        //
-        //     runResetTime = Time.Current + run_reset_delay;
-        //
-        //     textureAnimations[PlayerAnimation.Jump].Show();
-        //     textureAnimations[PlayerAnimation.Jump].Restart();
-        // }
-        //
-        // private void playHold()
-        // {
-        //     StopAll();
-        //     textureAnimations[PlayerAnimation.Hold].Show();
-        //     textureAnimations[PlayerAnimation.Hold].Restart();
-        // }
-        //
-        // private void playAttack(LanedHitLane lane)
-        // {
-        //     StopAll();
-        //
-        //     runResetTime = Time.Current + run_reset_delay;
-        //
-        //     var animation = lane == LanedHitLane.Air ? PlayerAnimation.AirAttack : PlayerAnimation.GroundAttack;
-        //     textureAnimations[animation].Show();
-        //     textureAnimations[animation].Restart();
-        // }
-
         private void playAnimation(PlayerAnimation animation, bool delayNextRunAnimation = true)
         {
             StopAll();
@@ -197,7 +202,7 @@ namespace osu.Game.Rulesets.Rush.UI
             if (Target != PlayerTargetLane.None)
                 return false;
 
-            var eq = Precision.AlmostEquals(Y, groundY);
+            var eq = distanceToGround / playHeight <= jump_fraction;
 
             if ((action == RushAction.AirPrimary || action == RushAction.AirSecondary) && eq)
                 jump();
@@ -285,19 +290,16 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public bool CollidesWith(HitObject hitObject)
         {
-            const float damage_range = 25f;
-            const float heart_range = 50f;
-
             switch (hitObject)
             {
                 case MiniBoss _:
                     return true;
 
                 case Heart heart:
-                    return Math.Abs(Y - (heart.Lane == LanedHitLane.Air ? airY : groundY)) <= heart_range;
+                    return (heart.Lane == LanedHitLane.Air ? distanceToAir : distanceToGround) / playHeight <= heart_range_fraction;
 
                 case LanedHit lanedHit:
-                    return Math.Abs(Y - (lanedHit.Lane == LanedHitLane.Air ? airY : groundY)) <= damage_range;
+                    return (lanedHit.Lane == LanedHitLane.Air ? distanceToAir : distanceToGround) / playHeight <= damage_range_fraction;
             }
 
             return false;

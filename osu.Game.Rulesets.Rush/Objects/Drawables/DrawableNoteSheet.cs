@@ -68,7 +68,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             });
 
             AccentColour.ValueChanged += _ => updateHoldStar();
-            HasBroken.ValueChanged += _ => updateHoldStar();
+
+            HasBroken.ValueChanged += _ =>
+            {
+                if (HasBroken.Value && HoldStartTime != null && HoldEndTime == null)
+                    HoldEndTime = Time.Current;
+
+                updateHoldStar();
+            };
         }
 
         private void updateHoldStar() => holdStar.UpdateColour(HasBroken.Value ? Color4.Gray : AccentColour.Value);
@@ -151,7 +158,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (AllJudged || timeOffset < 0)
                 return;
 
-            Tail.UpdateResult();
+            Tail.UpdateResult(userTriggered);
 
             if (Tail.IsHit && Head.IsHit && !HasBroken.Value)
                 ApplyResult(r => r.Type = HitResult.Perfect);
@@ -167,15 +174,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!LaneMatchesAction(action))
                 return false;
 
-            pressCount++;
-
             if (pressCount > 1)
                 return true;
 
-            beginHoldAt(Time.Current - Head.HitObject.StartTime);
-            Head.UpdateResult();
+            if (Head.UpdateResult(true))
+            {
+                pressCount++;
+                beginHoldAt(Time.Current - Head.HitObject.StartTime);
+                return true;
+            }
 
-            return true;
+            return false;
         }
 
         private void beginHoldAt(double timeOffset)
@@ -193,7 +202,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             pressCount--;
 
-            if (pressCount > 0 || AllJudged)
+            if (pressCount > 0)
                 return;
 
             if (HasBroken.Value || HoldStartTime == null || HoldEndTime != null)
@@ -208,7 +217,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 HasBroken.Value = true;
             else if (Tail.HitObject.HitWindows.CanBeHit(tailOffset))
             {
-                Tail.UpdateResult();
+                Tail.UpdateResult(true);
                 HasBroken.Value = !Tail.IsHit;
             }
         }
@@ -217,7 +226,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.Update();
 
-            if (Head.IsHit || HasBroken.Value)
+            if (Head.IsHit && !Tail.AllJudged || HasBroken.Value)
                 holdStar.Show();
             else
                 holdStar.Hide();
