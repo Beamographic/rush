@@ -80,7 +80,7 @@ namespace osu.Game.Rulesets.Rush.Objects
             Tail.Samples = Samples.TakeLast(1).ToList();
         }
 
-        public override Judgement CreateJudgement() => new IgnoreJudgement();
+        public override Judgement CreateJudgement() => new RushIgnoreJudgement();
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
     }
