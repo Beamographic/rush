@@ -17,6 +17,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
+        public override bool DisplayResult => false;
+        public override bool DisplayExplosion => true;
+
         public DrawableHeart(Heart hitObject)
             : base(hitObject)
         {
@@ -33,6 +36,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 }
             });
         }
+
+        public override Drawable CreateHitExplosion() => new HeartHitExplosion(this);
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
@@ -78,6 +83,26 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 this.ScaleTo(1.5f)
                     .Then()
                     .ScaleTo(1f, timingPoint.BeatLength, Easing.Out);
+        }
+
+        private class HeartHitExplosion : DrawableHeartIcon
+        {
+            public HeartHitExplosion(DrawableHeart drawableHeart)
+            {
+                Anchor = drawableHeart.LaneAnchor;
+                Origin = Anchor.Centre;
+                Size = drawableHeart.Size;
+                Scale = new Vector2(0.5f);
+            }
+
+            protected override void LoadComplete()
+            {
+                base.LoadComplete();
+
+                this.ScaleTo(1.25f, RushPlayfield.HIT_EXPLOSION_DURATION)
+                    .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
+                    .Expire(true);
+            }
         }
     }
 }
