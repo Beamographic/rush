@@ -29,6 +29,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected readonly IBindable<ScrollingDirection> Direction = new Bindable<ScrollingDirection>();
 
+        protected RushInputManager ActionInputManager => (RushInputManager)GetContainingInputManager();
+
         protected virtual bool ExpireOnHit => true;
         protected virtual bool ExpireOnMiss => false;
 
