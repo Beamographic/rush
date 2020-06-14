@@ -7,11 +7,12 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class SawbladeJudgement : RushJudgement
     {
-        protected override double HealthPointIncreaseFor(HitResult result, bool playerCollided) =>
-            result switch
-            {
-                HitResult.Miss => -20.0,
-                _ => 0.0,
-            };
+        protected override double HealthPointIncreaseFor(HitResult result, bool playerCollided)
+        {
+            if (playerCollided)
+                return -20.0;
+
+            return 0.0;
+        }
     }
 }
