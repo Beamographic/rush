@@ -21,6 +21,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
+        public override bool DisplayExplosion => true;
+
         public DrawableMinion(Minion hitObject)
             : base(hitObject)
         {
