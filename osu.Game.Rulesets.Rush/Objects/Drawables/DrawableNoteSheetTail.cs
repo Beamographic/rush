@@ -18,11 +18,20 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
+            var overallMissed = NoteSheet.Result.Type == HitResult.Miss;
+
+            // Apply tail miss at its time when the entire note sheet has already been judged as missed.
+            if (overallMissed && timeOffset >= 0)
+            {
+                ApplyResult(r => r.Type = HitResult.Miss);
+                return;
+            }
+
             // for now let's give the player an automatic perfect if they hold the note (like in a certain other rhythm game)
             if (!userTriggered)
             {
                 if (timeOffset >= 0)
-                    ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : HitResult.Perfect);
+                    ApplyResult(r => r.Type = HitResult.Perfect);
                 return;
             }
 
@@ -31,7 +40,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return;
 
             // ...and an automatic perfect if they release within any "hit" judged period
-            ApplyResult(r => r.Type = HasBroken.Value ? HitResult.Miss : HitResult.Perfect);
+            ApplyResult(r => r.Type = HitResult.Perfect);
         }
 
         // FIXME: should logically be TrailingAnchor, not sure why it renders incorrectly

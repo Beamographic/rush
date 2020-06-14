@@ -1,38 +1,41 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableNoteSheetCapStar : CompositeDrawable
+    public class DrawableNoteSheetCapStar : CompositeDrawable, IHasAccentColour
     {
         private const double rotation_time = 1000;
 
-        private readonly SpriteIcon spriteIcon;
-        private readonly Box backgroundBox;
+        private readonly SpriteIcon starIcon;
         private readonly Triangles triangles;
+        private readonly Box backgroundBox;
 
-        public void UpdateColour(Color4 colour)
+        public readonly Bindable<Color4> AccentColour = new Bindable<Color4>();
+
+        Color4 IHasAccentColour.AccentColour
         {
-            backgroundBox.Colour = colour.Darken(0.5f);
-            triangles.Colour = colour;
-            triangles.Alpha = 0.8f;
-            spriteIcon.Colour = colour.Lighten(0.5f);
+            get => AccentColour.Value;
+            set => AccentColour.Value = value;
         }
 
         public DrawableNoteSheetCapStar()
         {
             AddRangeInternal(new Drawable[]
             {
-                spriteIcon = new SpriteIcon
+                starIcon = new SpriteIcon
                 {
                     Anchor = Anchor.Centre,
                     Scale = new Vector2(1.5f),
@@ -56,12 +59,24 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             });
         }
 
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            AccentColour.BindValueChanged(c =>
+            {
+                starIcon.Colour = c.NewValue.Lighten(0.5f);
+                backgroundBox.Colour = c.NewValue.Darken(0.5f);
+                triangles.Colour = c.NewValue;
+                triangles.Alpha = 0.8f;
+            }, true);
+        }
+
         protected override void Update()
         {
             base.Update();
 
-            spriteIcon.OriginPosition = new Vector2(DrawWidth * 0.5f, DrawHeight * 0.54f);
-            spriteIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
+            starIcon.OriginPosition = new Vector2(DrawWidth * 0.5f, DrawHeight * 0.54f);
+            starIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
         }
     }
 }
