@@ -1,17 +1,24 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Utils;
+using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Judgements;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
+using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -28,49 +35,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private readonly Container nonProxiedContent;
 
         protected readonly IBindable<ScrollingDirection> Direction = new Bindable<ScrollingDirection>();
-
-        protected virtual bool ExpireOnHit => true;
-        protected virtual bool ExpireOnMiss => false;
-
-        protected DrawableRushHitObject(RushHitObject hitObject)
-            : base(hitObject)
-        {
-            AddRangeInternal(new[]
-            {
-                nonProxiedContent = new Container
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Child = Content = new Container { RelativeSizeAxes = Axes.Both }
-                },
-                proxiedContent = new ProxiedContentContainer { RelativeSizeAxes = Axes.Both }
-            });
-        }
-
-        protected override bool ComputeIsMaskedAway(RectangleF maskingBounds) => false;
-
-        private bool isProxied;
-
-        protected void ProxyContent()
-        {
-            if (isProxied) return;
-
-            isProxied = true;
-
-            nonProxiedContent.Remove(Content);
-            proxiedContent.Add(Content);
-        }
-
-        protected void UnproxyContent()
-        {
-            if (!isProxied) return;
-
-            isProxied = false;
-
-            proxiedContent.Remove(Content);
-            nonProxiedContent.Add(Content);
-        }
-
-        public Drawable CreateProxiedContent() => proxiedContent.CreateProxy();
 
         public override double LifetimeStart
         {
@@ -90,6 +54,33 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 base.LifetimeEnd = value;
                 proxiedContent.LifetimeEnd = value;
             }
+        }
+
+        protected override bool ComputeIsMaskedAway(RectangleF maskingBounds) => false;
+
+        /// <summary>
+        /// Whether to display an explosion when this hit object is hit.
+        /// </summary>
+        public virtual bool DisplayExplosion => false;
+
+        protected virtual bool ExpireOnHit => true;
+        protected virtual bool ExpireOnMiss => false;
+
+        [Resolved]
+        private DrawableRushRuleset drawableRuleset { get; set; }
+
+        protected DrawableRushHitObject(RushHitObject hitObject)
+            : base(hitObject)
+        {
+            AddRangeInternal(new[]
+            {
+                nonProxiedContent = new Container
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Child = Content = new Container { RelativeSizeAxes = Axes.Both }
+                },
+                proxiedContent = new ProxiedContentContainer { RelativeSizeAxes = Axes.Both }
+            });
         }
 
         [BackgroundDependencyLoader(true)]
@@ -152,10 +143,64 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
         }
 
+        public virtual Drawable CreateHitExplosion() => new DefaultHitExplosion(Color4.Yellow.Darken(0.5f))
+        {
+            Anchor = Anchor,
+            Origin = Anchor.Centre,
+            Size = new Vector2(200, 200),
+            Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f),
+            Rotation = RNG.NextSingle() * 360f,
+        };
+
+        protected override JudgementResult CreateResult(Judgement judgement) => new RushJudgementResult(HitObject, (RushJudgement)judgement);
+
+        protected new void ApplyResult(Action<JudgementResult> application)
+        {
+            // This is the only point to correctly apply values to the judgement
+            // result in correct time, check whether the player collided now.
+            Action<JudgementResult> rushApplication = br =>
+            {
+                var r = (RushJudgementResult)br;
+
+                application?.Invoke(r);
+                r.PlayerCollided = drawableRuleset.PlayerCollidesWith(r.HitObject);
+            };
+
+            base.ApplyResult(rushApplication);
+        }
+
+        #region Proxying logic
+
+        private bool isProxied;
+
+        protected void ProxyContent()
+        {
+            if (isProxied) return;
+
+            isProxied = true;
+
+            nonProxiedContent.Remove(Content);
+            proxiedContent.Add(Content);
+        }
+
+        protected void UnproxyContent()
+        {
+            if (!isProxied) return;
+
+            isProxied = false;
+
+            proxiedContent.Remove(Content);
+            nonProxiedContent.Add(Content);
+        }
+
+        public Drawable CreateProxiedContent() => proxiedContent.CreateProxy();
+
         private class ProxiedContentContainer : Container
         {
             public override bool RemoveWhenNotAlive => false;
         }
+
+        #endregion
     }
 
     public abstract class DrawableRushHitObject<TObject> : DrawableRushHitObject

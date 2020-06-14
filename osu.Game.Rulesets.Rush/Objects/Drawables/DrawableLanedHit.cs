@@ -4,9 +4,12 @@
 using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Utils;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
+using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -63,6 +66,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             return false;
         }
+
+        public override Drawable CreateHitExplosion() => new DefaultHitExplosion(LaneAccentColour)
+        {
+            Anchor = LaneAnchor,
+            Origin = Anchor.Centre,
+            Size = new Vector2(200, 200),
+            Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f),
+            Rotation = RNG.NextSingle() * 360f,
+        };
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {

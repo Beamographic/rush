@@ -25,6 +25,7 @@ namespace osu.Game.Rulesets.Rush.UI
         public DefaultHitExplosion(Color4 explosionColour, int sparkCount = 10, Color4? sparkColour = null)
         {
             Origin = Anchor.Centre;
+            Depth = 1f;
 
             InternalChildren = new Drawable[]
             {
@@ -58,6 +59,23 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             colouredExplosion.Texture = store.Get("Effects/explosion");
             whiteExplosion.Texture = store.Get("Effects/explosion");
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            ApplyExplosionTransforms();
+        }
+
+        /// <summary>
+        /// Applies all transforms to animate the explosion.
+        /// </summary>
+        protected virtual void ApplyExplosionTransforms()
+        {
+            this.ScaleTo(0.5f, RushPlayfield.HIT_EXPLOSION_DURATION)
+                .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
+                .Expire(true);
         }
 
         protected class Sparks : CompositeDrawable

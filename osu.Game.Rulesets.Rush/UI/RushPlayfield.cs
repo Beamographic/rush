@@ -1,15 +1,14 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Utils;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
@@ -26,14 +25,14 @@ namespace osu.Game.Rulesets.Rush.UI
     [Cached]
     public class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>
     {
-        private readonly Random random = new Random();
-
         public const float DEFAULT_HEIGHT = 178;
         public const float HIT_TARGET_OFFSET = 120;
         public const float HIT_TARGET_SIZE = 100;
         public const float PLAYER_OFFSET = 130;
         public const float JUDGEMENT_OFFSET = 100;
         public const float JUDGEMENT_MOVEMENT = 300;
+
+        public const double HIT_EXPLOSION_DURATION = 200f;
 
         public RushPlayerSprite PlayerSprite { get; }
 
@@ -229,11 +228,23 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset)
         {
-            var explosion = createHitExplosion(Color4.Yellow.Darken(0.5f), drawableMiniBoss.Anchor);
-            explosion.Scale *= 1.5f;
+            // TODO: maybe this explosion can be moved into the mini boss drawable object itself.
+            var explosion = new DefaultHitExplosion(Color4.Yellow.Darken(0.5f))
+            {
+                Alpha = 0,
+                Depth = 0,
+                Origin = Anchor.Centre,
+                Anchor = drawableMiniBoss.Anchor,
+                Size = new Vector2(200, 200),
+                Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f) * 1.5f,
+                Rotation = RNG.NextSingle() * 360f,
+            };
+
             halfPaddingOverEffectContainer.Add(explosion);
-            explosion.ScaleTo(explosion.Scale * 0.5f, 200f).FadeOutFromOne(200f);
-            explosion.Delay(200).Expire(true);
+
+            explosion.ScaleTo(explosion.Scale * 0.5f, 200f)
+                     .FadeOutFromOne(200f)
+                     .Expire(true);
 
             PlayerSprite.Target = PlayerTargetLane.MiniBoss;
         }
@@ -241,211 +252,96 @@ namespace osu.Game.Rulesets.Rush.UI
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
             DrawableRushHitObject rushJudgedObject = (DrawableRushHitObject)judgedObject;
-            int healthAmount = (int)((result.Judgement as RushJudgement)?.HealthPoints ?? 0);
-            var healthPosition = new Vector2(overPlayerEffectsContainer.DrawWidth * 0.75f, overPlayerEffectsContainer.DrawHeight * 0.5f);
+            RushJudgementResult rushResult = (RushJudgementResult)result;
 
             PlayerSprite.HandleResult(rushJudgedObject, result);
 
-            const float animation_time = 200f;
             const float judgement_time = 250f;
 
-            var drawableLanedHit = rushJudgedObject as IDrawableLanedHit;
-
-            switch (rushJudgedObject.HitObject)
+            // Display hit explosions for objects that allow it.
+            if (result.IsHit && rushJudgedObject.DisplayExplosion)
             {
-                case NoteSheetHead _ when result.IsHit:
-                case NoteSheetTail _ when result.IsHit:
-                    var star = new DrawableNoteSheetCapStar
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = drawableLanedHit!.LaneAnchor,
-                        Size = rushJudgedObject.Size,
-                    };
+                var explosion = rushJudgedObject.CreateHitExplosion();
 
-                    var flash = new Circle
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = drawableLanedHit!.LaneAnchor,
-                        Size = rushJudgedObject.Size,
-                        Scale = new Vector2(0.5f),
-                    };
-
-                    star.UpdateColour(drawableLanedHit.LaneAccentColour);
-                    flash.Colour = drawableLanedHit.LaneAccentColour.Lighten(0.5f);
-                    flash.Alpha = 0.4f;
-
-                    overEffectContainer.AddRange(new Drawable[]
-                    {
-                        star, flash
-                    });
-
-                    star.ScaleTo(2f, animation_time)
-                        .FadeOutFromOne(animation_time)
-                        .OnComplete(d => d.Expire());
-
-                    flash.ScaleTo(4f, animation_time / 2)
-                         .Then()
-                         .ScaleTo(0.5f, animation_time / 2)
-                         .FadeOut(animation_time / 2)
-                         .OnComplete(d => d.Expire());
-
-                    break;
-
-                case Minion _:
-                case DualHitPart _:
-                    if (result.IsHit)
-                    {
-                        var explosion = createHitExplosion(drawableLanedHit!.LaneAccentColour, drawableLanedHit.LaneAnchor);
+                if (explosion != null)
+                {
+                    // TODO: low priority, but the explosion should be added in a container
+                    //       that has the hit object container to avoid this kinda hacky check.
+                    if (explosion.Depth <= 0)
+                        overEffectContainer.Add(explosion);
+                    else
                         underEffectContainer.Add(explosion);
-                        explosion.ScaleTo(0.5f, 200f).FadeOutFromOne(200f).OnComplete(d => d.Expire());
-                    }
-                    else if (PlayerSprite.CollidesWith(result.HitObject))
-                    {
-                        var damageText = new SpriteText
-                        {
-                            Origin = Anchor.Centre,
-                            Colour = Color4.Red,
-                            Font = FontUsage.Default.With(size: 40),
-                            Scale = new Vector2(1.2f),
-                            Text = $"{healthAmount:D}",
-                            Position = healthPosition,
-                        };
-
-                        overPlayerEffectsContainer.Add(damageText);
-
-                        damageText.ScaleTo(1f, animation_time)
-                                  .Then()
-                                  .FadeOutFromOne(animation_time)
-                                  .MoveToOffset(new Vector2(0f, -20f), animation_time)
-                                  .OnComplete(d => d.Expire());
-                    }
-
-                    break;
-
-                case Sawblade _:
-                    if (PlayerSprite.CollidesWith(result.HitObject))
-                    {
-                        var damageText = new SpriteText
-                        {
-                            Origin = Anchor.Centre,
-                            Colour = Color4.Red,
-                            Font = FontUsage.Default.With(size: 40),
-                            Scale = new Vector2(1.2f),
-                            Text = $"{healthAmount:D}",
-                            Position = healthPosition,
-                        };
-
-                        overPlayerEffectsContainer.Add(damageText);
-
-                        damageText.ScaleTo(1f, animation_time)
-                                  .Then()
-                                  .FadeOutFromOne(animation_time)
-                                  .MoveToOffset(new Vector2(0f, -20f), animation_time)
-                                  .OnComplete(d => d.Expire());
-                    }
-
-                    break;
-
-                case Heart _ when result.IsHit:
-                    var heartFlash = new DrawableHeartIcon
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = drawableLanedHit!.LaneAnchor,
-                        Size = rushJudgedObject.Size,
-                        Scale = new Vector2(0.5f)
-                    };
-
-                    var healthIncrease = new SpriteText
-                    {
-                        Origin = Anchor.Centre,
-                        Colour = Color4.Green,
-                        Font = FontUsage.Default.With(size: 40),
-                        Scale = new Vector2(1.2f),
-                        Text = $"+{healthAmount:D}",
-                        Position = healthPosition,
-                    };
-
-                    overEffectContainer.Add(heartFlash);
-
-                    heartFlash.ScaleTo(1.25f, animation_time)
-                              .FadeOutFromOne(animation_time)
-                              .OnComplete(d => d.Expire());
-
-                    overPlayerEffectsContainer.Add(healthIncrease);
-
-                    healthIncrease.ScaleTo(1f, animation_time)
-                                  .Then()
-                                  .FadeOutFromOne(animation_time)
-                                  .MoveToOffset(new Vector2(0f, -20f), animation_time)
-                                  .OnComplete(d => d.Expire());
-
-                    // TODO: green floating plus signs
-
-                    break;
+                }
             }
 
-            if (!rushJudgedObject.DisplayResult || !DisplayJudgements.Value)
-                return;
+            // Display health point difference if the judgement result implies it.
+            var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
-            DrawableRushJudgement judgementDrawable = null;
-
-            switch (rushJudgedObject.HitObject)
+            if (pointDifference != 0)
             {
-                case NoteSheet _:
-                    break;
+                var healthText = new SpriteText
+                {
+                    RelativePositionAxes = Axes.Both,
+                    Position = new Vector2(0.75f, 0.5f),
+                    Origin = Anchor.Centre,
+                    Colour = pointDifference > 0 ? Color4.Green : Color4.Red,
+                    Text = $"{pointDifference:+0;-0}",
+                    Font = FontUsage.Default.With(size: 40),
+                    Scale = new Vector2(1.2f),
+                };
 
-                case Heart _:
-                    break;
+                overPlayerEffectsContainer.Add(healthText);
 
-                case Sawblade sawblade:
-                    judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                    {
-                        Origin = Anchor.Centre,
-                        Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
-                        Scale = new Vector2(1.2f)
-                    };
-
-                    break;
-
-                case LanedHit lanedHit:
-                    judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                    {
-                        Origin = Anchor.Centre,
-                        Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
-                        Scale = new Vector2(1.5f)
-                    };
-
-                    break;
+                healthText.ScaleTo(1f, judgement_time)
+                          .Then()
+                          .FadeOutFromOne(judgement_time)
+                          .MoveToOffset(new Vector2(0f, -20f), judgement_time)
+                          .Expire(true);
             }
 
-            if (judgementDrawable != null)
+            // Display judgement results in a drawable for objects that allow it.
+            if (rushJudgedObject.DisplayResult)
             {
-                judgementContainer.Add(judgementDrawable);
+                DrawableRushJudgement judgementDrawable = null;
 
-                judgementDrawable.ScaleTo(1f, judgement_time)
-                                 .Then()
-                                 .MoveToOffset(new Vector2(-JUDGEMENT_MOVEMENT, 0f), judgement_time, Easing.In)
-                                 .OnComplete(d => d.Expire());
+                // TODO: showing judgements based on the judged object suggests that
+                //       this may want to be inside the object class as well.
+                switch (rushJudgedObject.HitObject)
+                {
+                    case Sawblade sawblade:
+                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
+                        {
+                            Origin = Anchor.Centre,
+                            Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
+                            Scale = new Vector2(1.2f)
+                        };
+
+                        break;
+
+                    case LanedHit lanedHit:
+                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
+                        {
+                            Origin = Anchor.Centre,
+                            Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
+                            Scale = new Vector2(1.5f)
+                        };
+
+                        break;
+                }
+
+                if (judgementDrawable != null)
+                {
+                    judgementContainer.Add(judgementDrawable);
+
+                    judgementDrawable.ScaleTo(1f, judgement_time)
+                                     .Then()
+                                     .MoveToOffset(new Vector2(-JUDGEMENT_MOVEMENT, 0f), judgement_time, Easing.In)
+                                     .Expire(true);
+                }
             }
         }
 
         private float judgementPositionForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? -JUDGEMENT_OFFSET : judgementContainer.DrawHeight - JUDGEMENT_OFFSET;
-
-        private Drawable createHitExplosion(Color4 colour, Anchor anchor = Anchor.Centre)
-        {
-            // some random rotation and scale for variety
-            var startScale = 0.9f + random.NextDouble() * 0.2f;
-            var rotation = random.NextDouble() * 360;
-
-            return new DefaultHitExplosion(colour)
-            {
-                Origin = Anchor.Centre,
-                Anchor = anchor,
-                Size = new Vector2(200, 200),
-                Scale = new Vector2((float)startScale),
-                Rotation = (float)rotation
-            };
-        }
 
         public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
 
