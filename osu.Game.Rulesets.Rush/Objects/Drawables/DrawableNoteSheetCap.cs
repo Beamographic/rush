@@ -1,9 +1,13 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -54,6 +58,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             AccentColour.BindValueChanged(evt => capStar.UpdateColour(evt.NewValue), true);
         }
+
         public override Drawable CreateHitExplosion() => new NoteSheetHitExplosion(this);
 
         protected override void UpdateInitialTransforms()
@@ -100,7 +105,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         RelativeSizeAxes = Axes.Both,
-                        AccentColour = { Value = drawableNoteSheet.LaneAccentColour },
                     },
                     flashCircle = new Circle
                     {
@@ -112,6 +116,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         Colour = drawableNoteSheet.LaneAccentColour.Lighten(0.5f)
                     }
                 };
+
+                explosionStar.UpdateColour(drawableNoteSheet.LaneAccentColour);
             }
 
             protected override void LoadComplete()
