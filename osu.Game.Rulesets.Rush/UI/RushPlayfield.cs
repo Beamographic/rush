@@ -260,6 +260,7 @@ namespace osu.Game.Rulesets.Rush.UI
                         Origin = Anchor.Centre,
                         Anchor = drawableLanedHit!.LaneAnchor,
                         Size = rushJudgedObject.Size,
+                        AccentColour = { Value = drawableLanedHit.LaneAccentColour },
                     };
 
                     var flash = new Circle
@@ -270,7 +271,6 @@ namespace osu.Game.Rulesets.Rush.UI
                         Scale = new Vector2(0.5f),
                     };
 
-                    star.UpdateColour(drawableLanedHit.LaneAccentColour);
                     flash.Colour = drawableLanedHit.LaneAccentColour.Lighten(0.5f);
                     flash.Alpha = 0.4f;
 
