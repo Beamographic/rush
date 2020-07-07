@@ -58,6 +58,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override bool ComputeIsMaskedAway(RectangleF maskingBounds) => false;
 
+        protected RushInputManager ActionInputManager => (RushInputManager)GetContainingInputManager();
+
         /// <summary>
         /// Whether to display an explosion when this hit object is hit.
         /// </summary>

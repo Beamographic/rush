@@ -16,9 +16,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            if (AllJudged)
-                return;
-
             if (userTriggered)
             {
                 var result = HitObject.HitWindows.ResultFor(timeOffset);
@@ -26,14 +23,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     return;
 
                 ApplyResult(r => r.Type = result);
-
-                if (result == HitResult.Miss)
-                    HasBroken.Value = true;
             }
             else if (!HitObject.HitWindows.CanBeHit(timeOffset))
             {
                 ApplyResult(r => r.Type = HitResult.Miss);
-                HasBroken.Value = true;
             }
         }
 

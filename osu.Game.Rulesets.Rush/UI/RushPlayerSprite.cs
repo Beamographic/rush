@@ -254,8 +254,8 @@ namespace osu.Game.Rulesets.Rush.UI
                     break;
 
                 case NoteSheetTail _:
-                case NoteSheetBody _:
-                    if (judgedObject.HitObject is NoteSheetBody && result.IsHit)
+                case NoteSheet _:
+                    if (judgedObject.HitObject is NoteSheet && result.IsHit)
                         break;
 
                     var lanedHit = (LanedHit)judgedObject.HitObject;

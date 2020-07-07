@@ -12,15 +12,12 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
-using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableNoteSheetCap<TObject> : DrawableLanedHit<TObject>
         where TObject : LanedHit
     {
-        public Bindable<bool> HasBroken { get; } = new BindableBool();
-
         private readonly DrawableNoteSheetCapStar capStar;
         protected readonly DrawableNoteSheet NoteSheet;
 
@@ -40,23 +37,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
-                RelativeSizeAxes = Axes.Both
+                RelativeSizeAxes = Axes.Both,
+                AccentColour = { BindTarget = AccentColour },
             };
-
-            AccentColour.ValueChanged += _ => updateDrawables();
-            HasBroken.ValueChanged += _ => updateDrawables();
-        }
-
-        private void updateDrawables()
-        {
-            var colour = HasBroken.Value ? Color4.Gray : AccentColour.Value;
-            capStar.UpdateColour(colour);
-        }
-
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            AccentColour.BindValueChanged(evt => capStar.UpdateColour(evt.NewValue), true);
         }
 
         public override Drawable CreateHitExplosion() => new NoteSheetHitExplosion(this);
@@ -75,13 +58,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 Hide();
         }
 
-        public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
+        public bool TriggerResult() => UpdateResult(true);
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {
         }
 
-        public override bool OnPressed(RushAction action) => false; // Handled by the hold note
+        public override bool OnPressed(RushAction action) => false; // Handled by the note sheet object itself.
 
         public override void OnReleased(RushAction action)
         {
@@ -105,6 +88,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         RelativeSizeAxes = Axes.Both,
+                        AccentColour = { Value = drawableNoteSheet.LaneAccentColour },
                     },
                     flashCircle = new Circle
                     {
@@ -116,8 +100,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         Colour = drawableNoteSheet.LaneAccentColour.Lighten(0.5f)
                     }
                 };
-
-                explosionStar.UpdateColour(drawableNoteSheet.LaneAccentColour);
             }
 
             protected override void LoadComplete()

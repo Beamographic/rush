@@ -26,7 +26,6 @@ namespace osu.Game.Rulesets.Rush.Objects
             {
                 duration = value;
                 Tail.StartTime = EndTime;
-                Body.Duration = value;
             }
         }
 
@@ -38,8 +37,6 @@ namespace osu.Game.Rulesets.Rush.Objects
                 base.StartTime = value;
                 Head.StartTime = value;
                 Tail.StartTime = EndTime;
-                Body.StartTime = value;
-                Body.EndTime = EndTime;
             }
         }
 
@@ -51,7 +48,6 @@ namespace osu.Game.Rulesets.Rush.Objects
                 base.Lane = value;
                 Head.Lane = value;
                 Tail.Lane = value;
-                Body.Lane = value;
             }
         }
 
@@ -59,13 +55,10 @@ namespace osu.Game.Rulesets.Rush.Objects
 
         public readonly NoteSheetTail Tail = new NoteSheetTail();
 
-        public readonly NoteSheetBody Body = new NoteSheetBody();
-
         protected override void CreateNestedHitObjects()
         {
             base.CreateNestedHitObjects();
 
-            AddNested(Body);
             AddNested(Head);
             AddNested(Tail);
 
