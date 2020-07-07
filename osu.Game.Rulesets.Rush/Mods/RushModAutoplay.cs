@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Rush.Mods
         {
             ScoreInfo = new ScoreInfo
             {
-                User = new User { Username = "Sleepwalker" },
+                User = new User { Username = "Autoplay" },
             },
             Replay = new RushAutoGenerator(beatmap).Generate(),
         };
