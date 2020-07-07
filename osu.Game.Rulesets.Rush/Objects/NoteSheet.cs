@@ -4,6 +4,7 @@
 using System.Linq;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Types;
+using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects
@@ -73,7 +74,7 @@ namespace osu.Game.Rulesets.Rush.Objects
             Tail.Samples = Samples.TakeLast(1).ToList();
         }
 
-        public override Judgement CreateJudgement() => new IgnoreJudgement();
+        public override Judgement CreateJudgement() => new RushIgnoreJudgement();
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
     }

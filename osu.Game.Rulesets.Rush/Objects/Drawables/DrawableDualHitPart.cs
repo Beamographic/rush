@@ -22,6 +22,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private readonly Box background;
         private readonly Triangles triangles;
 
+        public override bool DisplayExplosion => true;
+
         public DrawableDualHitPart(DualHitPart hitObject)
             : base(hitObject)
         {
