@@ -9,9 +9,6 @@ namespace osu.Game.Rulesets.Rush.Tests
     [TestFixture]
     public class TestSceneRushPlayer : PlayerTestScene
     {
-        public TestSceneRushPlayer()
-            : base(new RushRuleset())
-        {
-        }
+        protected override Ruleset CreatePlayerRuleset() => new RushRuleset();
     }
 }
