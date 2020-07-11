@@ -79,7 +79,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 };
             }
 
-            protected override void OnNewBeat(int beatIndex, TimingControlPoint timingPoint, EffectControlPoint effectPoint, TrackAmplitudes amplitudes) =>
+            protected override void OnNewBeat(int beatIndex, TimingControlPoint timingPoint, EffectControlPoint effectPoint, ChannelAmplitudes amplitudes) =>
                 this.ScaleTo(1.5f)
                     .Then()
                     .ScaleTo(1f, timingPoint.BeatLength, Easing.Out);

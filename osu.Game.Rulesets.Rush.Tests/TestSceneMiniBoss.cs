@@ -6,12 +6,11 @@ using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Rush.Beatmaps;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.UI;
-using osu.Game.Tests.Visual;
 using osuTK.Input;
 
 namespace osu.Game.Rulesets.Rush.Tests
 {
-    public class TestSceneMiniBoss : PlayerTestScene
+    public class TestSceneMiniBoss : TestSceneRushPlayer
     {
         private const float mini_boss_time = 600f;
 
@@ -37,11 +36,6 @@ namespace osu.Game.Rulesets.Rush.Tests
         }
 
         private PlayerTargetLane targetLane => ((DrawableRushRuleset)Player.DrawableRuleset).Playfield.PlayerSprite.Target;
-
-        public TestSceneMiniBoss()
-            : base(new RushRuleset())
-        {
-        }
 
         [Test]
         public void TestPlayerStateTransitionsAtCorrectTime()
