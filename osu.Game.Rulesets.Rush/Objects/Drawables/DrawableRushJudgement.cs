@@ -3,9 +3,6 @@
 
 using osu.Framework.Allocation;
 using osu.Framework.Extensions;
-using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Textures;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Rulesets.Judgements;
@@ -26,22 +23,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         [BackgroundDependencyLoader]
-        private void load(TextureStore store)
+        private void load()
         {
-            InternalChild = JudgementBody = new Container
+            JudgementBody.Child = new OsuSpriteText
             {
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                RelativeSizeAxes = Axes.Both,
-                Child = JudgementText = new OsuSpriteText
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Text = Result.Type.GetDescription().ToUpperInvariant(),
-                    Font = OsuFont.Numeric.With(size: 20),
-                    Colour = colours.ForHitResult(Result.Type),
-                    Scale = new Vector2(0.85f, 1f)
-                }
+                Text = Result.Type.GetDescription().ToUpperInvariant(),
+                Font = OsuFont.Numeric.With(size: 20),
+                Colour = colours.ForHitResult(Result.Type),
+                Scale = new Vector2(0.85f, 1),
             };
         }
     }
