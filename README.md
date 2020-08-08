@@ -5,6 +5,10 @@ Custom ruleset for osu!lazer, based loosely on Muse Dash.
 
 Demo: https://www.youtube.com/watch?v=HXdQd65CwkU
 
+Discord: https://discord.gg/2P9E8MS
+
+The Discord server is currently just for realtime discussion, but could be expanded if there is community interest.
+
 ## Status
 WIP but playable.
 
