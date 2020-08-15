@@ -18,15 +18,7 @@ namespace osu.Game.Rulesets.Rush.Replays
 
         protected override bool IsImportant(RushReplayFrame frame) => frame.Actions.Any();
 
-        public override List<IInput> GetPendingInputs()
-        {
-            return new List<IInput>
-            {
-                new ReplayState<RushAction>
-                {
-                    PressedActions = CurrentFrame?.Actions ?? new List<RushAction>(),
-                }
-            };
-        }
+        public override void CollectPendingInputs(List<IInput> inputs) =>
+            inputs.Add(new ReplayState<RushAction> { PressedActions = CurrentFrame?.Actions ?? new List<RushAction>() });
     }
 }
