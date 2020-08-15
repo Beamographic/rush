@@ -22,9 +22,12 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         public RushBeatmapConverter(IBeatmap beatmap, Ruleset ruleset)
         {
-            converter = beatmap.Metadata.Tags.Split(" ").Any(tag => tag.Equals(crafted_tag, StringComparison.InvariantCultureIgnoreCase))
-                ? (BeatmapConverter<RushHitObject>)new RushCraftedBeatmapConverter(beatmap, ruleset)
-                : new RushGeneratedBeatmapConverter(beatmap, ruleset);
+            bool crafted = !string.IsNullOrEmpty(beatmap.Metadata.Tags)
+                           && beatmap.Metadata.Tags
+                                     .Split(" ")
+                                     .Any(tag => tag.Equals(crafted_tag, StringComparison.InvariantCultureIgnoreCase));
+
+            converter = crafted ? (BeatmapConverter<RushHitObject>)new RushCraftedBeatmapConverter(beatmap, ruleset) : new RushGeneratedBeatmapConverter(beatmap, ruleset);
         }
 
         public bool CanConvert() => converter.CanConvert();
