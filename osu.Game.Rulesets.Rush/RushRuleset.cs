@@ -22,9 +22,15 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
-        public override string Description => "Rush!";
+        public const string DESCRIPTION = "Rush!";
+        public const string PLAYING_VERB = "Punching doods";
+        public const string SHORT_NAME = "rush";
 
-        public override string PlayingVerb => "Punching doods";
+        public override string Description => DESCRIPTION;
+
+        public override string PlayingVerb => PLAYING_VERB;
+
+        public override string ShortName => SHORT_NAME;
 
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new DrawableRushRuleset(this, beatmap, mods);
 
@@ -63,8 +69,6 @@ namespace osu.Game.Rulesets.Rush
                     return Array.Empty<Mod>();
             }
         }
-
-        public override string ShortName => "rush";
 
         public override IEnumerable<KeyBinding> GetDefaultKeyBindings(int variant = 0) => new[]
         {
