@@ -31,16 +31,16 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 : new RushGeneratedBeatmapConverter(beatmap, ruleset);
         }
 
+        public event Action<HitObject, IEnumerable<HitObject>> ObjectConverted
+        {
+            add => BackedConverter.ObjectConverted += value;
+            remove => BackedConverter.ObjectConverted -= value;
+        }
 
         public bool CanConvert() => BackedConverter.CanConvert();
 
         public IBeatmap Convert() => BackedConverter.Convert();
 
-        /// <summary>
-        /// <see cref="BeatmapConverter{T}"/>'s implementation is not visible to us,
-        /// so we can't defer to it.
-        /// </summary>
-        public event Action<HitObject, IEnumerable<HitObject>> ObjectConverted;
         public IBeatmap Beatmap => BackedConverter.Beatmap;
     }
 }
