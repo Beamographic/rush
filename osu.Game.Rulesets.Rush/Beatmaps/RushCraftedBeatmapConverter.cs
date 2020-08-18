@@ -80,7 +80,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
         {
-            if (!typeForObject(original, out var hitObjectType, out var lane, out var minionSize))
+            if (!typeForObject(original, out var hitObjectType, out var lane, out _ /*TODO: out var minionSize */))
                 yield break;
 
             switch (hitObjectType)
