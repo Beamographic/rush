@@ -8,7 +8,7 @@ using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.UI;
 using osuTK.Input;
 
-namespace osu.Game.Rulesets.Rush.Tests
+namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
     public class TestSceneMiniBoss : TestSceneRushPlayer
     {

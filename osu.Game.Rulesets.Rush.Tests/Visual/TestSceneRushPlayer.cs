@@ -4,7 +4,7 @@
 using NUnit.Framework;
 using osu.Game.Tests.Visual;
 
-namespace osu.Game.Rulesets.Rush.Tests
+namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
     [TestFixture]
     public class TestSceneRushPlayer : PlayerTestScene

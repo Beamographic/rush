@@ -8,7 +8,7 @@ using osu.Framework.Platform;
 using osu.Game.Tests.Visual;
 using osuTK.Graphics;
 
-namespace osu.Game.Rulesets.Rush.Tests
+namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
     public class TestSceneOsuGame : OsuTestScene
     {
