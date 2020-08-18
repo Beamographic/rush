@@ -3,14 +3,13 @@
 
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
-using osuTK;
+using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -18,7 +17,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         private readonly Container<DrawableDualHitPart> airHitContainer;
         private readonly Container<DrawableDualHitPart> groundHitContainer;
-        private readonly Box joinBox;
+        private readonly SkinnableDrawable skinnedJoin;
 
         public DrawableDualHitPart Air => airHitContainer.Child;
         public DrawableDualHitPart Ground => groundHitContainer.Child;
@@ -31,13 +30,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             Content.AddRange(new Drawable[]
             {
-                joinBox = new Box
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    RelativeSizeAxes = Axes.Y,
-                    Size = new Vector2(10f, 1f)
-                },
+                skinnedJoin = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitJoin), _ => new DualHitJoinPiece()),
                 airHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
                 groundHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
             });
@@ -77,8 +70,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.UpdateInitialTransforms();
 
-            joinBox.Colour = ColourInfo.GradientVertical(AIR_ACCENT_COLOUR, GROUND_ACCENT_COLOUR);
-            joinBox.Show();
+            skinnedJoin.Show();
         }
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
@@ -148,7 +140,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
                 case ArmedState.Hit:
                     ProxyContent();
-                    joinBox.Hide();
+                    skinnedJoin.Hide();
                     this.FadeOut(animation_time);
                     break;
             }

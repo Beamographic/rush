@@ -13,5 +13,7 @@ namespace osu.Game.Rulesets.Rush
         NoteSheetExplosion,
         Miniboss,
         Sawblade,
+        DualHitPart,
+        DualHitJoin,
     }
 }
