@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -8,6 +9,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Game.Graphics.Backgrounds;
+using osu.Game.Rulesets.Objects.Drawables;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
@@ -23,6 +25,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 
         public NoteSheetBodyPiece()
         {
+            RelativeSizeAxes = Axes.Y;
+
             InternalChildren = new Drawable[]
             {
                 backgroundBox = new Box { RelativeSizeAxes = Axes.Both },
@@ -44,9 +48,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
             };
         }
 
-        [BackgroundDependencyLoader]
-        private void load()
+        [BackgroundDependencyLoader(true)]
+        private void load([CanBeNull] DrawableHitObject drawableHitObject)
         {
+            if (drawableHitObject != null)
+                AccentColour.BindTo(drawableHitObject.AccentColour);
+
             AccentColour.BindValueChanged(c =>
             {
                 backgroundBox.Colour = c.NewValue.Darken(1f);

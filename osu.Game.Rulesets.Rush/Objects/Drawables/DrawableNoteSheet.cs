@@ -13,7 +13,7 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
-using osuTK;
+using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -28,11 +28,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private readonly Container<DrawableNoteSheetHead> headContainer;
         private readonly Container<DrawableNoteSheetTail> tailContainer;
 
-        public NoteSheetBodyPiece BodyPiece => bodyContainer.Child;
+        public Drawable BodyDrawable => bodyContainer.Child.Drawable;
 
-        private readonly Container<NoteSheetBodyPiece> bodyContainer;
+        private readonly Container<SkinnableDrawable> bodyContainer;
 
-        private readonly DrawableNoteSheetCapStar holdStar;
+        private readonly Drawable holdCap;
 
         private double? holdStartTime => !Head.IsHit ? (double?)null : HitObject.StartTime;
         private double? holdEndTime => !Judged ? (double?)null : (HitObject.EndTime + Result.TimeOffset);
@@ -59,26 +59,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Height = NOTE_SHEET_SIZE;
 
-            Content.AddRange(new Drawable[]
+            Content.AddRange(new[]
             {
-                bodyContainer = new Container<NoteSheetBodyPiece>
+                bodyContainer = new Container<SkinnableDrawable>
                 {
                     Masking = true,
                     RelativeSizeAxes = Axes.Both,
-                    Child = new NoteSheetBodyPiece
-                    {
-                        RelativeSizeAxes = Axes.Y,
-                        AccentColour = { BindTarget = AccentColour },
-                    },
+                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetBody, hitObject.Lane), _ => new NoteSheetBodyPiece())
                 },
                 headContainer = new Container<DrawableNoteSheetHead> { RelativeSizeAxes = Axes.Both },
                 tailContainer = new Container<DrawableNoteSheetTail> { RelativeSizeAxes = Axes.Both },
-                holdStar = new DrawableNoteSheetCapStar
+                holdCap = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetHold, hitObject.Lane), _ => new NoteSheetCapStarPiece())
                 {
-                    Alpha = 0f,
                     Origin = Anchor.Centre,
-                    Size = new Vector2(NOTE_SHEET_SIZE),
-                    AccentColour = { BindTarget = AccentColour },
                 }
             });
         }
@@ -138,7 +131,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             headContainer.Origin = headContainer.Anchor = LeadingAnchor;
             tailContainer.Origin = tailContainer.Anchor = TrailingAnchor;
 
-            BodyPiece.Origin = BodyPiece.Anchor = TrailingAnchor;
+            BodyDrawable.Origin = BodyDrawable.Anchor = TrailingAnchor;
             bodyContainer.Origin = bodyContainer.Anchor = TrailingAnchor;
         }
 
@@ -211,16 +204,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.Update();
 
             if (Head.IsHit)
-                holdStar.Show();
+                holdCap.Show();
             else
-                holdStar.Hide();
+                holdCap.Hide();
 
-            holdStar.X = DrawWidth * (float)Progress;
-            holdStar.Y = DrawHeight / 2f;
+            holdCap.X = DrawWidth * (float)Progress;
+            holdCap.Y = DrawHeight / 2f;
 
             // Keep the body piece width in-line with ours and
             // start cutting its container's width as we hold it.
-            BodyPiece.Width = DrawWidth;
+            BodyDrawable.Width = DrawWidth;
             bodyContainer.Width = 1 - (float)Progress;
         }
 

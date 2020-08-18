@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -10,12 +11,13 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
+using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
 
-namespace osu.Game.Rulesets.Rush.Objects.Drawables
+namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class DrawableNoteSheetCapStar : CompositeDrawable, IHasAccentColour
+    public class NoteSheetCapStarPiece : CompositeDrawable, IHasAccentColour
     {
         private const double rotation_time = 1000;
 
@@ -31,8 +33,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             set => AccentColour.Value = value;
         }
 
-        public DrawableNoteSheetCapStar()
+        public NoteSheetCapStarPiece()
         {
+            Origin = Anchor.Centre;
+            Anchor = Anchor.Centre;
+            Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE);
+
             AddRangeInternal(new Drawable[]
             {
                 starIcon = new SpriteIcon
@@ -59,9 +65,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             });
         }
 
-        [BackgroundDependencyLoader]
-        private void load()
+        [BackgroundDependencyLoader(true)]
+        private void load([CanBeNull] DrawableHitObject drawableHitObject)
         {
+            if (drawableHitObject != null)
+                AccentColour.BindTo(drawableHitObject.AccentColour);
+
             AccentColour.BindValueChanged(c =>
             {
                 starIcon.Colour = c.NewValue.Lighten(0.5f);

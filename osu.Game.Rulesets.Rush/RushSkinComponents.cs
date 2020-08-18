@@ -10,6 +10,7 @@ namespace osu.Game.Rulesets.Rush
         NoteSheetTail,
         NoteSheetBody,
         NoteSheetHold,
+        NoteSheetExplosion,
         Miniboss,
         Sawblade,
     }

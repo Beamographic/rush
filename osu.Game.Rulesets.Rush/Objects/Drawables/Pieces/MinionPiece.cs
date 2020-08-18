@@ -9,11 +9,11 @@ using osu.Framework.Graphics.Textures;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class DefaultMinionPiece : CompositeDrawable
+    public class MinionPiece : CompositeDrawable
     {
         private readonly TextureAnimation animation;
 
-        public DefaultMinionPiece()
+        public MinionPiece()
         {
             RelativeSizeAxes = Axes.Both;
 

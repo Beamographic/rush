@@ -9,6 +9,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableNoteSheetHead : DrawableNoteSheetCap<NoteSheetHead>
     {
+        protected override RushSkinComponents Component => RushSkinComponents.NoteSheetHead;
+
         public DrawableNoteSheetHead(DrawableNoteSheet noteSheet)
             : base(noteSheet, noteSheet.HitObject.Head)
         {
