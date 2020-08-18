@@ -3,14 +3,13 @@
 
 using System;
 using System.Linq;
-using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Animations;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Textures;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -19,10 +18,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         private const float base_sprite_scale = 1f;
         private const float target_sprite_scale = 1.1f;
-        private readonly Vector2 spriteSize = new Vector2(300f, 200f);
 
-        private readonly TextureAnimation normalAnimation;
-        private readonly TextureAnimation hitAnimation;
+        private readonly SkinnableDrawable mainPiece;
 
         private readonly Container<DrawableMiniBossTick> ticks;
 
@@ -35,30 +32,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             AddRangeInternal(new Drawable[]
             {
-                normalAnimation = new TextureAnimation
+                mainPiece = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Miniboss), _ => new MiniBossPiece())
                 {
                     Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    Scale = new Vector2(base_sprite_scale),
-                    DefaultFrameLength = 250,
-                },
-                hitAnimation = new TextureAnimation
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    Scale = new Vector2(base_sprite_scale),
-                    DefaultFrameLength = 250,
-                    Alpha = 0f
+                    Anchor = Anchor.Centre
                 },
                 ticks = new Container<DrawableMiniBossTick> { RelativeSizeAxes = Axes.Both }
             });
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(TextureStore store)
-        {
-            normalAnimation.AddFrames(new[] { store.Get("MiniBoss/pippidon_boss_0"), store.Get("MiniBoss/pippidon_boss_1") });
-            hitAnimation.AddFrames(new[] { store.Get("MiniBoss/pippidon_boss_hurt_0"), store.Get("MiniBoss/pippidon_boss_hurt_1"), store.Get("MiniBoss/pippidon_boss_hurt_2") });
         }
 
         protected override void AddNestedHitObject(DrawableHitObject hitObject)
@@ -95,15 +75,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.Update();
 
             float fraction = (float)(HitObject.StartTime - Clock.CurrentTime) / 500f;
-            normalAnimation.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
+            mainPiece.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
 
             X = Math.Max(0, X);
         }
 
         protected override void UpdateInitialTransforms()
         {
-            normalAnimation.Show();
-            hitAnimation.Hide();
+            mainPiece.Scale = new Vector2(base_sprite_scale);
         }
 
         public override bool OnPressed(RushAction action) => UpdateResult(true);
@@ -125,9 +104,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 var numHits = ticks.Count(r => r.IsHit);
                 var completion = (float)numHits / HitObject.RequiredHits;
 
-                normalAnimation.Hide();
-                hitAnimation.Show();
-                hitAnimation.ScaleTo(base_sprite_scale + Math.Min(target_sprite_scale - base_sprite_scale, (target_sprite_scale - base_sprite_scale) * completion), 260, Easing.OutQuint);
+                mainPiece.ScaleTo(base_sprite_scale + Math.Min(target_sprite_scale - base_sprite_scale, (target_sprite_scale - base_sprite_scale) * completion), 260, Easing.OutQuint);
 
                 OnAttacked(this, timeOffset);
             }
