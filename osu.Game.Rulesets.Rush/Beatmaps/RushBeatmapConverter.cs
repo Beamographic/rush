@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
-using osu.Game.Rulesets.Rush.Objects;
 
 namespace osu.Game.Rulesets.Rush.Beatmaps
 {
@@ -17,29 +16,31 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
     /// </summary>
     public class RushBeatmapConverter : IBeatmapConverter
     {
-        private const string crafted_tag = "crafted";
-        private readonly BeatmapConverter<RushHitObject> converter;
+        public readonly IBeatmapConverter BackedConverter;
+        public const string CRAFTED_TAG = "crafted";
 
         public RushBeatmapConverter(IBeatmap beatmap, Ruleset ruleset)
         {
             bool crafted = !string.IsNullOrEmpty(beatmap.Metadata.Tags)
                            && beatmap.Metadata.Tags
                                      .Split(" ")
-                                     .Any(tag => tag.Equals(crafted_tag, StringComparison.InvariantCultureIgnoreCase));
+                                     .Any(tag => tag.Equals(CRAFTED_TAG, StringComparison.InvariantCultureIgnoreCase));
 
-            converter = crafted ? (BeatmapConverter<RushHitObject>)new RushCraftedBeatmapConverter(beatmap, ruleset) : new RushGeneratedBeatmapConverter(beatmap, ruleset);
+            BackedConverter = crafted
+                ? (IBeatmapConverter)new RushCraftedBeatmapConverter(beatmap, ruleset)
+                : new RushGeneratedBeatmapConverter(beatmap, ruleset);
         }
 
-        public bool CanConvert() => converter.CanConvert();
 
-        public IBeatmap Convert() => converter.Convert();
+        public bool CanConvert() => BackedConverter.CanConvert();
 
-        public IBeatmap Beatmap => converter.Beatmap;
+        public IBeatmap Convert() => BackedConverter.Convert();
 
         /// <summary>
         /// <see cref="BeatmapConverter{T}"/>'s implementation is not visible to us,
         /// so we can't defer to it.
         /// </summary>
         public event Action<HitObject, IEnumerable<HitObject>> ObjectConverted;
+        public IBeatmap Beatmap => BackedConverter.Beatmap;
     }
 }
