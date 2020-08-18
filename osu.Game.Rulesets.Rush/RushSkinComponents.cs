@@ -15,5 +15,6 @@ namespace osu.Game.Rulesets.Rush
         Sawblade,
         DualHitPart,
         DualHitJoin,
+        Heart,
     }
 }

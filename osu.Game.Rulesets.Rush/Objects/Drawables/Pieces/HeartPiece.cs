@@ -7,12 +7,16 @@ using osu.Framework.Graphics.Sprites;
 using osuTK;
 using osuTK.Graphics;
 
-namespace osu.Game.Rulesets.Rush.Objects.Drawables
+namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class DrawableHeartIcon : CompositeDrawable
+    public class HeartPiece : CompositeDrawable
     {
-        public DrawableHeartIcon()
+        public HeartPiece()
         {
+            Origin = Anchor.Centre;
+            Anchor = Anchor.Centre;
+            RelativeSizeAxes = Axes.Both;
+
             InternalChildren = new Drawable[]
             {
                 new SpriteIcon
