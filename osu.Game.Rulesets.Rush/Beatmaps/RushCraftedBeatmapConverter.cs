@@ -32,14 +32,14 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
     ///</code>
     ///
     /// Hitobjects may appear anywhere in these sections, but the following positions are suggested
-    /// to make a .osu file more human-readable:
-    /// A: 100,100
-    /// B: 100,200
-    /// C: 100,300
-    /// D: 250,100
-    /// E: 250,300
-    /// F: 400,100
-    /// G: 400,300
+    /// when using largeest grid size:
+    /// A: 64,64
+    /// B: 64,192
+    /// C: 64,320
+    /// D: 256,64
+    /// E: 256,320
+    /// F: 448,64
+    /// G: 448,320
     ///
     /// Hitcircles:
     /// 1) Hitcircles in section A or C are by default "air" or "ground" minions respectively
@@ -57,7 +57,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
     /// Sliders:
     /// 1) Sliders that start in section A or C are by default "air" or "ground" notesheets respectively
     /// 2) Sliders that start in section B will add equal length notesheets to both air and ground
-    /// 3) Only the slider start is checked when selecting a lane
+    /// 3) The slider head indicates in which lane the notesheet will appear
     /// 4) Slider distance and repeats are ignored, only the final end time is used
     ///
     /// Spinners:
