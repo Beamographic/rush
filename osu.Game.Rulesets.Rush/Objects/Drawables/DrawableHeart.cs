@@ -65,30 +65,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 ApplyResult(r => r.Type = HitResult.Perfect);
         }
 
-        // protected class BeatingHeart : BeatSyncedContainer
-        // {
-        //     public BeatingHeart()
-        //     {
-        //         Child = new DrawableHeartIcon
-        //         {
-        //             Origin = Anchor.Centre,
-        //             Anchor = Anchor.Centre,
-        //             RelativeSizeAxes = Axes.Both,
-        //         };
-        //     }
-        //
-        //     protected override void OnNewBeat(int beatIndex, TimingControlPoint timingPoint, EffectControlPoint effectPoint, ChannelAmplitudes amplitudes) =>
-        //         this.ScaleTo(1.5f)
-        //             .Then()
-        //             .ScaleTo(1f, timingPoint.BeatLength, Easing.Out);
-        // }
-
         private class HeartHitExplosion : HeartPiece
         {
             public HeartHitExplosion(DrawableHeart drawableHeart)
             {
                 Anchor = drawableHeart.LaneAnchor;
                 Origin = Anchor.Centre;
+                RelativeSizeAxes = Axes.None;
                 Size = drawableHeart.Size;
                 Scale = new Vector2(0.5f);
             }
