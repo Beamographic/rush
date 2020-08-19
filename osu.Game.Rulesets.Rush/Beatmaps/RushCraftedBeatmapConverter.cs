@@ -135,7 +135,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     yield return new MiniBoss
                     {
                         StartTime = original.StartTime,
-                        EndTime = original.GetEndTime()
+                        EndTime = original.GetEndTime(),
+                        Samples = original.Samples,
                     };
 
                     break;
@@ -153,7 +154,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     yield return new Heart
                     {
                         StartTime = original.StartTime,
-                        Lane = lane
+                        Lane = lane,
+                        Samples = original.Samples,
                     };
 
                     break;
