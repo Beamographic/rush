@@ -61,7 +61,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (userTriggered || timeOffset < 0 || AllJudged)
                 return;
 
-            if (HitObject.HitWindows.CanBeHit(timeOffset))
+            if (HitObject.HitWindows.ResultFor(timeOffset) != HitResult.None)
                 return;
 
             if (playfield.PlayerSprite.CollidesWith(HitObject))

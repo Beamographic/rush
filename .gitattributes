@@ -1,0 +1,16 @@
+# Autodetect text files and ensure that we normalise their
+# line endings to lf internally. When checked out they may
+# use different line endings.
+* text=auto
+
+# Check out with crlf (Windows) line endings
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.cs text diff=csharp eol=crlf
+
+# Check out with lf (UNIX) line endings
+.gitignore text eol=lf
+.gitattributes text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
