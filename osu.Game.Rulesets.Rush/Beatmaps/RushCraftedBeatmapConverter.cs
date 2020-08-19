@@ -67,7 +67,6 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
     /// 1) Slider velocity and BPM are currently ignored, but may be used in the future
     /// 2) Kiai will be used in the future to indicate boss sections
     /// 3) New combo is ignored
-    /// 4) Hitsounds are only transferred for minions
     /// </remarks>
     public class RushCraftedBeatmapConverter : BeatmapConverter<RushHitObject>
     {
@@ -105,6 +104,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                         {
                             StartTime = original.StartTime,
                             EndTime = original.GetEndTime(),
+                            Samples = original.Samples,
                             Lane = LanedHitLane.Air
                         };
                     }
@@ -115,6 +115,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                         {
                             StartTime = original.StartTime,
                             EndTime = original.GetEndTime(),
+                            Samples = original.Samples,
                             Lane = LanedHitLane.Ground
                         };
                     }
@@ -124,7 +125,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 case HitObjectType.DualHit:
                     yield return new DualHit
                     {
-                        StartTime = original.StartTime
+                        StartTime = original.StartTime,
+                        Samples = original.Samples,
                     };
 
                     break;
