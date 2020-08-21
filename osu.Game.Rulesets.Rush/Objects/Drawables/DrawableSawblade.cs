@@ -68,13 +68,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (userTriggered || timeOffset < 0 || AllJudged)
                 return;
 
-            if (HitObject.HitWindows.ResultFor(timeOffset) != HitResult.None)
-                return;
+            switch (HitObject.HitWindows.ResultFor(timeOffset))
+            {
+                case HitResult.None:
+                    ApplyResult(r => r.Type = HitResult.Perfect);
+                    break;
 
-            if (playfield.PlayerSprite.CollidesWith(HitObject))
-                ApplyResult(r => r.Type = HitResult.Miss);
-            else
-                ApplyResult(r => r.Type = HitResult.Perfect);
+                case HitResult.Miss:
+                    // sawblades only hurt the player if they collide within the trailing "miss" hit window
+                    if (playfield.PlayerSprite.CollidesWith(HitObject))
+                        ApplyResult(r => r.Type = HitResult.Miss);
+
+                    break;
+            }
         }
 
         protected class Saw : CompositeDrawable
