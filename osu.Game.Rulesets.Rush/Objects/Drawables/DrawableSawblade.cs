@@ -65,12 +65,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
+            // sawblades can't be user triggered, and will not hurt the player in the leading hit windows
             if (userTriggered || timeOffset < 0 || AllJudged)
                 return;
 
             switch (HitObject.HitWindows.ResultFor(timeOffset))
             {
                 case HitResult.None:
+                    // if we've reached the trailing "none", we successfully dodged the sawblade
                     ApplyResult(r => r.Type = HitResult.Perfect);
                     break;
 
