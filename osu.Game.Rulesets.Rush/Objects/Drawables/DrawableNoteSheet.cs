@@ -19,7 +19,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableNoteSheet : DrawableLanedHit<NoteSheet>
     {
-        public override bool DisplayResult => false;
         public const float NOTE_SHEET_SIZE = RushPlayfield.HIT_TARGET_SIZE * 0.75f;
         public const float REQUIRED_COMPLETION = 0.75f;
 
@@ -54,6 +53,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         [Resolved]
         private RushPlayfield playfield { get; set; }
+
+        public override bool DisplayResult => false;
 
         public DrawableNoteSheet(NoteSheet hitObject)
             : base(hitObject)
