@@ -54,6 +54,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
+        public override bool DisplayResult => false;
+
         public DrawableNoteSheet(NoteSheet hitObject)
             : base(hitObject)
         {
