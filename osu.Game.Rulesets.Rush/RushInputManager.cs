@@ -51,8 +51,7 @@ namespace osu.Game.Rulesets.Rush
 
     public static class RushActionExtensions
     {
-        public static LanedHitLane Lane(this RushAction action) =>
-            action switch
+        public static LanedHitLane Lane(this RushAction action) => action switch
             {
                 RushAction.GroundPrimary => LanedHitLane.Ground,
                 RushAction.GroundSecondary => LanedHitLane.Ground,
