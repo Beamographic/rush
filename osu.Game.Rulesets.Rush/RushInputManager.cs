@@ -41,10 +41,10 @@ namespace osu.Game.Rulesets.Rush
         [Description("Air (Secondary)")]
         AirSecondary,
 
-        [Description("Air (Tertiary")]
+        [Description("Air (Tertiary)")]
         AirTertiary,
 
-        [Description("Air (Quaternary")]
+        [Description("Air (Quaternary)")]
         AirQuaternary
     }
 }
