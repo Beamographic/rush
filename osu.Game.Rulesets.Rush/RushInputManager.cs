@@ -29,10 +29,22 @@ namespace osu.Game.Rulesets.Rush
         [Description("Ground (Secondary)")]
         GroundSecondary,
 
+        [Description("Ground (Tertiary)")]
+        GroundTertiary,
+
+        [Description("Ground (Quaternary)")]
+        GroundQuarternary,
+
         [Description("Air (Primary)")]
         AirPrimary,
 
         [Description("Air (Secondary)")]
-        AirSecondary
+        AirSecondary,
+
+        [Description("Air (Tertiary")]
+        AirTertiary,
+
+        [Description("Air (Quaternary")]
+        AirQuaternary
     }
 }
