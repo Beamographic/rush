@@ -33,7 +33,7 @@ namespace osu.Game.Rulesets.Rush
         GroundTertiary,
 
         [Description("Ground (Quaternary)")]
-        GroundQuarternary,
+        GroundQuaternary,
 
         [Description("Air (Primary)")]
         AirPrimary,

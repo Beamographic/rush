@@ -71,7 +71,7 @@ namespace osu.Game.Rulesets.Rush
             new KeyBinding(InputKey.J, RushAction.GroundPrimary),
             new KeyBinding(InputKey.K, RushAction.GroundSecondary),
             new KeyBinding(InputKey.L, RushAction.GroundTertiary),
-            new KeyBinding(InputKey.Semicolon, RushAction.GroundQuarternary),
+            new KeyBinding(InputKey.Semicolon, RushAction.GroundQuaternary),
 
             new KeyBinding(InputKey.F, RushAction.AirPrimary),
             new KeyBinding(InputKey.D, RushAction.AirSecondary),

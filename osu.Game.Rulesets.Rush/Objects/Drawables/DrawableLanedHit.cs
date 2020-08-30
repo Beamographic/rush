@@ -61,7 +61,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     return action == RushAction.AirPrimary || action == RushAction.AirSecondary || action == RushAction.AirTertiary || action == RushAction.AirQuaternary;
 
                 case LanedHitLane.Ground:
-                    return action == RushAction.GroundPrimary || action == RushAction.GroundSecondary || action == RushAction.GroundTertiary || action == RushAction.GroundQuarternary;
+                    return action == RushAction.GroundPrimary || action == RushAction.GroundSecondary || action == RushAction.GroundTertiary || action == RushAction.GroundQuaternary;
             }
 
             return false;
