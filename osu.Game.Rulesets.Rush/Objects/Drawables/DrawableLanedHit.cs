@@ -53,19 +53,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             return UpdateResult(true);
         }
 
-        public virtual bool LaneMatchesAction(RushAction action)
-        {
-            switch (HitObject.Lane)
-            {
-                case LanedHitLane.Air:
-                    return action == RushAction.AirPrimary || action == RushAction.AirSecondary;
-
-                case LanedHitLane.Ground:
-                    return action == RushAction.GroundPrimary || action == RushAction.GroundSecondary;
-            }
-
-            return false;
-        }
+        public virtual bool LaneMatchesAction(RushAction action) => action.Lane() == HitObject.Lane;
 
         public override Drawable CreateHitExplosion() => new DefaultHitExplosion(LaneAccentColour)
         {
