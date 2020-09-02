@@ -65,11 +65,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 {
                     Masking = true,
                     RelativeSizeAxes = Axes.Both,
-                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetBody, hitObject.Lane), _ => new NoteSheetBodyPiece())
+                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetBody), _ => new NoteSheetBodyPiece())
                 },
                 headContainer = new Container<DrawableNoteSheetHead> { RelativeSizeAxes = Axes.Both },
                 tailContainer = new Container<DrawableNoteSheetTail> { RelativeSizeAxes = Axes.Both },
-                holdCap = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetHold, hitObject.Lane), _ => new NoteSheetCapStarPiece())
+                holdCap = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetHold), _ => new NoteSheetCapStarPiece())
                 {
                     Origin = Anchor.Centre,
                 }

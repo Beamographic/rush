@@ -31,7 +31,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 RelativeSizeAxes = Axes.Both,
                 Size = new Vector2(0.4f),
                 NewBeat = (b, t, e, a) => this.ScaleTo(1.5f).Then().ScaleTo(1f, t.BeatLength, Easing.Out),
-                Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Heart, hitObject.Lane), _ => new HeartPiece())
+                Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Heart), _ => new HeartPiece
                 {
                     RelativeSizeAxes = Axes.Both,
                 })

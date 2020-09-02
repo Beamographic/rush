@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
                     Masking = hitObject.Lane == LanedHitLane.Ground,
-                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade, hitObject.Lane), _ => new SawbladePiece())
+                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
                     {
                         Origin = Anchor.Centre,
                         Anchor = hitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,

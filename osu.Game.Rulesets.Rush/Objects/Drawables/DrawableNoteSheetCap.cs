@@ -38,7 +38,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
-            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component, hitObject.Lane), _ => new NoteSheetCapStarPiece())
+            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new NoteSheetCapStarPiece())
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
