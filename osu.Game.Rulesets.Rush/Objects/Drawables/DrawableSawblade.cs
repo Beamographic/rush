@@ -15,10 +15,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableSawblade : DrawableLanedHit<Sawblade>
     {
-        public Drawable SawPiece => sawContainer.Child.Drawable;
-
-        private readonly Container<SkinnableDrawable> sawContainer;
-
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
@@ -35,7 +31,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             Content.AddRange(new[]
             {
-                sawContainer = new Container<SkinnableDrawable>
+                new Container
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
