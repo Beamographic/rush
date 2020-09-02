@@ -118,19 +118,25 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                                                 Children = new Drawable[]
                                                 {
-                                                    new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.HitTarget, LanedHitLane.Air), _ => new HitTarget())
+                                                    new Container
                                                     {
                                                         Anchor = Anchor.TopLeft,
                                                         Origin = Anchor.Centre,
                                                         Size = new Vector2(HIT_TARGET_SIZE),
-                                                        FillMode = FillMode.Fit
+                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.AirHitTarget), _ => new HitTarget()
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                        }, confineMode: ConfineMode.ScaleToFit),
                                                     },
-                                                    new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.HitTarget, LanedHitLane.Ground), _ => new HitTarget())
+                                                    new Container
                                                     {
                                                         Anchor = Anchor.BottomLeft,
                                                         Origin = Anchor.Centre,
                                                         Size = new Vector2(HIT_TARGET_SIZE),
-                                                        FillMode = FillMode.Fit
+                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.GroundHitTarget), _ => new HitTarget()
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                        }, confineMode: ConfineMode.ScaleToFit),
                                                     },
                                                 }
                                             },

@@ -16,6 +16,7 @@ namespace osu.Game.Rulesets.Rush
         DualHitPart,
         DualHitJoin,
         Heart,
-        HitTarget,
+        AirHitTarget,
+        GroundHitTarget,
     }
 }

@@ -7,7 +7,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Graphics.Containers;
-using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
@@ -16,10 +15,6 @@ namespace osu.Game.Rulesets.Rush.UI
     {
         public HitTarget()
         {
-            Origin = Anchor.Centre;
-            Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
-            FillMode = FillMode.Fit;
-
             Children = new Drawable[]
             {
                 new CircularContainer
