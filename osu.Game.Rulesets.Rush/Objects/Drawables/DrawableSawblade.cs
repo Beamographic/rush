@@ -2,14 +2,12 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
-using osu.Game.Graphics.Backgrounds;
+using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
@@ -17,8 +15,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableSawblade : DrawableLanedHit<Sawblade>
     {
-        private readonly Saw saw;
-
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
@@ -42,7 +38,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
                     Masking = hitObject.Lane == LanedHitLane.Ground,
-                    Child = saw = new Saw
+                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
                     {
                         Origin = Anchor.Centre,
                         Anchor = hitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,
@@ -51,13 +47,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     }
                 }
             });
-
-            AccentColour.ValueChanged += _ => updateDrawables();
-        }
-
-        private void updateDrawables()
-        {
-            saw.UpdateColour(AccentColour.Value);
         }
 
         // Sawblade doesn't handle user presses at all.
@@ -82,69 +71,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         ApplyResult(r => r.Type = HitResult.Miss);
 
                     break;
-            }
-        }
-
-        protected class Saw : CompositeDrawable
-        {
-            private const double rotation_time = 1000;
-
-            private readonly SpriteIcon outerSawIcon;
-            private readonly SpriteIcon innerSawIcon;
-            private readonly Box backgroundBox;
-            private readonly Triangles triangles;
-
-            public Saw()
-            {
-                InternalChildren = new Drawable[]
-                {
-                    outerSawIcon = new SpriteIcon
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = Anchor.Centre,
-                        Icon = FontAwesome.Solid.Sun,
-                        Colour = Color4.White,
-                        RelativeSizeAxes = Axes.Both,
-                        Scale = new Vector2(1.1f)
-                    },
-                    innerSawIcon = new SpriteIcon
-                    {
-                        Origin = Anchor.Centre,
-                        Anchor = Anchor.Centre,
-                        Icon = FontAwesome.Solid.Sun,
-                        RelativeSizeAxes = Axes.Both,
-                    },
-                    new CircularContainer
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        RelativeSizeAxes = Axes.Both,
-                        BorderThickness = DrawableNoteSheet.NOTE_SHEET_SIZE * 0.1f,
-                        BorderColour = Color4.White,
-                        Masking = true,
-                        Size = new Vector2(0.75f),
-                        Children = new Drawable[]
-                        {
-                            backgroundBox = new Box { RelativeSizeAxes = Axes.Both },
-                            triangles = new Triangles { RelativeSizeAxes = Axes.Both }
-                        }
-                    }
-                };
-            }
-
-            public void UpdateColour(Color4 colour)
-            {
-                backgroundBox.Colour = colour.Darken(0.5f);
-                triangles.Colour = colour;
-                triangles.Alpha = 0.8f;
-                innerSawIcon.Colour = colour.Lighten(0.5f);
-            }
-
-            protected override void Update()
-            {
-                base.Update();
-
-                innerSawIcon.Rotation = outerSawIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
             }
         }
     }

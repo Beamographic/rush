@@ -11,6 +11,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         internal const double RELEASE_WINDOW_LENIENCE = 3;
 
+        protected override RushSkinComponents Component => RushSkinComponents.NoteSheetTail;
+
         public DrawableNoteSheetTail(DrawableNoteSheet noteSheet)
             : base(noteSheet, noteSheet.HitObject.Tail)
         {

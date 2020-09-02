@@ -17,6 +17,7 @@ using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
@@ -117,19 +118,25 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                                                 Children = new Drawable[]
                                                 {
-                                                    new HitTarget
+                                                    new Container
                                                     {
                                                         Anchor = Anchor.TopLeft,
                                                         Origin = Anchor.Centre,
                                                         Size = new Vector2(HIT_TARGET_SIZE),
-                                                        FillMode = FillMode.Fit
+                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.AirHitTarget), _ => new HitTarget()
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                        }, confineMode: ConfineMode.ScaleToFit),
                                                     },
-                                                    new HitTarget
+                                                    new Container
                                                     {
                                                         Anchor = Anchor.BottomLeft,
                                                         Origin = Anchor.Centre,
                                                         Size = new Vector2(HIT_TARGET_SIZE),
-                                                        FillMode = FillMode.Fit
+                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.GroundHitTarget), _ => new HitTarget()
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                        }, confineMode: ConfineMode.ScaleToFit),
                                                     },
                                                 }
                                             },

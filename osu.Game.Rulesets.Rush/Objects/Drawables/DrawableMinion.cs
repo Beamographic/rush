@@ -4,19 +4,21 @@
 using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Animations;
-using osu.Framework.Graphics.Textures;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableMinion : DrawableLanedHit<Minion>
     {
+        protected virtual RushSkinComponents Component => RushSkinComponents.Minion;
+
+        private readonly Drawable minionPiece;
+
         private readonly Random random = new Random();
-        private readonly TextureAnimation normalAnimation;
-        private readonly TextureAnimation hitAnimation;
 
         [Resolved]
         private RushPlayfield playfield { get; set; }
@@ -28,37 +30,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-            Content.AddRange(new Drawable[]
+            Content.Add(minionPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new MinionPiece())
             {
-                normalAnimation = new TextureAnimation
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    FillMode = FillMode.Fit,
-                    RelativeSizeAxes = Axes.Both,
-                    DefaultFrameLength = 250,
-                },
-                hitAnimation = new TextureAnimation
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    FillMode = FillMode.Fit,
-                    RelativeSizeAxes = Axes.Both,
-                    DefaultFrameLength = 250,
-                    Alpha = 0f
-                }
+                RelativeSizeAxes = Axes.Both
             });
-
-            normalAnimation.IsPlaying = true;
-            hitAnimation.IsPlaying = false;
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(TextureStore store)
-        {
-            string lane = HitObject.Lane == LanedHitLane.Air ? "air" : "ground";
-            normalAnimation.AddFrames(new[] { store.Get($"Minion/pippidon_{lane}_0"), store.Get($"Minion/pippidon_{lane}_0") });
-            hitAnimation.AddFrame(store.Get($"Minion/pippidon_{lane}_hit"));
         }
 
         protected override void Update()
@@ -66,15 +41,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.Update();
 
             float fraction = (float)(HitObject.StartTime - Clock.CurrentTime) / 500f;
-            normalAnimation.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * (HitObject.Lane == LanedHitLane.Air ? 5f : 3f));
-        }
-
-        protected override void UpdateInitialTransforms()
-        {
-            base.UpdateInitialTransforms();
-
-            normalAnimation.Show();
-            hitAnimation.Hide();
+            minionPiece.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * (HitObject.Lane == LanedHitLane.Air ? 5f : 3f));
         }
 
         protected override void UpdateStateTransforms(ArmedState state)
@@ -84,9 +51,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (state)
             {
                 case ArmedState.Hit:
-                    normalAnimation.Hide();
-                    hitAnimation.Show();
-
                     const float gravity_time = 300;
                     float randomness = -0.5f + (float)random.NextDouble();
                     float rotation = -180 + randomness * 50f;

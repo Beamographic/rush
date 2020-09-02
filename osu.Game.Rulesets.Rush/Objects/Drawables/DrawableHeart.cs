@@ -2,12 +2,11 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
-using osu.Framework.Audio.Track;
 using osu.Framework.Graphics;
-using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.Graphics.Containers;
+using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -25,15 +24,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
-            Content.AddRange(new[]
+            Content.Add(new ActionBeatSyncedContainer
             {
-                new BeatingHeart
+                Origin = Anchor.Centre,
+                Anchor = Anchor.Centre,
+                RelativeSizeAxes = Axes.Both,
+                Size = new Vector2(0.4f),
+                NewBeat = (b, t, e, a) => this.ScaleTo(1.5f).Then().ScaleTo(1f, t.BeatLength, Easing.Out),
+                Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Heart), _ => new HeartPiece
                 {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
-                    Size = new Vector2(0.4f),
-                }
+                })
             });
         }
 
@@ -67,25 +68,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 ApplyResult(r => r.Type = HitResult.Perfect);
         }
 
-        protected class BeatingHeart : BeatSyncedContainer
-        {
-            public BeatingHeart()
-            {
-                Child = new DrawableHeartIcon
-                {
-                    Origin = Anchor.Centre,
-                    Anchor = Anchor.Centre,
-                    RelativeSizeAxes = Axes.Both,
-                };
-            }
-
-            protected override void OnNewBeat(int beatIndex, TimingControlPoint timingPoint, EffectControlPoint effectPoint, ChannelAmplitudes amplitudes) =>
-                this.ScaleTo(1.5f)
-                    .Then()
-                    .ScaleTo(1f, timingPoint.BeatLength, Easing.Out);
-        }
-
-        private class HeartHitExplosion : DrawableHeartIcon
+        private class HeartHitExplosion : HeartPiece
         {
             public HeartHitExplosion(DrawableHeart drawableHeart)
             {

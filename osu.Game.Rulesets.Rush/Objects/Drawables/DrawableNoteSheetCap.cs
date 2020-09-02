@@ -9,16 +9,21 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableNoteSheetCap<TObject> : DrawableLanedHit<TObject>
+    public abstract class DrawableNoteSheetCap<TObject> : DrawableLanedHit<TObject>
         where TObject : LanedHit
     {
-        private readonly DrawableNoteSheetCapStar capStar;
+        protected abstract RushSkinComponents Component { get; }
+
+        private readonly Drawable capPiece;
+
         protected readonly DrawableNoteSheet NoteSheet;
 
         [Resolved]
@@ -26,19 +31,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayExplosion => true;
 
-        public DrawableNoteSheetCap(DrawableNoteSheet noteSheet, TObject hitObject)
+        protected DrawableNoteSheetCap(DrawableNoteSheet noteSheet, TObject hitObject)
             : base(hitObject)
         {
             NoteSheet = noteSheet;
             Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
-            Content.Child = capStar = new DrawableNoteSheetCapStar
+            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new NoteSheetCapStarPiece())
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
-                AccentColour = { BindTarget = AccentColour },
             };
         }
 
@@ -72,7 +76,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private class NoteSheetHitExplosion : CompositeDrawable
         {
-            private readonly DrawableNoteSheetCapStar explosionStar;
+            private readonly NoteSheetCapStarPiece explosionStar;
             private readonly Circle flashCircle;
 
             public NoteSheetHitExplosion(DrawableNoteSheetCap<TObject> drawableNoteSheet)
@@ -83,13 +87,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
                 InternalChildren = new Drawable[]
                 {
-                    explosionStar = new DrawableNoteSheetCapStar
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        RelativeSizeAxes = Axes.Both,
-                        AccentColour = { Value = drawableNoteSheet.LaneAccentColour },
-                    },
+                    explosionStar = new NoteSheetCapStarPiece(),
                     flashCircle = new Circle
                     {
                         Anchor = Anchor.Centre,

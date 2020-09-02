@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     Masking = true,
                     BorderColour = Color4.White,
                     BorderThickness = 3f,
-                    Alpha = 0.2f,
+                    Alpha = 0.35f,
                     Child = new Box
                     {
                         RelativeSizeAxes = Axes.Both,

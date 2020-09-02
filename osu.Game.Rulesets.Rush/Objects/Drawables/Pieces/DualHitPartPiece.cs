@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -8,75 +9,75 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.UI;
 using osuTK;
 using osuTK.Graphics;
 
-namespace osu.Game.Rulesets.Rush.Objects.Drawables
+namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class DrawableNoteSheetCapStar : CompositeDrawable, IHasAccentColour
+    public class DualHitPartPiece : CompositeDrawable
     {
         private const double rotation_time = 1000;
 
-        private readonly SpriteIcon starIcon;
+        private readonly SpriteIcon gearSpriteIcon;
+        private readonly Box background;
         private readonly Triangles triangles;
-        private readonly Box backgroundBox;
 
         public readonly Bindable<Color4> AccentColour = new Bindable<Color4>();
 
-        Color4 IHasAccentColour.AccentColour
+        public DualHitPartPiece()
         {
-            get => AccentColour.Value;
-            set => AccentColour.Value = value;
-        }
+            Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-        public DrawableNoteSheetCapStar()
-        {
             AddRangeInternal(new Drawable[]
             {
-                starIcon = new SpriteIcon
+                gearSpriteIcon = new SpriteIcon
                 {
+                    Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    Scale = new Vector2(1.5f),
                     RelativeSizeAxes = Axes.Both,
-                    Icon = FontAwesome.Solid.Star,
+                    Icon = FontAwesome.Solid.Cog
                 },
                 new CircularContainer
                 {
-                    Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
-                    BorderThickness = DrawableNoteSheet.NOTE_SHEET_SIZE * 0.1f,
+                    Scale = new Vector2(0.7f),
+                    BorderThickness = RushPlayfield.HIT_TARGET_SIZE * 0.1f,
                     BorderColour = Color4.White,
                     Masking = true,
                     Children = new Drawable[]
                     {
-                        backgroundBox = new Box { RelativeSizeAxes = Axes.Both },
+                        background = new Box { RelativeSizeAxes = Axes.Both },
                         triangles = new Triangles { RelativeSizeAxes = Axes.Both }
                     }
-                }
+                },
             });
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load([CanBeNull] DrawableHitObject drawableHitObject)
         {
-            AccentColour.BindValueChanged(c =>
+            if (drawableHitObject != null)
+                AccentColour.BindTo(drawableHitObject.AccentColour);
+
+            AccentColour.BindValueChanged(evt =>
             {
-                starIcon.Colour = c.NewValue.Lighten(0.5f);
-                backgroundBox.Colour = c.NewValue.Darken(0.5f);
-                triangles.Colour = c.NewValue;
+                background.Colour = evt.NewValue.Darken(0.5f);
+                triangles.Colour = evt.NewValue;
                 triangles.Alpha = 0.8f;
-            }, true);
+                gearSpriteIcon.Colour = evt.NewValue.Lighten(0.5f);
+            });
         }
 
         protected override void Update()
         {
             base.Update();
 
-            starIcon.OriginPosition = new Vector2(DrawWidth * 0.5f, DrawHeight * 0.54f);
-            starIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
+            gearSpriteIcon.Rotation = (float)(Time.Current % rotation_time / rotation_time) * 360f;
         }
     }
 }
