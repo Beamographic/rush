@@ -32,6 +32,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 Size = new Vector2(0.4f),
                 NewBeat = (b, t, e, a) => this.ScaleTo(1.5f).Then().ScaleTo(1f, t.BeatLength, Easing.Out),
                 Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Heart, hitObject.Lane), _ => new HeartPiece())
+                {
+                    RelativeSizeAxes = Axes.Both,
+                })
             });
         }
 
@@ -71,7 +74,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             {
                 Anchor = drawableHeart.LaneAnchor;
                 Origin = Anchor.Centre;
-                RelativeSizeAxes = Axes.None;
                 Size = drawableHeart.Size;
                 Scale = new Vector2(0.5f);
             }

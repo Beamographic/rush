@@ -15,7 +15,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
         {
             Origin = Anchor.Centre;
             Anchor = Anchor.Centre;
-            RelativeSizeAxes = Axes.Both;
 
             InternalChildren = new Drawable[]
             {
