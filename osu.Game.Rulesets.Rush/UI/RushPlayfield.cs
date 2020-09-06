@@ -36,6 +36,8 @@ namespace osu.Game.Rulesets.Rush.UI
         public const double HIT_EXPLOSION_DURATION = 200f;
 
         public RushPlayerSprite PlayerSprite { get; }
+        public RushLanedPlayfield AirPlayfield { get; }
+        public RushLanedPlayfield GroundPlayfield { get; }
 
         private readonly Container underEffectContainer;
         private readonly Container overEffectContainer;
@@ -157,7 +159,26 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 Name = "Hit Objects",
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                                                Child = HitObjectContainer
+                                                Children = new Drawable[]
+                                                {
+                                                    HitObjectContainer,
+                                                    AirPlayfield = new RushLanedPlayfield(LanedHitLane.Air)
+                                                    {
+                                                        Anchor = Anchor.TopLeft,
+                                                        Origin = Anchor.CentreLeft,
+                                                        RelativeSizeAxes = Axes.X,
+                                                        Width = 1f,
+                                                        Height = HIT_TARGET_SIZE,
+                                                    },
+                                                    GroundPlayfield = new RushLanedPlayfield(LanedHitLane.Ground)
+                                                    {
+                                                        Anchor = Anchor.BottomLeft,
+                                                        Origin = Anchor.CentreLeft,
+                                                        RelativeSizeAxes = Axes.X,
+                                                        Width = 1f,
+                                                        Height = HIT_TARGET_SIZE,
+                                                    },
+                                                }
                                             },
                                             proxiedHitObjects = new ProxyContainer
                                             {
@@ -196,12 +217,20 @@ namespace osu.Game.Rulesets.Rush.UI
                     }
                 }
             };
+
+            AddNested(AirPlayfield);
+            AddNested(GroundPlayfield);
         }
 
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
         }
+
+        public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) =>
+            AirPlayfield.ReceivePositionalInputAt(screenSpacePos) ||
+            GroundPlayfield.ReceivePositionalInputAt(screenSpacePos) ||
+            base.ReceivePositionalInputAt(screenSpacePos);
 
         public override void Add(DrawableHitObject hitObject)
         {
@@ -217,7 +246,13 @@ namespace osu.Game.Rulesets.Rush.UI
                     break;
             }
 
-            base.Add(hitObject);
+            if (hitObject is IDrawableLanedHit drawableLanedHit)
+            {
+                var playfield = drawableLanedHit.Lane == LanedHitLane.Air ? AirPlayfield : GroundPlayfield;
+                playfield.Add(hitObject);
+            }
+            else
+                base.Add(hitObject);
         }
 
         public override bool Remove(DrawableHitObject hitObject)

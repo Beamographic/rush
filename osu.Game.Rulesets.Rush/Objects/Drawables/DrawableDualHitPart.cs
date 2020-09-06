@@ -1,10 +1,12 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
 using osuTK;
 
@@ -20,6 +22,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
             Content.Add(new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitPart), _ => new DualHitPartPiece()));
+        }
+
+        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
+        {
+            base.OnDirectionChanged(e);
+
+            Anchor = LaneAnchor;
         }
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);

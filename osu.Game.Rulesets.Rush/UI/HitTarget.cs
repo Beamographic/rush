@@ -15,6 +15,8 @@ namespace osu.Game.Rulesets.Rush.UI
     {
         public HitTarget()
         {
+            RelativeSizeAxes = Axes.Both;
+
             Children = new Drawable[]
             {
                 new CircularContainer

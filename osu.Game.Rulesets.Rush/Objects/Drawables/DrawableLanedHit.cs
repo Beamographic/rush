@@ -19,12 +19,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         public virtual Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
-        public Anchor LaneAnchor =>
+        public virtual Anchor LaneAnchor =>
             HitObject.Lane switch
             {
                 LanedHitLane.Air => Direction.Value == ScrollingDirection.Left ? Anchor.TopLeft : Anchor.TopRight,
                 LanedHitLane.Ground => Direction.Value == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight,
-                _ => Direction.Value == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight
+                _ => Direction.Value == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight
             };
 
         public Anchor LeadingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.OnDirectionChanged(e);
 
-            Anchor = LaneAnchor;
+            Anchor = LeadingAnchor;
         }
 
         public override bool OnPressed(RushAction action)
