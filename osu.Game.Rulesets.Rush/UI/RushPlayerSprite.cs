@@ -204,9 +204,9 @@ namespace osu.Game.Rulesets.Rush.UI
 
             var eq = distanceToGround / playHeight <= jump_fraction;
 
-            if ((action == RushAction.AirPrimary || action == RushAction.AirSecondary) && eq)
+            if (action.Lane() == LanedHitLane.Air && eq)
                 jump();
-            else if ((action == RushAction.GroundPrimary || action == RushAction.GroundSecondary) && !eq)
+            else if (action.Lane() == LanedHitLane.Ground && !eq)
                 Target |= PlayerTargetLane.AttackGround;
 
             return true;
