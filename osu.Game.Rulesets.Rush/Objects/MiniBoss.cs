@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Threading;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Types;
@@ -25,9 +26,9 @@ namespace osu.Game.Rulesets.Rush.Objects
 
         public int RequiredHits => (int)(Math.Ceiling(Duration / 500f) * RequiredHitsPerSecond * 0.5f);
 
-        protected override void CreateNestedHitObjects()
+        protected override void CreateNestedHitObjects(CancellationToken cancellationToken)
         {
-            base.CreateNestedHitObjects();
+            base.CreateNestedHitObjects(cancellationToken);
 
             for (int i = 0; i < RequiredHits; i++)
                 AddNested(new MiniBossTick());
