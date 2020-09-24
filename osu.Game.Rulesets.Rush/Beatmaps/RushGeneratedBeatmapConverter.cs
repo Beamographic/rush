@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
@@ -56,14 +57,14 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         protected override Beatmap<RushHitObject> CreateBeatmap() => new RushBeatmap();
 
-        protected override Beatmap<RushHitObject> ConvertBeatmap(IBeatmap original)
+        protected override Beatmap<RushHitObject> ConvertBeatmap(IBeatmap original, CancellationToken cancellationToken)
         {
             var firstObject = original.HitObjects.FirstOrDefault()?.StartTime ?? 0;
             nextHeartTime = firstObject + min_heart_time;
             nextDualHitTime = firstObject + min_dualhit_time;
             nextSawbladeTime = firstObject + min_sawblade_time;
 
-            var beatmap = base.ConvertBeatmap(original);
+            var beatmap = base.ConvertBeatmap(original, cancellationToken);
             reset();
 
             return beatmap;
@@ -82,7 +83,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         // https://github.com/ppy/osu/tree/master/osu.Game/Rulesets/Objects/Types
         public override bool CanConvert() => true;
 
-        protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
+        protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap, CancellationToken cancellationToken)
         {
             void updatePrevious(LanedHitLane? newLane, HitObjectFlags newFlags)
             {

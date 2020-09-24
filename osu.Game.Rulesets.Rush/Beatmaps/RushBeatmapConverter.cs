@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
 
@@ -38,8 +39,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         }
 
         public bool CanConvert() => BackedConverter.CanConvert();
-
-        public IBeatmap Convert() => BackedConverter.Convert();
+        public IBeatmap Convert(CancellationToken cancellationToken = default) => BackedConverter.Convert(cancellationToken);
 
         public IBeatmap Beatmap => BackedConverter.Beatmap;
     }
