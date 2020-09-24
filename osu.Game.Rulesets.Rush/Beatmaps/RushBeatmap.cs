@@ -3,9 +3,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Rush.Objects;
+using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Beatmaps
 {
@@ -26,39 +28,41 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 {
                     Name = @"Minion Count",
                     Content = minions.ToString(),
-                    Icon = FontAwesome.Regular.Angry
+                    CreateIcon = () => createIcon(FontAwesome.Regular.Angry),
                 },
                 new BeatmapStatistic
                 {
                     Name = @"Notesheet Count",
                     Content = notesheets.ToString(),
-                    Icon = FontAwesome.Regular.Star
+                    CreateIcon = () => createIcon(FontAwesome.Regular.Star),
                 },
                 new BeatmapStatistic
                 {
                     Name = @"Dual Hit Count",
                     Content = dualhits.ToString(),
-                    Icon = FontAwesome.Solid.Cog
+                    CreateIcon = () => createIcon(FontAwesome.Solid.Cog),
                 },
                 new BeatmapStatistic
                 {
                     Name = @"Sawblade Count",
                     Content = sawblades.ToString(),
-                    Icon = FontAwesome.Solid.Sun
+                    CreateIcon = () => createIcon(FontAwesome.Solid.Sun),
                 },
                 new BeatmapStatistic
                 {
                     Name = @"Miniboss Count",
                     Content = minibosses.ToString(),
-                    Icon = FontAwesome.Solid.Mitten
+                    CreateIcon = () => createIcon(FontAwesome.Solid.Mitten),
                 },
                 new BeatmapStatistic
                 {
                     Name = @"Heart Count",
                     Content = hearts.ToString(),
-                    Icon = FontAwesome.Solid.Heart
+                    CreateIcon = () => createIcon(FontAwesome.Solid.Heart),
                 }
             };
         }
+
+        private static Drawable createIcon(IconUsage icon) => new SpriteIcon { Icon = icon, Scale = new Vector2(0.7f) };
     }
 }
