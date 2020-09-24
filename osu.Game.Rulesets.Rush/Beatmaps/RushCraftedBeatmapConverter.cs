@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
@@ -77,7 +78,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         public override bool CanConvert() => true;
 
-        protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
+        protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap, CancellationToken cancellationToken)
         {
             if (!typeForObject(original, out var hitObjectType, out var lane, out _ /*TODO: out var minionSize */))
                 yield break;

@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Linq;
+using System.Threading;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.Rush.Judgements;
@@ -55,9 +56,9 @@ namespace osu.Game.Rulesets.Rush.Objects
 
         public readonly NoteSheetTail Tail = new NoteSheetTail();
 
-        protected override void CreateNestedHitObjects()
+        protected override void CreateNestedHitObjects(CancellationToken cancellationToken)
         {
-            base.CreateNestedHitObjects();
+            base.CreateNestedHitObjects(cancellationToken);
 
             AddNested(Head);
             AddNested(Tail);
