@@ -3,11 +3,9 @@
 # Rush!
 Custom ruleset for osu!lazer, based loosely on Muse Dash.
 
-Demo: https://www.youtube.com/watch?v=HXdQd65CwkU
+Demo: https://youtu.be/tLs1cqeLJ1U
 
 Discord: https://discord.gg/2P9E8MS
-
-The Discord server is currently just for realtime discussion, but could be expanded if there is community interest.
 
 ## Status
 WIP but playable.
@@ -36,7 +34,7 @@ The ruleset consists of a single DLL file that you'll need to place in the `rule
     If osu!lazer was running while installing the ruleset, you may need to restart the game in order for the ruleset to appear.
 
 **NOTE**: Custom Rulesets do not automatically update alongside osu!lazer but have a compatibility mechanism to continue using them on newer game versions. However, some changes made game-side may break that compatibility and require installing a newer version of the ruleset.
-Thus it is recommended that you periodically head over the releases page and replace the ruleset DLL in the `rulesets` directory with the latest available version.
+Thus it is recommended that you periodically head over to the releases page and replace the ruleset DLL in the `rulesets` directory with the latest available version.
 
 ## TODO
 * Better player sprite
