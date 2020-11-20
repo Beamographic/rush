@@ -2,11 +2,8 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
-using osu.Framework.Extensions;
 using osu.Game.Graphics;
-using osu.Game.Graphics.Sprites;
 using osu.Game.Rulesets.Judgements;
-using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -25,13 +22,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [BackgroundDependencyLoader]
         private void load()
         {
-            JudgementBody.Child = new OsuSpriteText
-            {
-                Text = Result.Type.GetDescription().ToUpperInvariant(),
-                Font = OsuFont.Numeric.With(size: 20),
-                Colour = colours.ForHitResult(Result.Type),
-                Scale = new Vector2(0.85f, 1),
-            };
+            // JudgementBody.Child = new OsuSpriteText
+            // {
+            //     Text = Result.Type.GetDescription().ToUpperInvariant(),
+            //     Font = OsuFont.Numeric.With(size: 20),
+            //     Colour = colours.ForHitResult(Result.Type),
+            //     Scale = new Vector2(0.85f, 1),
+            // };
         }
     }
 }
