@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container halfPaddingOverEffectContainer;
         private readonly Container overPlayerEffectsContainer;
         private readonly ProxyContainer proxiedHitObjects;
-        private readonly JudgementContainer<DrawableRushJudgement> judgementContainer;
+        private readonly JudgementContainer<DrawableJudgement> judgementContainer;
 
         public RushPlayfield()
         {
@@ -146,7 +146,7 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                                             },
-                                            judgementContainer = new JudgementContainer<DrawableRushJudgement>
+                                            judgementContainer = new JudgementContainer<DrawableJudgement>
                                             {
                                                 Name = "Judgement",
                                                 RelativeSizeAxes = Axes.Both,
@@ -309,14 +309,14 @@ namespace osu.Game.Rulesets.Rush.UI
             // Display judgement results in a drawable for objects that allow it.
             if (rushJudgedObject.DisplayResult)
             {
-                DrawableRushJudgement judgementDrawable = null;
+                DrawableJudgement judgementDrawable = null;
 
                 // TODO: showing judgements based on the judged object suggests that
                 //       this may want to be inside the object class as well.
                 switch (rushJudgedObject.HitObject)
                 {
                     case Sawblade sawblade:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
+                        judgementDrawable = new DrawableJudgement(result, rushJudgedObject)
                         {
                             Origin = Anchor.Centre,
                             Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
@@ -326,7 +326,7 @@ namespace osu.Game.Rulesets.Rush.UI
                         break;
 
                     case LanedHit lanedHit:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
+                        judgementDrawable = new DrawableJudgement(result, rushJudgedObject)
                         {
                             Origin = Anchor.Centre,
                             Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
