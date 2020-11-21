@@ -3,6 +3,8 @@
 
 using System;
 using System.Linq;
+using JetBrains.Annotations;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Rulesets.Objects;
@@ -19,14 +21,24 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private const float base_sprite_scale = 1f;
         private const float target_sprite_scale = 1.1f;
 
-        private readonly SkinnableDrawable mainPiece;
+        private SkinnableDrawable mainPiece;
 
-        private readonly Container<DrawableMiniBossTick> ticks;
+        private Container<DrawableMiniBossTick> ticks;
 
         public event Action<DrawableMiniBoss, double> Attacked;
 
-        public DrawableMiniBoss(MiniBoss hitObject)
+        public DrawableMiniBoss()
+            : this(null)
+        {
+        }
+
+        public DrawableMiniBoss([CanBeNull] MiniBoss hitObject = null)
             : base(hitObject)
+        {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Origin = Anchor.Centre;
 

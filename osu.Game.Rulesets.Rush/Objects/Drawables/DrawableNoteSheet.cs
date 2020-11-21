@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -25,14 +26,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public DrawableNoteSheetHead Head => headContainer.Child;
         public DrawableNoteSheetTail Tail => tailContainer.Child;
 
-        private readonly Container<DrawableNoteSheetHead> headContainer;
-        private readonly Container<DrawableNoteSheetTail> tailContainer;
+        private Container<DrawableNoteSheetHead> headContainer;
+        private Container<DrawableNoteSheetTail> tailContainer;
 
         public Drawable BodyDrawable => bodyContainer.Child.Drawable;
 
-        private readonly Container<SkinnableDrawable> bodyContainer;
+        private Container<SkinnableDrawable> bodyContainer;
 
-        private readonly Drawable holdCap;
+        private Drawable holdCap;
 
         private double? holdStartTime => !Head.IsHit ? (double?)null : HitObject.StartTime;
         private double? holdEndTime => !Judged ? (double?)null : (HitObject.EndTime + Result.TimeOffset);
@@ -56,8 +57,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayResult => false;
 
-        public DrawableNoteSheet(NoteSheet hitObject)
+        public DrawableNoteSheet()
+            : this(null)
+        {
+        }
+
+        public DrawableNoteSheet([CanBeNull] NoteSheet hitObject = null)
             : base(hitObject)
+        {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Height = NOTE_SHEET_SIZE;
 

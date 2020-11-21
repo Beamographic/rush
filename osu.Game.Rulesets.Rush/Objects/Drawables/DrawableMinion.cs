@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Rush.UI;
@@ -16,7 +17,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         protected virtual RushSkinComponents Component => RushSkinComponents.Minion;
 
-        private readonly Drawable minionPiece;
+        private Drawable minionPiece;
 
         private readonly Random random = new Random();
 
@@ -25,8 +26,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayExplosion => true;
 
-        public DrawableMinion(Minion hitObject)
+        public DrawableMinion()
+            : this(null)
+        {
+        }
+
+        public DrawableMinion([CanBeNull] Minion hitObject = null)
             : base(hitObject)
+        {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 

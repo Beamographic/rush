@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Linq;
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -22,7 +23,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         protected abstract RushSkinComponents Component { get; }
 
-        private readonly Drawable capPiece;
+        private Drawable capPiece;
 
         protected readonly DrawableNoteSheet NoteSheet;
 
@@ -31,10 +32,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayExplosion => true;
 
-        protected DrawableNoteSheetCap(DrawableNoteSheet noteSheet, TObject hitObject)
+        protected DrawableNoteSheetCap([CanBeNull] DrawableNoteSheet noteSheet, [CanBeNull] TObject hitObject)
             : base(hitObject)
         {
             NoteSheet = noteSheet;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
             Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 

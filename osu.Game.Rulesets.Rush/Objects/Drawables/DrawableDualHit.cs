@@ -1,6 +1,8 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -15,15 +17,25 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableDualHit : DrawableRushHitObject<DualHit>
     {
-        private readonly Container<DrawableDualHitPart> airHitContainer;
-        private readonly Container<DrawableDualHitPart> groundHitContainer;
-        private readonly SkinnableDrawable skinnedJoin;
+        private Container<DrawableDualHitPart> airHitContainer;
+        private Container<DrawableDualHitPart> groundHitContainer;
+        private SkinnableDrawable skinnedJoin;
 
         public DrawableDualHitPart Air => airHitContainer.Child;
         public DrawableDualHitPart Ground => groundHitContainer.Child;
 
-        public DrawableDualHit(DualHit hitObject)
+        public DrawableDualHit()
+            : this(null)
+        {
+        }
+
+        public DrawableDualHit([CanBeNull] DualHit hitObject = null)
             : base(hitObject)
+        {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             RelativeSizeAxes = Axes.Y;
             Height = 1f;

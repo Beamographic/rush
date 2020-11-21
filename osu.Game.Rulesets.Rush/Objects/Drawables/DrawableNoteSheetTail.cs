@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
 using osu.Framework.Bindables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -13,8 +14,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override RushSkinComponents Component => RushSkinComponents.NoteSheetTail;
 
-        public DrawableNoteSheetTail(DrawableNoteSheet noteSheet)
-            : base(noteSheet, noteSheet.HitObject.Tail)
+        public DrawableNoteSheetTail()
+            : this(null)
+        {
+        }
+
+        public DrawableNoteSheetTail([CanBeNull] DrawableNoteSheet noteSheet = null)
+            : base(noteSheet, noteSheet?.HitObject.Tail)
         {
         }
 

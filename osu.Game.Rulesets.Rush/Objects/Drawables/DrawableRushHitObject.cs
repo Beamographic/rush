@@ -89,6 +89,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private void load([NotNull] IScrollingInfo scrollingInfo)
         {
             Direction.BindTo(scrollingInfo.Direction);
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            // OnDirectionChanged must be called after all DRHO subclasses have been loaded
             Direction.BindValueChanged(OnDirectionChanged, true);
         }
 

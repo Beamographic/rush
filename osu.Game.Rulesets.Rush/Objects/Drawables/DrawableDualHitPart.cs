@@ -1,6 +1,8 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects.Drawables;
@@ -14,8 +16,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         public override bool DisplayExplosion => true;
 
-        public DrawableDualHitPart(DualHitPart hitObject)
+        public DrawableDualHitPart()
+            : this(null)
+        {
+        }
+
+        public DrawableDualHitPart([CanBeNull] DualHitPart hitObject = null)
             : base(hitObject)
+        {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 

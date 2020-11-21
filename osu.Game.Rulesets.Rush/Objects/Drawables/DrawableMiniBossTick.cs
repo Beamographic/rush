@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Scoring;
 
@@ -10,7 +11,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         public override bool DisplayResult => false;
 
-        public DrawableMiniBossTick(MiniBossTick hitObject)
+        public DrawableMiniBossTick()
+            : this(null)
+        {
+        }
+
+        public DrawableMiniBossTick([CanBeNull] MiniBossTick hitObject = null)
             : base(hitObject)
         {
         }

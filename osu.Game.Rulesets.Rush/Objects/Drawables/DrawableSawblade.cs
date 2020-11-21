@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -24,8 +25,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override bool ExpireOnHit => false;
         protected override bool ExpireOnMiss => false;
 
-        public DrawableSawblade(Sawblade hitObject)
+        public DrawableSawblade()
+            : this(null)
+        {
+        }
+
+        public DrawableSawblade([CanBeNull] Sawblade hitObject = null)
             : base(hitObject)
+        {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
@@ -37,11 +48,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
-                    Masking = hitObject.Lane == LanedHitLane.Ground,
+                    Masking = HitObject.Lane == LanedHitLane.Ground,
                     Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
                     {
                         Origin = Anchor.Centre,
-                        Anchor = hitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,
+                        Anchor = HitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,
                         RelativeSizeAxes = Axes.Both,
                         Size = new Vector2(0.8f)
                     }
