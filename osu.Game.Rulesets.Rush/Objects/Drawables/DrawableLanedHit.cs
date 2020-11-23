@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Diagnostics;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
@@ -36,9 +37,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public readonly IBindable<LanedHitLane> LaneBindable = new Bindable<LanedHitLane>();
 
+        protected void UpdateAccentColour() => AccentColour.Value = Judged && Result.Type == HitResult.Miss ? Color4.Gray : LaneAccentColour;
+
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
         {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            LaneBindable.ValueChanged += _ => UpdateAccentColour();
         }
 
         protected override void OnApply(HitObject hitObject)
@@ -112,12 +121,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.UpdateStateTransforms(state);
 
-            switch (state)
-            {
-                case ArmedState.Miss:
-                    AccentColour.Value = Color4.Gray;
-                    break;
-            }
+            UpdateAccentColour();
         }
     }
 }
