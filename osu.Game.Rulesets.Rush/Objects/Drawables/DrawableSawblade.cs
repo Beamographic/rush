@@ -19,8 +19,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
+        private Container mainContainer;
+
         // Sawblade uses the reverse lane colour to indicate which key the player should tap to avoid it
-        public override Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Ground ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
+        public override Color4 LaneAccentColour => Lane == LanedHitLane.Ground ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
         protected override bool ExpireOnHit => false;
         protected override bool ExpireOnMiss => false;
@@ -42,22 +44,26 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             Content.AddRange(new[]
             {
-                new Container
+                mainContainer = new Container
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
-                    Masking = HitObject.Lane == LanedHitLane.Ground,
                     Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
                     {
                         Origin = Anchor.Centre,
-                        Anchor = HitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,
                         RelativeSizeAxes = Axes.Both,
                         Size = new Vector2(0.8f)
                     }
                 }
             });
+
+            LaneBindable.BindValueChanged(e =>
+            {
+                mainContainer.Masking = e.NewValue == LanedHitLane.Ground;
+                mainContainer.Child.Anchor = e.NewValue == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre;
+            }, true);
         }
 
         // Sawblade doesn't handle user presses at all.

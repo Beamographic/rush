@@ -25,17 +25,21 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private Drawable capPiece;
 
-        protected readonly DrawableNoteSheet NoteSheet;
+        protected DrawableNoteSheet NoteSheet { get; private set; }
 
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
         public override bool DisplayExplosion => true;
 
-        protected DrawableNoteSheetCap([CanBeNull] DrawableNoteSheet noteSheet, [CanBeNull] TObject hitObject)
+        protected DrawableNoteSheetCap()
+            : this(null)
+        {
+        }
+
+        protected DrawableNoteSheetCap([CanBeNull] TObject hitObject = null)
             : base(hitObject)
         {
-            NoteSheet = noteSheet;
         }
 
         [BackgroundDependencyLoader]
@@ -50,6 +54,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 Anchor = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
             };
+        }
+
+        protected override void OnParentReceived(DrawableHitObject parent)
+        {
+            base.OnParentReceived(parent);
+
+            NoteSheet = (DrawableNoteSheet)parent;
         }
 
         public override Drawable CreateHitExplosion() => new NoteSheetHitExplosion(this);

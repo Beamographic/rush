@@ -1,6 +1,8 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -17,12 +19,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableDualHit : DrawableRushHitObject<DualHit>
     {
-        private Container<DrawableDualHitPart> airHitContainer;
-        private Container<DrawableDualHitPart> groundHitContainer;
+        private Container<DrawableDualHitPart> partContainer;
         private SkinnableDrawable skinnedJoin;
 
-        public DrawableDualHitPart Air => airHitContainer.Child;
-        public DrawableDualHitPart Ground => groundHitContainer.Child;
+        public IEnumerable<(LanedHitLane, bool)> LanesHit => partContainer.Select(part => (part.Lane, part.IsHit));
 
         public DrawableDualHit()
             : this(null)
@@ -43,8 +43,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Content.AddRange(new Drawable[]
             {
                 skinnedJoin = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitJoin), _ => new DualHitJoinPiece()),
-                airHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
-                groundHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
+                partContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
             });
         }
 
@@ -55,7 +54,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (hitObject)
             {
                 case DrawableDualHitPart part:
-                    (part.HitObject.Lane == LanedHitLane.Air ? airHitContainer : groundHitContainer).Add(part);
+                    partContainer.Add(part);
                     break;
             }
         }
@@ -63,8 +62,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            airHitContainer.Clear();
-            groundHitContainer.Clear();
+            partContainer.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
@@ -97,13 +95,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (AllJudged)
                 return false;
 
-            var airResult = !Air.AllJudged && Air.LaneMatchesAction(action) && Air.UpdateResult(true);
-            var groundResult = !Ground.AllJudged && Ground.LaneMatchesAction(action) && Ground.UpdateResult(true);
+            bool anyResults = false;
+            bool allResults = true;
 
-            if (Air.AllJudged && Ground.AllJudged)
-                return UpdateResult(true);
+            foreach (DrawableDualHitPart part in partContainer)
+            {
+                bool result = !part.AllJudged && part.LaneMatchesAction(action) && part.UpdateResult(true);
+                anyResults |= result;
+                allResults &= result;
+            }
 
-            return airResult || groundResult;
+            return allResults ? UpdateResult(true) : anyResults;
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
@@ -114,25 +116,21 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!userTriggered && timeOffset < 0)
                 return;
 
-            if (!Ground.AllJudged)
-                Ground.UpdateResult(false);
+            foreach (DrawableDualHitPart part in partContainer)
+            {
+                if (!part.AllJudged)
+                    part.UpdateResult(false);
+            }
 
-            if (!Air.AllJudged)
-                Air.UpdateResult(false);
-
-            if (Air.Result.Type == HitResult.None || Ground.Result.Type == HitResult.None)
+            if (partContainer.Any(part => part.Result.Type == HitResult.None))
                 return;
 
             // If we missed either, it's an overall miss.
             // If we hit both, the overall judgement is the lowest score of the two.
             ApplyResult(r =>
             {
-                var lowestResult = Air.Result.Type < Ground.Result.Type ? Air.Result.Type : Ground.Result.Type;
-
-                if (!Air.IsHit && !Ground.IsHit)
-                    r.Type = HitResult.Miss;
-                else
-                    r.Type = lowestResult;
+                var lowestResult = partContainer.Min(part => part.Result.Type);
+                r.Type = partContainer.All(part => !part.IsHit) ? HitResult.Miss : lowestResult;
             });
         }
 

@@ -51,6 +51,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.Update();
 
+            if (HitObject == null)
+                return;
+
             float fraction = (float)(HitObject.StartTime - Clock.CurrentTime) / 500f;
             minionPiece.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * (HitObject.Lane == LanedHitLane.Air ? 5f : 3f));
         }

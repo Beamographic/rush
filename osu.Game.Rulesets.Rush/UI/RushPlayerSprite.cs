@@ -272,9 +272,9 @@ namespace osu.Game.Rulesets.Rush.UI
                     Target = Target.WithAttackLane(minion.Lane, true);
                     break;
 
-                case DualHit dualHit:
+                case DualHit _:
                     DrawableDualHit ddh = (DrawableDualHit)judgedObject;
-                    Target = Target.WithAttackLane(dualHit.Air.Lane, ddh.Air.Result.IsHit).WithAttackLane(dualHit.Ground.Lane, ddh.Ground.Result.IsHit);
+                    Target = Target.WithAttackLanes(ddh.LanesHit);
                     break;
 
                 case MiniBoss _:
@@ -369,6 +369,14 @@ namespace osu.Game.Rulesets.Rush.UI
                 case LanedHitLane.Ground:
                     return attack ? current | PlayerTargetLane.AttackGround : current & ~PlayerTargetLane.AttackGround;
             }
+
+            return current;
+        }
+
+        public static PlayerTargetLane WithAttackLanes(this PlayerTargetLane current, IEnumerable<(LanedHitLane, bool)> lanedHits)
+        {
+            foreach (var pair in lanedHits)
+                current = current.WithAttackLane(pair.Item1, pair.Item2);
 
             return current;
         }

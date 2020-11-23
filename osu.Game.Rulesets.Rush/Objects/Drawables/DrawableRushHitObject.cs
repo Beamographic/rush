@@ -29,10 +29,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public static readonly Color4 GROUND_ACCENT_COLOUR = new Color4(1f, 0.4f, 1f, 1f);
         public static readonly float LIFETIME_END_DELAY = 500f;
 
-        protected readonly Container Content;
-        private readonly Container proxiedContent;
+        protected Container Content;
+        private Container proxiedContent;
 
-        private readonly Container nonProxiedContent;
+        private Container nonProxiedContent;
 
         protected readonly IBindable<ScrollingDirection> Direction = new Bindable<ScrollingDirection>();
 
@@ -74,6 +74,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected DrawableRushHitObject(RushHitObject hitObject)
             : base(hitObject)
         {
+        }
+
+        [BackgroundDependencyLoader(true)]
+        private void load([NotNull] IScrollingInfo scrollingInfo)
+        {
             AddRangeInternal(new[]
             {
                 nonProxiedContent = new Container
@@ -83,11 +88,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 },
                 proxiedContent = new ProxiedContentContainer { RelativeSizeAxes = Axes.Both }
             });
-        }
 
-        [BackgroundDependencyLoader(true)]
-        private void load([NotNull] IScrollingInfo scrollingInfo)
-        {
             Direction.BindTo(scrollingInfo.Direction);
         }
 
@@ -215,12 +216,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public abstract class DrawableRushHitObject<TObject> : DrawableRushHitObject
         where TObject : RushHitObject
     {
-        public new readonly TObject HitObject;
+        public new TObject HitObject => (TObject)base.HitObject;
 
         protected DrawableRushHitObject(TObject hitObject)
             : base(hitObject)
         {
-            HitObject = hitObject;
         }
     }
 }

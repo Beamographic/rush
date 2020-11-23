@@ -108,29 +108,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            headContainer.Clear();
-            tailContainer.Clear();
+            headContainer.Clear(false);
+            tailContainer.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
         {
             switch (hitObject)
             {
-                case NoteSheetHead _:
-                    return new DrawableNoteSheetHead(this)
-                    {
-                        Anchor = LeadingAnchor,
-                        Origin = Anchor.Centre,
-                        AccentColour = { BindTarget = AccentColour }
-                    };
+                case NoteSheetHead head:
+                    return new DrawableNoteSheetHead(head);
 
-                case NoteSheetTail _:
-                    return new DrawableNoteSheetTail(this)
-                    {
-                        Anchor = TrailingAnchor,
-                        Origin = Anchor.Centre,
-                        AccentColour = { BindTarget = AccentColour }
-                    };
+                case NoteSheetTail tail:
+                    return new DrawableNoteSheetTail(tail);
             }
 
             return base.CreateNestedHitObject(hitObject);
@@ -141,11 +131,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.OnDirectionChanged(e);
 
             Origin = LeadingAnchor;
+
             headContainer.Origin = headContainer.Anchor = LeadingAnchor;
             tailContainer.Origin = tailContainer.Anchor = TrailingAnchor;
 
             BodyDrawable.Origin = BodyDrawable.Anchor = TrailingAnchor;
             bodyContainer.Origin = bodyContainer.Anchor = TrailingAnchor;
+
+            Head.Anchor = LeadingAnchor;
+            Tail.Anchor = TrailingAnchor;
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)

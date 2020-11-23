@@ -17,8 +17,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        public DrawableNoteSheetHead([CanBeNull] DrawableNoteSheet noteSheet = null)
-            : base(noteSheet, noteSheet?.HitObject.Head)
+        public DrawableNoteSheetHead([CanBeNull] NoteSheetHead hitObject = null)
+            : base(hitObject)
         {
         }
 

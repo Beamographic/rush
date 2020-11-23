@@ -19,14 +19,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        public DrawableNoteSheetTail([CanBeNull] DrawableNoteSheet noteSheet = null)
-            : base(noteSheet, noteSheet?.HitObject.Tail)
+        public DrawableNoteSheetTail([CanBeNull] NoteSheetTail hitObject = null)
+            : base(hitObject)
         {
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            var overallMissed = NoteSheet.Result.Type == HitResult.Miss;
+            var overallMissed = NoteSheet?.Result.Type == HitResult.Miss;
 
             // Apply tail miss at its time when the entire note sheet has already been judged as missed.
             if (overallMissed && timeOffset >= 0)

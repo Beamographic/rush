@@ -5,11 +5,13 @@ using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Utils;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
@@ -123,7 +125,7 @@ namespace osu.Game.Rulesets.Rush.UI
                                                         Anchor = Anchor.TopLeft,
                                                         Origin = Anchor.Centre,
                                                         Size = new Vector2(HIT_TARGET_SIZE),
-                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.AirHitTarget), _ => new HitTarget()
+                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.AirHitTarget), _ => new HitTarget
                                                         {
                                                             RelativeSizeAxes = Axes.Both,
                                                         }, confineMode: ConfineMode.ScaleToFit),
@@ -133,7 +135,7 @@ namespace osu.Game.Rulesets.Rush.UI
                                                         Anchor = Anchor.BottomLeft,
                                                         Origin = Anchor.Centre,
                                                         Size = new Vector2(HIT_TARGET_SIZE),
-                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.GroundHitTarget), _ => new HitTarget()
+                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.GroundHitTarget), _ => new HitTarget
                                                         {
                                                             RelativeSizeAxes = Axes.Both,
                                                         }, confineMode: ConfineMode.ScaleToFit),
@@ -196,26 +198,44 @@ namespace osu.Game.Rulesets.Rush.UI
                     }
                 }
             };
+
+            NewResult += onNewResult;
         }
 
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
+            registerPool<DualHit, DrawableDualHit>(10, 100);
+            registerPool<DualHitPart, DrawableDualHitPart>(10, 100);
+            registerPool<Heart, DrawableHeart>(10, 100);
+            registerPool<MiniBoss, DrawableMiniBoss>(10, 100);
+            registerPool<MiniBossTick, DrawableMiniBossTick>(10, 100);
+            registerPool<Minion, DrawableMinion>(10, 100);
+            registerPool<NoteSheet, DrawableNoteSheet>(10, 100);
+            registerPool<NoteSheetHead, DrawableNoteSheetHead>(10, 100);
+            registerPool<NoteSheetTail, DrawableNoteSheetTail>(10, 100);
+            registerPool<Sawblade, DrawableSawblade>(10, 100);
+        }
+
+        private void registerPool<TObject, TDrawable>(int initialSize, int? maximumSize = null)
+            where TObject : HitObject
+            where TDrawable : DrawableHitObject, new() =>
+            RegisterPool<TObject, TDrawable>(CreatePool<TDrawable>(initialSize, maximumSize));
+
+        protected virtual DrawablePool<TDrawable> CreatePool<TDrawable>(int initialSize, int? maximumSize = null)
+            where TDrawable : DrawableHitObject, new() =>
+            new DrawableRushPool<TDrawable>(OnHitObjectLoaded, initialSize, maximumSize);
+
+        public void OnHitObjectLoaded(Drawable drawable)
+        {
+            if (drawable is DrawableRushHitObject drho)
+                proxiedHitObjects.Add(drho.CreateProxiedContent());
         }
 
         public override void Add(DrawableHitObject hitObject)
         {
-            hitObject.OnNewResult += onNewResult;
-
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
-
-            switch (hitObject)
-            {
-                case DrawableRushHitObject drho:
-                    proxiedHitObjects.Add(drho.CreateProxiedContent());
-                    break;
-            }
 
             base.Add(hitObject);
         }
@@ -224,8 +244,6 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             if (!base.Remove(hitObject))
                 return false;
-
-            hitObject.OnNewResult -= onNewResult;
 
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked -= onMiniBossAttacked;
@@ -358,11 +376,6 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private class ProxyContainer : LifetimeManagementContainer
         {
-            public new MarginPadding Padding
-            {
-                set => base.Padding = value;
-            }
-
             public void Add(Drawable proxy) => AddInternal(proxy);
         }
     }

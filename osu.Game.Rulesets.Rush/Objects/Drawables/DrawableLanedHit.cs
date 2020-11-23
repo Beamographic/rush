@@ -5,6 +5,7 @@ using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
+using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
@@ -17,10 +18,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
         where TLanedHit : LanedHit
     {
-        public virtual Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
+        public virtual Color4 LaneAccentColour => Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
         public Anchor LaneAnchor =>
-            HitObject.Lane switch
+            Lane switch
             {
                 LanedHitLane.Air => Direction.Value == ScrollingDirection.Left ? Anchor.TopLeft : Anchor.TopRight,
                 LanedHitLane.Ground => Direction.Value == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight,
@@ -31,11 +32,29 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public Anchor TrailingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
 
-        public LanedHitLane Lane => HitObject.Lane;
+        public LanedHitLane Lane => LaneBindable.Value;
+
+        public readonly IBindable<LanedHitLane> LaneBindable = new Bindable<LanedHitLane>();
 
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
         {
+        }
+
+        protected override void OnApply(HitObject hitObject)
+        {
+            base.OnApply(hitObject);
+
+            if (hitObject is LanedHit lanedHit)
+                LaneBindable.BindTo(lanedHit.LaneBindable);
+        }
+
+        protected override void OnFree(HitObject hitObject)
+        {
+            base.OnFree(hitObject);
+
+            if (hitObject is LanedHit lanedHit)
+                LaneBindable.UnbindFrom(lanedHit.LaneBindable);
         }
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)

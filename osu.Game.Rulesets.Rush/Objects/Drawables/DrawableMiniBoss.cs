@@ -68,7 +68,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            ticks.Clear();
+            ticks.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
@@ -85,6 +85,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void Update()
         {
             base.Update();
+
+            if (HitObject == null)
+                return;
 
             float fraction = (float)(HitObject.StartTime - Clock.CurrentTime) / 500f;
             mainPiece.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * 5f);
