@@ -22,9 +22,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private const double sawblade_probability = 0.1;
         private const double dualhit_probability = 0.2;
         private const double suggest_probability = 0.1;
-        private const double notesheet_start_probability = 0.5;
-        private const double notesheet_end_probability = 0.2;
-        private const double notesheet_dual_probability = 0.1;
+        private const double starsheet_start_probability = 0.5;
+        private const double starsheet_end_probability = 0.2;
+        private const double starsheet_dual_probability = 0.1;
         private const double kiai_multiplier = 4;
 
         private const double sawblade_same_lane_safety_time = 90;
@@ -48,7 +48,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private double previousSourceTime;
         private HitObjectFlags previousFlags;
 
-        private readonly Dictionary<LanedHitLane, NoteSheet> currentNoteSheets = new Dictionary<LanedHitLane, NoteSheet>();
+        private readonly Dictionary<LanedHitLane, StarSheet> currentStarSheets = new Dictionary<LanedHitLane, StarSheet>();
 
         public RushGeneratedBeatmapConverter(IBeatmap beatmap, Ruleset ruleset)
             : base(beatmap, ruleset)
@@ -76,7 +76,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             previousLane = null;
             previousSourcePosition = null;
             previousSourceTime = 0;
-            currentNoteSheets.Clear();
+            currentStarSheets.Clear();
         }
 
         // todo: Check for conversion types that should be supported (ie. Beatmap.HitObjects.Any(h => h is IHasXPosition))
@@ -127,23 +127,23 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             lane ??= laneForHitObject(original);
 
             // if we should end a sheet, try to
-            if (currentNoteSheets.Count > 0 && (flags.HasFlag(HitObjectFlags.ForceEndNotesheet) || flags.HasFlag(HitObjectFlags.SuggestEndNotesheet) && random.NextDouble() < notesheet_end_probability))
+            if (currentStarSheets.Count > 0 && (flags.HasFlag(HitObjectFlags.ForceEndStarsheet) || flags.HasFlag(HitObjectFlags.SuggestEndStarsheet) && random.NextDouble() < starsheet_end_probability))
             {
                 // TODO: for now we'll end both sheets where they are and ignore snapping logic
-                currentNoteSheets.Clear();
+                currentStarSheets.Clear();
             }
 
-            // if we should start a notesheet...
-            if (flags.HasFlag(HitObjectFlags.ForceStartNotesheet) || flags.HasFlag(HitObjectFlags.SuggestStartNotesheet) && random.NextDouble() < notesheet_start_probability)
+            // if we should start a starsheet...
+            if (flags.HasFlag(HitObjectFlags.ForceStartStarsheet) || flags.HasFlag(HitObjectFlags.SuggestStartStarsheet) && random.NextDouble() < starsheet_start_probability)
             {
                 // TODO: for now, end all existing sheets
-                currentNoteSheets.Clear();
+                currentStarSheets.Clear();
 
                 // use the suggested lane or randomly select one
                 LanedHitLane sheetLane = lane ?? (random.NextDouble() < 0.5 ? LanedHitLane.Ground : LanedHitLane.Air);
 
                 // create a sheet
-                NoteSheet sheet = currentNoteSheets[sheetLane] = createNoteSheet(original, sheetLane, original.Samples);
+                StarSheet sheet = currentStarSheets[sheetLane] = createStarSheet(original, sheetLane, original.Samples);
                 LanedHitLane otherLane = sheetLane.Opposite();
 
                 // FIXME: surely this is bad, altering the hit object after it's been returned???
@@ -185,10 +185,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     }
                 }
                 // otherwise we have a chance to make a dual sheet
-                else if (random.NextDouble() < notesheet_dual_probability)
+                else if (random.NextDouble() < starsheet_dual_probability)
                 {
-                    currentNoteSheets[otherLane] = createNoteSheet(original, otherLane, null);
-                    yield return currentNoteSheets[otherLane];
+                    currentStarSheets[otherLane] = createStarSheet(original, otherLane, null);
+                    yield return currentStarSheets[otherLane];
                 }
 
                 updatePrevious(sheetLane, flags);
@@ -196,11 +196,11 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             }
 
             // if either of the sheets are too long, end them where they are
-            if (currentNoteSheets.ContainsKey(LanedHitLane.Air) && currentNoteSheets[LanedHitLane.Air].Duration >= max_sheet_length)
-                currentNoteSheets.Remove(LanedHitLane.Air);
+            if (currentStarSheets.ContainsKey(LanedHitLane.Air) && currentStarSheets[LanedHitLane.Air].Duration >= max_sheet_length)
+                currentStarSheets.Remove(LanedHitLane.Air);
 
-            if (currentNoteSheets.ContainsKey(LanedHitLane.Ground) && currentNoteSheets[LanedHitLane.Ground].Duration >= max_sheet_length)
-                currentNoteSheets.Remove(LanedHitLane.Ground);
+            if (currentStarSheets.ContainsKey(LanedHitLane.Ground) && currentStarSheets[LanedHitLane.Ground].Duration >= max_sheet_length)
+                currentStarSheets.Remove(LanedHitLane.Ground);
 
             // if it's low probability, potentially skip this object
             if (flags.HasFlag(HitObjectFlags.LowProbability) && random.NextDouble() < skip_probability)
@@ -225,10 +225,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             // if we still haven't selected a lane at this point, pick a random one
             var finalLane = lane ?? (random.NextDouble() < 0.5 ? LanedHitLane.Ground : LanedHitLane.Air);
 
-            // check if a lane is blocked by a notesheet
-            LanedHitLane? blockedLane = currentNoteSheets.ContainsKey(LanedHitLane.Air)
+            // check if a lane is blocked by a starsheet
+            LanedHitLane? blockedLane = currentStarSheets.ContainsKey(LanedHitLane.Air)
                 ? LanedHitLane.Air
-                : currentNoteSheets.ContainsKey(LanedHitLane.Ground)
+                : currentStarSheets.ContainsKey(LanedHitLane.Ground)
                     ? LanedHitLane.Ground
                     : (LanedHitLane?)null;
 
@@ -323,8 +323,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 Samples = original.Samples
             };
 
-        private NoteSheet createNoteSheet(HitObject original, LanedHitLane lane, IList<HitSampleInfo> samples) =>
-            new NoteSheet
+        private StarSheet createStarSheet(HitObject original, LanedHitLane lane, IList<HitSampleInfo> samples) =>
+            new StarSheet
             {
                 StartTime = original.StartTime,
                 EndTime = original.GetEndTime(),
@@ -353,13 +353,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         {
             HitObjectFlags flags = HitObjectFlags.None;
 
-            // sliders should force a notesheet to start or end
+            // sliders should force a starsheet to start or end
             if (hitObject is IHasDuration hasDuration && hitObject is IHasDistance && hasDuration.Duration >= min_sheet_length)
             {
-                // if (currentNoteSheets.Count == 2)
-                //     flags |= HitObjectFlags.ForceStartNotesheet | HitObjectFlags.ForceEndNotesheet;
-                // else
-                flags |= HitObjectFlags.ForceStartNotesheet | HitObjectFlags.ForceEndNotesheet;
+                flags |= HitObjectFlags.ForceStartStarsheet | HitObjectFlags.ForceEndStarsheet;
             }
 
             // TimingControlPoint timingPoint = beatmap.ControlPointInfo.TimingPointAt(hitObject.StartTime);
@@ -383,21 +380,21 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.SuggestNotSameLane;
                 // flags |= HitObjectFlags.LowProbability;
                 flags |= HitObjectFlags.AllowSawbladeAdd;
-                flags |= HitObjectFlags.ForceEndNotesheet;
+                flags |= HitObjectFlags.ForceEndStarsheet;
             }
             else if (timeSeparation <= 125)
             {
                 // more than 120 bpm
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.SuggestNotSameLane;
                 flags |= HitObjectFlags.AllowSawbladeAdd;
-                flags |= HitObjectFlags.ForceEndNotesheet;
+                flags |= HitObjectFlags.ForceEndStarsheet;
             }
             else if (timeSeparation <= 135 && positionSeparation < 20)
             {
                 // more than 111 bpm stream
                 flags |= newCombo ? HitObjectFlags.ForceNotSameLane : HitObjectFlags.ForceSameLane;
                 flags |= HitObjectFlags.AllowSawbladeAdd;
-                flags |= HitObjectFlags.ForceEndNotesheet;
+                flags |= HitObjectFlags.ForceEndStarsheet;
             }
             else
             {
@@ -405,15 +402,15 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 // flags |= HitObjectFlags.LowProbability;
                 flags |= HitObjectFlags.AllowDoubleHit;
                 flags |= HitObjectFlags.AllowSawbladeAdd;
-                flags |= HitObjectFlags.ForceEndNotesheet;
+                flags |= HitObjectFlags.ForceEndStarsheet;
                 // flags |= HitObjectFlags.AllowSawbladeReplace; FIXME: for now, always add rather than replace
             }
 
             // new combo should never be low probability
             if (newCombo) flags &= ~HitObjectFlags.LowProbability;
 
-            // new combo should force note sheets to end
-            if (newCombo) flags |= HitObjectFlags.ForceEndNotesheet;
+            // new combo should force star sheets to end
+            if (newCombo) flags |= HitObjectFlags.ForceEndStarsheet;
 
             return flags;
         }
@@ -463,10 +460,10 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             /// </summary>
             AllowSawbladeAdd = 1 << 7,
 
-            ForceStartNotesheet = 1 << 8,
-            ForceEndNotesheet = 1 << 9,
-            SuggestStartNotesheet = 1 << 10,
-            SuggestEndNotesheet = 1 << 11,
+            ForceStartStarsheet = 1 << 8,
+            ForceEndStarsheet = 1 << 9,
+            SuggestStartStarsheet = 1 << 10,
+            SuggestEndStarsheet = 1 << 11,
 
             AllowSawbladeAddOrReplace = AllowSawbladeAdd | AllowSawbladeReplace,
         }

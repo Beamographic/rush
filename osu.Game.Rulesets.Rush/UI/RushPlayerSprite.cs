@@ -249,13 +249,13 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             switch (judgedObject.HitObject)
             {
-                case NoteSheetHead head:
+                case StarSheetHead head:
                     Target = Target.WithHoldLane(head.Lane, result.IsHit);
                     break;
 
-                case NoteSheetTail _:
-                case NoteSheet _:
-                    if (judgedObject.HitObject is NoteSheet && result.IsHit)
+                case StarSheetTail _:
+                case StarSheet _:
+                    if (judgedObject.HitObject is StarSheet && result.IsHit)
                         break;
 
                     var lanedHit = (LanedHit)judgedObject.HitObject;

@@ -8,27 +8,27 @@ using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableNoteSheetTail : DrawableNoteSheetCap<NoteSheetTail>
+    public class DrawableStarSheetTail : DrawableStarSheetCap<StarSheetTail>
     {
         internal const double RELEASE_WINDOW_LENIENCE = 3;
 
-        protected override RushSkinComponents Component => RushSkinComponents.NoteSheetTail;
+        protected override RushSkinComponents Component => RushSkinComponents.StarSheetTail;
 
-        public DrawableNoteSheetTail()
+        public DrawableStarSheetTail()
             : this(null)
         {
         }
 
-        public DrawableNoteSheetTail([CanBeNull] NoteSheetTail hitObject = null)
+        public DrawableStarSheetTail([CanBeNull] StarSheetTail hitObject = null)
             : base(hitObject)
         {
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            var overallMissed = NoteSheet?.Result.Type == HitResult.Miss;
+            var overallMissed = StarSheet?.Result.Type == HitResult.Miss;
 
-            // Apply tail miss at its time when the entire note sheet has already been judged as missed.
+            // Apply tail miss at its time when the entire starsheet has already been judged as missed.
             if (overallMissed && timeOffset >= 0)
             {
                 ApplyResult(r => r.Type = HitResult.Miss);

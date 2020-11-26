@@ -56,7 +56,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
-                    BorderThickness = DrawableNoteSheet.NOTE_SHEET_SIZE * 0.1f,
+                    BorderThickness = DrawableStarSheet.STAR_SHEET_SIZE * 0.1f,
                     BorderColour = Color4.White,
                     Masking = true,
                     Size = new Vector2(0.75f),

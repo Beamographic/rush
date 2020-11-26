@@ -218,9 +218,9 @@ namespace osu.Game.Rulesets.Rush.UI
             registerPool<MiniBoss, DrawableMiniBoss>(10, 100);
             registerPool<MiniBossTick, DrawableMiniBossTick>(10, 100);
             registerPool<Minion, DrawableMinion>(10, 100);
-            registerPool<NoteSheet, DrawableNoteSheet>(10, 100);
-            registerPool<NoteSheetHead, DrawableNoteSheetHead>(10, 100);
-            registerPool<NoteSheetTail, DrawableNoteSheetTail>(10, 100);
+            registerPool<StarSheet, DrawableStarSheet>(10, 100);
+            registerPool<StarSheetHead, DrawableStarSheetHead>(10, 100);
+            registerPool<StarSheetTail, DrawableStarSheetTail>(10, 100);
             registerPool<Sawblade, DrawableSawblade>(10, 100);
 
             var hitWindows = new RushHitWindows();

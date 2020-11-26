@@ -10,7 +10,7 @@ using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class NoteSheet : LanedHit, IHasDuration
+    public class StarSheet : LanedHit, IHasDuration
     {
         public double EndTime
         {
@@ -52,9 +52,9 @@ namespace osu.Game.Rulesets.Rush.Objects
             }
         }
 
-        public readonly NoteSheetHead Head = new NoteSheetHead();
+        public readonly StarSheetHead Head = new StarSheetHead();
 
-        public readonly NoteSheetTail Tail = new NoteSheetTail();
+        public readonly StarSheetTail Tail = new StarSheetTail();
 
         protected override void CreateNestedHitObjects(CancellationToken cancellationToken)
         {

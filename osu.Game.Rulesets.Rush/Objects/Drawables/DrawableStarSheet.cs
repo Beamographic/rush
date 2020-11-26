@@ -18,16 +18,16 @@ using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableNoteSheet : DrawableLanedHit<NoteSheet>
+    public class DrawableStarSheet : DrawableLanedHit<StarSheet>
     {
-        public const float NOTE_SHEET_SIZE = RushPlayfield.HIT_TARGET_SIZE * 0.75f;
+        public const float STAR_SHEET_SIZE = RushPlayfield.HIT_TARGET_SIZE * 0.75f;
         public const float REQUIRED_COMPLETION = 0.75f;
 
-        public DrawableNoteSheetHead Head => headContainer.Child;
-        public DrawableNoteSheetTail Tail => tailContainer.Child;
+        public DrawableStarSheetHead Head => headContainer.Child;
+        public DrawableStarSheetTail Tail => tailContainer.Child;
 
-        private Container<DrawableNoteSheetHead> headContainer;
-        private Container<DrawableNoteSheetTail> tailContainer;
+        private Container<DrawableStarSheetHead> headContainer;
+        private Container<DrawableStarSheetTail> tailContainer;
 
         public Drawable BodyDrawable => bodyContainer.Child.Drawable;
 
@@ -57,12 +57,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayResult => false;
 
-        public DrawableNoteSheet()
+        public DrawableStarSheet()
             : this(null)
         {
         }
 
-        public DrawableNoteSheet([CanBeNull] NoteSheet hitObject = null)
+        public DrawableStarSheet([CanBeNull] StarSheet hitObject = null)
             : base(hitObject)
         {
         }
@@ -70,7 +70,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [BackgroundDependencyLoader]
         private void load()
         {
-            Height = NOTE_SHEET_SIZE;
+            Height = STAR_SHEET_SIZE;
 
             Content.AddRange(new[]
             {
@@ -78,11 +78,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 {
                     Masking = true,
                     RelativeSizeAxes = Axes.Both,
-                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetBody), _ => new NoteSheetBodyPiece())
+                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.StarSheetBody), _ => new StarSheetBodyPiece())
                 },
-                headContainer = new Container<DrawableNoteSheetHead> { RelativeSizeAxes = Axes.Both },
-                tailContainer = new Container<DrawableNoteSheetTail> { RelativeSizeAxes = Axes.Both },
-                holdCap = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.NoteSheetHold), _ => new NoteSheetCapStarPiece())
+                headContainer = new Container<DrawableStarSheetHead> { RelativeSizeAxes = Axes.Both },
+                tailContainer = new Container<DrawableStarSheetTail> { RelativeSizeAxes = Axes.Both },
+                holdCap = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.StarSheetHold), _ => new StarSheetCapStarPiece())
                 {
                     Origin = Anchor.Centre,
                 }
@@ -95,11 +95,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             switch (hitObject)
             {
-                case DrawableNoteSheetHead head:
+                case DrawableStarSheetHead head:
                     headContainer.Child = head;
                     break;
 
-                case DrawableNoteSheetTail tail:
+                case DrawableStarSheetTail tail:
                     tailContainer.Child = tail;
                     break;
             }
@@ -116,11 +116,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             switch (hitObject)
             {
-                case NoteSheetHead head:
-                    return new DrawableNoteSheetHead(head);
+                case StarSheetHead head:
+                    return new DrawableStarSheetHead(head);
 
-                case NoteSheetTail tail:
-                    return new DrawableNoteSheetTail(tail);
+                case StarSheetTail tail:
+                    return new DrawableStarSheetTail(tail);
             }
 
             return base.CreateNestedHitObject(hitObject);
@@ -194,12 +194,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!LaneMatchesAction(action))
                 return;
 
-            // Check if there was also another action holding the same note sheet,
+            // Check if there was also another action holding the same starsheet,
             // and use it in replace to this released one if so. (support for switching keys during hold)
             if (ActionInputManager.PressedActions.Count(LaneMatchesAction) > 1)
                 return;
 
-            // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
+            // Starsheet not held yet (i.e. not our time yet) or already broken / finished.
             if (!Head.IsHit || Judged)
                 return;
 

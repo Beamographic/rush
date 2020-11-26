@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         public override IEnumerable<BeatmapStatistic> GetStatistics()
         {
             int minions = HitObjects.Count(s => s is Minion);
-            int notesheets = HitObjects.Count(s => s is NoteSheet);
+            int starsheets = HitObjects.Count(s => s is StarSheet);
             int sawblades = HitObjects.Count(s => s is Sawblade);
             int dualhits = HitObjects.Count(s => s is DualHit);
             int minibosses = HitObjects.Count(s => s is MiniBoss);
@@ -32,8 +32,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Notesheet Count",
-                    Content = notesheets.ToString(),
+                    Name = @"Starsheet Count",
+                    Content = starsheets.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Regular.Star),
                 },
                 new BeatmapStatistic

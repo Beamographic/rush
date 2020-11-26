@@ -18,26 +18,26 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public abstract class DrawableNoteSheetCap<TObject> : DrawableLanedHit<TObject>
+    public abstract class DrawableStarSheetCap<TObject> : DrawableLanedHit<TObject>
         where TObject : LanedHit
     {
         protected abstract RushSkinComponents Component { get; }
 
         private Drawable capPiece;
 
-        protected DrawableNoteSheet NoteSheet { get; private set; }
+        protected DrawableStarSheet StarSheet { get; private set; }
 
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
         public override bool DisplayExplosion => true;
 
-        protected DrawableNoteSheetCap()
+        protected DrawableStarSheetCap()
             : this(null)
         {
         }
 
-        protected DrawableNoteSheetCap([CanBeNull] TObject hitObject = null)
+        protected DrawableStarSheetCap([CanBeNull] TObject hitObject = null)
             : base(hitObject)
         {
         }
@@ -45,10 +45,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [BackgroundDependencyLoader]
         private void load()
         {
-            Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE * 1.1f);
+            Size = new Vector2(DrawableStarSheet.STAR_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
-            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new NoteSheetCapStarPiece())
+            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new StarSheetCapStarPiece())
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
@@ -60,10 +60,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.OnParentReceived(parent);
 
-            NoteSheet = (DrawableNoteSheet)parent;
+            StarSheet = (DrawableStarSheet)parent;
         }
 
-        public override Drawable CreateHitExplosion() => new NoteSheetHitExplosion(this);
+        public override Drawable CreateHitExplosion() => new StarSheetHitExplosion(this);
 
         protected override void UpdateInitialTransforms()
         {
@@ -85,26 +85,26 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        public override bool OnPressed(RushAction action) => false; // Handled by the note sheet object itself.
+        public override bool OnPressed(RushAction action) => false; // Handled by the starsheet object itself.
 
         public override void OnReleased(RushAction action)
         {
         }
 
-        private class NoteSheetHitExplosion : CompositeDrawable
+        private class StarSheetHitExplosion : CompositeDrawable
         {
-            private readonly NoteSheetCapStarPiece explosionStar;
+            private readonly StarSheetCapStarPiece explosionStar;
             private readonly Circle flashCircle;
 
-            public NoteSheetHitExplosion(DrawableNoteSheetCap<TObject> drawableNoteSheet)
+            public StarSheetHitExplosion(DrawableStarSheetCap<TObject> drawableStarSheet)
             {
-                Anchor = drawableNoteSheet.LaneAnchor;
+                Anchor = drawableStarSheet.LaneAnchor;
                 Origin = Anchor.Centre;
-                Size = drawableNoteSheet.Size;
+                Size = drawableStarSheet.Size;
 
                 InternalChildren = new Drawable[]
                 {
-                    explosionStar = new NoteSheetCapStarPiece(),
+                    explosionStar = new StarSheetCapStarPiece(),
                     flashCircle = new Circle
                     {
                         Anchor = Anchor.Centre,
@@ -112,7 +112,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         Alpha = 0.4f,
                         RelativeSizeAxes = Axes.Both,
                         Scale = new Vector2(0.5f),
-                        Colour = drawableNoteSheet.LaneAccentColour.Lighten(0.5f)
+                        Colour = drawableStarSheet.LaneAccentColour.Lighten(0.5f)
                     }
                 };
             }
