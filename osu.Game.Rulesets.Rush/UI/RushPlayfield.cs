@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -16,7 +19,9 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Scoring;
 using osu.Game.Rulesets.Rush.UI.Ground;
+using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
@@ -44,7 +49,9 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container halfPaddingOverEffectContainer;
         private readonly Container overPlayerEffectsContainer;
         private readonly ProxyContainer proxiedHitObjects;
-        private readonly JudgementContainer<DrawableJudgement> judgementContainer;
+        private readonly JudgementContainer<DrawableRushJudgement> judgementContainer;
+
+        private readonly IDictionary<HitResult, DrawablePool<DrawableRushJudgement>> poolDictionary = new Dictionary<HitResult, DrawablePool<DrawableRushJudgement>>();
 
         public RushPlayfield()
         {
@@ -148,7 +155,7 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                                             },
-                                            judgementContainer = new JudgementContainer<DrawableJudgement>
+                                            judgementContainer = new JudgementContainer<DrawableRushJudgement>
                                             {
                                                 Name = "Judgement",
                                                 RelativeSizeAxes = Axes.Both,
@@ -215,6 +222,17 @@ namespace osu.Game.Rulesets.Rush.UI
             registerPool<NoteSheetHead, DrawableNoteSheetHead>(10, 100);
             registerPool<NoteSheetTail, DrawableNoteSheetTail>(10, 100);
             registerPool<Sawblade, DrawableSawblade>(10, 100);
+
+            var hitWindows = new RushHitWindows();
+
+            foreach (var result in Enum.GetValues(typeof(HitResult)).OfType<HitResult>().Where(r => r > HitResult.None && hitWindows.IsHitResultAllowed(r)))
+                poolDictionary.Add(result, new DrawableJudgementPool(result, onJudgementLoaded));
+
+            AddRangeInternal(poolDictionary.Values);
+        }
+
+        private void onJudgementLoaded(DrawableRushJudgement drawableRushJudgement)
+        {
         }
 
         private void registerPool<TObject, TDrawable>(int initialSize, int? maximumSize = null)
@@ -300,6 +318,7 @@ namespace osu.Game.Rulesets.Rush.UI
             }
 
             // Display health point difference if the judgement result implies it.
+            // Given how infrequent this is, we'll handle pooling later
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
             if (pointDifference != 0)
@@ -324,49 +343,15 @@ namespace osu.Game.Rulesets.Rush.UI
                           .Expire(true);
             }
 
-            // Display judgement results in a drawable for objects that allow it.
-            if (rushJudgedObject.DisplayResult)
+            // Display judgement results in a drawable for objects that allow it (for now, only laned)
+            if (rushJudgedObject.DisplayResult && rushJudgedObject is IDrawableLanedHit)
             {
-                DrawableJudgement judgementDrawable = null;
-
-                // TODO: showing judgements based on the judged object suggests that
-                //       this may want to be inside the object class as well.
-                switch (rushJudgedObject.HitObject)
-                {
-                    case Sawblade sawblade:
-                        judgementDrawable = new DrawableJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
-                            Scale = new Vector2(1.2f)
-                        };
-
-                        break;
-
-                    case LanedHit lanedHit:
-                        judgementDrawable = new DrawableJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
-                            Scale = new Vector2(1.5f)
-                        };
-
-                        break;
-                }
-
-                if (judgementDrawable != null)
-                {
-                    judgementContainer.Add(judgementDrawable);
-
-                    judgementDrawable.ScaleTo(1f, judgement_time)
-                                     .Then()
-                                     .MoveToOffset(new Vector2(-JUDGEMENT_MOVEMENT, 0f), judgement_time, Easing.In)
-                                     .Expire(true);
-                }
+                DrawableRushJudgement judgementDrawable = poolDictionary[result.Type].Get(doj => doj.Apply(result, judgedObject));
+                judgementContainer.Add(judgementDrawable);
             }
         }
 
-        private float judgementPositionForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? -JUDGEMENT_OFFSET : judgementContainer.DrawHeight - JUDGEMENT_OFFSET;
+        public float JudgementPositionForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? -JUDGEMENT_OFFSET : judgementContainer.DrawHeight - JUDGEMENT_OFFSET;
 
         public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
 
@@ -377,6 +362,30 @@ namespace osu.Game.Rulesets.Rush.UI
         private class ProxyContainer : LifetimeManagementContainer
         {
             public void Add(Drawable proxy) => AddInternal(proxy);
+        }
+
+        private class DrawableJudgementPool : DrawablePool<DrawableRushJudgement>
+        {
+            private readonly HitResult result;
+            private readonly Action<DrawableRushJudgement> onLoaded;
+
+            public DrawableJudgementPool(HitResult result, Action<DrawableRushJudgement> onLoaded)
+                : base(10)
+            {
+                this.result = result;
+                this.onLoaded = onLoaded;
+            }
+
+            protected override DrawableRushJudgement CreateNewDrawable()
+            {
+                var judgement = base.CreateNewDrawable();
+
+                judgement.Apply(new JudgementResult(new HitObject(), new Judgement()) { Type = result }, null);
+
+                onLoaded?.Invoke(judgement);
+
+                return judgement;
+            }
         }
     }
 }
