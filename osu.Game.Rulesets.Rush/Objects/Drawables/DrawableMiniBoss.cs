@@ -99,7 +99,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (userTriggered && timeOffset < 0)
             {
                 var nextTick = ticks.FirstOrDefault(t => !t.IsHit);
-                nextTick?.TriggerResult(HitResult.Perfect);
+                nextTick?.TriggerResult(HitResult.SmallTickHit);
 
                 var numHits = ticks.Count(r => r.IsHit);
                 var completion = (float)numHits / HitObject.RequiredHits;
@@ -120,7 +120,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         continue;
                     }
 
-                    tick.TriggerResult(HitResult.Miss);
+                    tick.TriggerResult(HitResult.SmallTickMiss);
                 }
 
                 var hitResult = numHits == HitObject.RequiredHits

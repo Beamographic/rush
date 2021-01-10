@@ -9,7 +9,7 @@ namespace osu.Game.Rulesets.Rush.Objects
 {
     public class MiniBossTick : RushHitObject
     {
-        public override Judgement CreateJudgement() => new RushIgnoreJudgement();
+        public override Judgement CreateJudgement() => new RushTickJudgement();
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
     }
