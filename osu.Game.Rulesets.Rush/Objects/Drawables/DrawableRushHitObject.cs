@@ -111,21 +111,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        protected override void UpdateInitialTransforms()
-        {
-            base.UpdateInitialTransforms();
+        protected override void UpdateStartTimeStateTransforms() => UnproxyContent();
 
-            UnproxyContent();
-        }
-
-        protected override void UpdateStateTransforms(ArmedState state)
+        protected override void UpdateHitStateTransforms(ArmedState state)
         {
             switch (state)
             {
-                case ArmedState.Idle:
-                    UnproxyContent();
-                    break;
-
                 case ArmedState.Miss:
                     AccentColour.Value = Color4.Gray;
                     ProxyContent();

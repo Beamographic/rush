@@ -133,14 +133,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
         }
 
-        protected override void UpdateStateTransforms(ArmedState state)
+        protected override void UpdateHitStateTransforms(ArmedState state)
         {
             switch (state)
             {
-                case ArmedState.Idle:
-                    UnproxyContent();
-                    break;
-
                 case ArmedState.Miss:
                     this.FadeOut(300);
                     break;

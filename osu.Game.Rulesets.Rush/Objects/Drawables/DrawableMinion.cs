@@ -44,9 +44,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             minionPiece.Y = (float)(Math.Sin(fraction * 2 * Math.PI) * (HitObject.Lane == LanedHitLane.Air ? 5f : 3f));
         }
 
-        protected override void UpdateStateTransforms(ArmedState state)
+        protected override void UpdateHitStateTransforms(ArmedState state)
         {
-            base.UpdateStateTransforms(state);
+            base.UpdateHitStateTransforms(state);
 
             switch (state)
             {

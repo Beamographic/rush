@@ -30,16 +30,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        protected override void UpdateStateTransforms(ArmedState state)
+        protected override void UpdateHitStateTransforms(ArmedState state)
         {
             const float animation_time = 300f;
 
             switch (state)
             {
-                case ArmedState.Idle:
-                    UnproxyContent();
-                    break;
-
                 case ArmedState.Miss:
                     this.FadeOut(animation_time);
                     break;

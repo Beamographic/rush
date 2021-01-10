@@ -48,15 +48,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override Drawable CreateHitExplosion() => new NoteSheetHitExplosion(this);
 
-        protected override void UpdateInitialTransforms()
+        protected override void UpdateStartTimeStateTransforms()
         {
             Scale = Vector2.One;
             Alpha = 1f;
         }
 
-        protected override void UpdateStateTransforms(ArmedState state)
+        protected override void UpdateHitStateTransforms(ArmedState state)
         {
-            base.UpdateStateTransforms(state);
+            base.UpdateHitStateTransforms(state);
 
             if (state == ArmedState.Hit)
                 Hide();
