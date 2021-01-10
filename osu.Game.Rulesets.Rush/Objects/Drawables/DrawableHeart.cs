@@ -18,6 +18,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayResult => false;
         public override bool DisplayExplosion => true;
+        protected override float LifetimeEndDelay => 0f;
+        protected override bool ExpireOnHit => false;
 
         public DrawableHeart(Heart hitObject)
             : base(hitObject)

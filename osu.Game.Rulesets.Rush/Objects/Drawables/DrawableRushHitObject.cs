@@ -67,6 +67,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected virtual bool ExpireOnHit => true;
         protected virtual bool ExpireOnMiss => false;
+        protected virtual float LifetimeEndDelay => LIFETIME_END_DELAY;
 
         [Resolved]
         private DrawableRushRuleset drawableRuleset { get; set; }
@@ -122,7 +123,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     ProxyContent();
 
                     if (!ExpireOnMiss)
-                        LifetimeEnd = HitObject.GetEndTime() + LIFETIME_END_DELAY;
+                        LifetimeEnd = HitObject.GetEndTime() + LifetimeEndDelay;
 
                     break;
 
@@ -130,7 +131,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     ProxyContent();
 
                     if (!ExpireOnHit)
-                        LifetimeEnd = HitObject.GetEndTime() + LIFETIME_END_DELAY;
+                        LifetimeEnd = HitObject.GetEndTime() + LifetimeEndDelay;
 
                     break;
             }
