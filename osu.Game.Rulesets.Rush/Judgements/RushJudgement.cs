@@ -9,14 +9,6 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class RushJudgement : Judgement
     {
-        protected override int NumericResultFor(HitResult result) =>
-            result switch
-            {
-                HitResult.Great => 200,
-                HitResult.Perfect => 300,
-                _ => 0
-            };
-
         /// <summary>
         /// Retrieves the numeric health point increase of a <see cref="RushJudgementResult"/>.
         /// </summary>
@@ -31,6 +23,6 @@ namespace osu.Game.Rulesets.Rush.Judgements
         /// <returns>The numeric health points increase of <paramref name="result"/> and <paramref name="playerCollided"/>.</returns>
         protected virtual double HealthPointIncreaseFor(HitResult result, bool playerCollided) => 0.0;
 
-        protected sealed override double HealthIncreaseFor(HitResult result) => throw new NotSupportedException($"Use the rush-specific version: {nameof(HealthPointIncreaseFor)}");
+        protected sealed override double HealthIncreaseFor(HitResult result) => throw new NotSupportedException($"Use the Rush!-specific version: {nameof(HealthPointIncreaseFor)}");
     }
 }

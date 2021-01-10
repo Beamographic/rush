@@ -7,8 +7,7 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class HeartJudgement : RushJudgement
     {
-        public override bool AffectsCombo => false;
-        public override bool IsBonus => true;
+        public override HitResult MaxResult => HitResult.LargeBonus;
 
         protected override double HealthPointIncreaseFor(HitResult result, bool collided)
         {

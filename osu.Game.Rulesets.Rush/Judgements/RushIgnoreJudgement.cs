@@ -7,9 +7,7 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class RushIgnoreJudgement : RushJudgement
     {
-        public override bool AffectsCombo => false;
-
-        protected override int NumericResultFor(HitResult result) => 0;
+        public override HitResult MaxResult => HitResult.IgnoreHit;
 
         protected override double HealthPointIncreaseFor(HitResult result, bool playerCollided) => 0.0;
     }
