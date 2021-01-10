@@ -50,7 +50,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (userTriggered)
             {
                 if (result != HitResult.None)
-                    ApplyResult(r => r.Type = HitResult.Perfect);
+                    ApplyResult(r => r.Type = HitResult.LargeBonus);
 
                 return;
             }
@@ -65,7 +65,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             // else if we're still able to hit it, check if the player is in the correct lane
             else if (playfield.PlayerSprite.CollidesWith(HitObject))
-                ApplyResult(r => r.Type = HitResult.Perfect);
+                ApplyResult(r => r.Type = HitResult.LargeBonus);
         }
 
         private class HeartHitExplosion : HeartPiece
