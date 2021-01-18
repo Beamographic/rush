@@ -14,12 +14,11 @@
     <PackageReference Include="NUnit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\osu.Game.Rulesets.Rush\osu.Game.Rulesets.Rush.csproj" />
-  </ItemGroup>
   <PropertyGroup Label="Project">
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>osu.Game.Rulesets.Rush.Tests</RootNamespace>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\osu.Game.Rulesets.Rush\osu.Game.Rulesets.Rush.csproj" />
+  </ItemGroup>
 </Project>
