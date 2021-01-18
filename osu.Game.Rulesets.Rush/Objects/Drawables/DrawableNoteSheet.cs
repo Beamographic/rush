@@ -205,18 +205,25 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             base.Update();
 
-            if (Head.IsHit)
+            if (Head.IsHit && !Tail.IsHit)
+            {
+                holdCap.X = DrawWidth * (float)Progress;
+                holdCap.Y = DrawHeight / 2f;
                 holdCap.Show();
+            }
             else
                 holdCap.Hide();
 
-            holdCap.X = DrawWidth * (float)Progress;
-            holdCap.Y = DrawHeight / 2f;
-
-            // Keep the body piece width in-line with ours and
-            // start cutting its container's width as we hold it.
-            BodyDrawable.Width = DrawWidth;
-            bodyContainer.Width = 1 - (float)Progress;
+            if (!IsHit)
+            {
+                // Keep the body piece width in-line with ours and
+                // start cutting its container's width as we hold it.
+                BodyDrawable.Width = DrawWidth;
+                bodyContainer.Width = 1 - (float)Progress;
+                bodyContainer.Show();
+            }
+            else
+                bodyContainer.Hide();
         }
 
         public override void PlaySamples()

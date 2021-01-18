@@ -34,7 +34,7 @@ namespace osu.Game.Rulesets.Rush.Objects
                 AddNested(new MiniBossTick());
         }
 
-        public override Judgement CreateJudgement() => new RushMiniBossJudgement();
+        public override Judgement CreateJudgement() => new RushJudgement();
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
     }

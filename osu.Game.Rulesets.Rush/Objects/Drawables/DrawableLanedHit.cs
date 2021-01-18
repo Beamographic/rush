@@ -82,16 +82,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             ApplyResult(r => r.Type = result);
         }
 
-        protected override void UpdateInitialTransforms()
+        protected override void UpdateStartTimeStateTransforms()
         {
-            base.UpdateInitialTransforms();
+            base.UpdateStartTimeStateTransforms();
 
             AccentColour.Value = LaneAccentColour;
         }
 
-        protected override void UpdateStateTransforms(ArmedState state)
+        protected override void UpdateHitStateTransforms(ArmedState state)
         {
-            base.UpdateStateTransforms(state);
+            base.UpdateHitStateTransforms(state);
 
             switch (state)
             {

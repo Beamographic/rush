@@ -316,7 +316,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 switch (rushJudgedObject.HitObject)
                 {
                     case Sawblade sawblade:
-                        judgementDrawable = new DrawableJudgement(result, rushJudgedObject)
+                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
                         {
                             Origin = Anchor.Centre,
                             Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
@@ -326,7 +326,7 @@ namespace osu.Game.Rulesets.Rush.UI
                         break;
 
                     case LanedHit lanedHit:
-                        judgementDrawable = new DrawableJudgement(result, rushJudgedObject)
+                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
                         {
                             Origin = Anchor.Centre,
                             Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
@@ -337,14 +337,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 }
 
                 if (judgementDrawable != null)
-                {
                     judgementContainer.Add(judgementDrawable);
-
-                    judgementDrawable.ScaleTo(1f, judgement_time)
-                                     .Then()
-                                     .MoveToOffset(new Vector2(-JUDGEMENT_MOVEMENT, 0f), judgement_time, Easing.In)
-                                     .Expire(true);
-                }
             }
         }
 
