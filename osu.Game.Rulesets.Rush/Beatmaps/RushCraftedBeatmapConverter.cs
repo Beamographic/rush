@@ -56,9 +56,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
     /// 1) The "finish" hitsound will be converted to hearts rather than sawblades.
     ///
     /// Sliders:
-    /// 1) Sliders that start in section A or C are by default "air" or "ground" notesheets respectively
-    /// 2) Sliders that start in section B will add equal length notesheets to both air and ground
-    /// 3) The slider head indicates in which lane the notesheet will appear
+    /// 1) Sliders that start in section A or C are by default "air" or "ground" starsheets respectively
+    /// 2) Sliders that start in section B will add equal length starsheets to both air and ground
+    /// 3) The slider head indicates in which lane the starsheet will appear
     /// 4) Slider distance and repeats are ignored, only the final end time is used
     ///
     /// Spinners:
@@ -97,11 +97,11 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
                     break;
 
-                case HitObjectType.DualNoteSheet:
-                case HitObjectType.NoteSheet:
-                    if (hitObjectType == HitObjectType.DualNoteSheet || lane == LanedHitLane.Air)
+                case HitObjectType.DualStarSheet:
+                case HitObjectType.StarSheet:
+                    if (hitObjectType == HitObjectType.DualStarSheet || lane == LanedHitLane.Air)
                     {
-                        yield return new NoteSheet
+                        yield return new StarSheet
                         {
                             StartTime = original.StartTime,
                             EndTime = original.GetEndTime(),
@@ -110,9 +110,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                         };
                     }
 
-                    if (hitObjectType == HitObjectType.DualNoteSheet || lane == LanedHitLane.Ground)
+                    if (hitObjectType == HitObjectType.DualStarSheet || lane == LanedHitLane.Ground)
                     {
-                        yield return new NoteSheet
+                        yield return new StarSheet
                         {
                             StartTime = original.StartTime,
                             EndTime = original.GetEndTime(),
@@ -193,14 +193,14 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             {
                 if (position.Y >= horizontal_top && position.Y < horizontal_bottom)
                 {
-                    hitObjectType = hitObject is IHasDuration ? HitObjectType.DualNoteSheet : HitObjectType.DualHit;
+                    hitObjectType = hitObject is IHasDuration ? HitObjectType.DualStarSheet : HitObjectType.DualHit;
                     return true;
                 }
 
                 lane = position.Y < horizontal_top ? LanedHitLane.Air : LanedHitLane.Ground;
 
                 if (hitObject is IHasDuration)
-                    hitObjectType = HitObjectType.NoteSheet;
+                    hitObjectType = HitObjectType.StarSheet;
                 else
                 {
                     hitObjectType = HitObjectType.Minion;
@@ -230,8 +230,8 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private enum HitObjectType
         {
             Minion,
-            NoteSheet,
-            DualNoteSheet, // helper to save on double sliders
+            StarSheet,
+            DualStarSheet, // helper to save on double sliders
             DualHit,
             MiniBoss,
             Sawblade,

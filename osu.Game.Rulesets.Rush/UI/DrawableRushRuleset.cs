@@ -51,8 +51,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 case MiniBoss miniBoss:
                     return new DrawableMiniBoss(miniBoss);
 
-                case NoteSheet noteSheet:
-                    return new DrawableNoteSheet(noteSheet);
+                case StarSheet starSheet:
+                    return new DrawableStarSheet(starSheet);
 
                 case DualHit dualHit:
                     return new DrawableDualHit(dualHit);

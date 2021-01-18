@@ -14,7 +14,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class NoteSheetBodyPiece : CompositeDrawable
+    public class StarSheetBodyPiece : CompositeDrawable
     {
         private const float border_size = 1f / 8f;
 
@@ -23,7 +23,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 
         public readonly Bindable<Color4> AccentColour = new Bindable<Color4>();
 
-        public NoteSheetBodyPiece()
+        public StarSheetBodyPiece()
         {
             RelativeSizeAxes = Axes.Y;
 

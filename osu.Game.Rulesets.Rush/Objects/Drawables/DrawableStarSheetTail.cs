@@ -7,29 +7,29 @@ using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableNoteSheetTail : DrawableNoteSheetCap<NoteSheetTail>
+    public class DrawableStarSheetTail : DrawableStarSheetCap<StarSheetTail>
     {
         internal const double RELEASE_WINDOW_LENIENCE = 3;
 
-        protected override RushSkinComponents Component => RushSkinComponents.NoteSheetTail;
+        protected override RushSkinComponents Component => RushSkinComponents.StarSheetTail;
 
-        public DrawableNoteSheetTail(DrawableNoteSheet noteSheet)
-            : base(noteSheet, noteSheet.HitObject.Tail)
+        public DrawableStarSheetTail(DrawableStarSheet starSheet)
+            : base(starSheet, starSheet.HitObject.Tail)
         {
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            var overallMissed = NoteSheet.Result.Type == HitResult.Miss;
+            var overallMissed = StarSheet.Result.Type == HitResult.Miss;
 
-            // Apply tail miss at its time when the entire note sheet has already been judged as missed.
+            // Apply tail miss at its time when the entire star sheet has already been judged as missed.
             if (overallMissed && timeOffset >= 0)
             {
                 ApplyResult(r => r.Type = HitResult.Miss);
                 return;
             }
 
-            // for now let's give the player an automatic perfect if they hold the note (like in a certain other rhythm game)
+            // for now let's give the player an automatic perfect if they hold the action (like in a certain other rhythm game)
             if (!userTriggered)
             {
                 if (timeOffset >= 0)
