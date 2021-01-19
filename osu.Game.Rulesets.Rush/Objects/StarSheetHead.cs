@@ -6,7 +6,7 @@ using osu.Game.Rulesets.Judgements;
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class NoteSheetHead : LanedHit
+    public class StarSheetHead : LanedHit
     {
         public override Judgement CreateJudgement() => new RushJudgement();
     }

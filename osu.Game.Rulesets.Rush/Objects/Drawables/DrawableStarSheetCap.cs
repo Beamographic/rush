@@ -17,28 +17,28 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public abstract class DrawableNoteSheetCap<TObject> : DrawableLanedHit<TObject>
+    public abstract class DrawableStarSheetCap<TObject> : DrawableLanedHit<TObject>
         where TObject : LanedHit
     {
         protected abstract RushSkinComponents Component { get; }
 
         private readonly Drawable capPiece;
 
-        protected readonly DrawableNoteSheet NoteSheet;
+        protected readonly DrawableStarSheet StarSheet;
 
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
         public override bool DisplayExplosion => true;
 
-        protected DrawableNoteSheetCap(DrawableNoteSheet noteSheet, TObject hitObject)
+        protected DrawableStarSheetCap(DrawableStarSheet starSheet, TObject hitObject)
             : base(hitObject)
         {
-            NoteSheet = noteSheet;
-            Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE * 1.1f);
+            StarSheet = starSheet;
+            Size = new Vector2(DrawableStarSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
-            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new NoteSheetCapStarPiece())
+            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new StarSheetCapStarPiece())
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
@@ -46,7 +46,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             };
         }
 
-        public override Drawable CreateHitExplosion() => new NoteSheetHitExplosion(this);
+        public override Drawable CreateHitExplosion() => new StarSheetHitExplosion(this);
 
         protected override void UpdateStartTimeStateTransforms()
         {
@@ -68,26 +68,26 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        public override bool OnPressed(RushAction action) => false; // Handled by the note sheet object itself.
+        public override bool OnPressed(RushAction action) => false; // Handled by the star sheet object itself.
 
         public override void OnReleased(RushAction action)
         {
         }
 
-        private class NoteSheetHitExplosion : CompositeDrawable
+        private class StarSheetHitExplosion : CompositeDrawable
         {
-            private readonly NoteSheetCapStarPiece explosionStar;
+            private readonly StarSheetCapStarPiece explosionStar;
             private readonly Circle flashCircle;
 
-            public NoteSheetHitExplosion(DrawableNoteSheetCap<TObject> drawableNoteSheet)
+            public StarSheetHitExplosion(DrawableStarSheetCap<TObject> drawableStarSheet)
             {
-                Anchor = drawableNoteSheet.LaneAnchor;
+                Anchor = drawableStarSheet.LaneAnchor;
                 Origin = Anchor.Centre;
-                Size = drawableNoteSheet.Size;
+                Size = drawableStarSheet.Size;
 
                 InternalChildren = new Drawable[]
                 {
-                    explosionStar = new NoteSheetCapStarPiece(),
+                    explosionStar = new StarSheetCapStarPiece(),
                     flashCircle = new Circle
                     {
                         Anchor = Anchor.Centre,
@@ -95,7 +95,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         Alpha = 0.4f,
                         RelativeSizeAxes = Axes.Both,
                         Scale = new Vector2(0.5f),
-                        Colour = drawableNoteSheet.LaneAccentColour.Lighten(0.5f)
+                        Colour = drawableStarSheet.LaneAccentColour.Lighten(0.5f)
                     }
                 };
             }

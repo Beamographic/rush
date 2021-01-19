@@ -27,7 +27,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Beatmaps
                 EndTime = hitObject.GetEndTime(),
                 Lane = (hitObject as LanedHit)?.Lane,
                 IsMinion = hitObject is Minion,
-                IsNoteSheet = hitObject is NoteSheet,
+                IsStarSheet = hitObject is StarSheet,
                 IsMiniBoss = hitObject is MiniBoss,
                 IsSawblade = hitObject is Sawblade,
                 HasHeart = hitObject is Heart /*|| (hitObject is LanedHit)?.HasHeart*/,
@@ -50,7 +50,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Beatmaps
         public double EndTime;
         public LanedHitLane? Lane;
         public bool IsMinion;
-        public bool IsNoteSheet;
+        public bool IsStarSheet;
         public bool IsMiniBoss;
         public bool IsSawblade;
         public bool IsHammer;
@@ -62,7 +62,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Beatmaps
                && Precision.AlmostEquals(EndTime, other.EndTime, conversion_lenience)
                && Lane == other.Lane
                && IsMinion == other.IsMinion
-               && IsNoteSheet == other.IsNoteSheet
+               && IsStarSheet == other.IsStarSheet
                && IsSawblade == other.IsSawblade
                && IsHammer == other.IsHammer
                && HasHeart == other.HasHeart

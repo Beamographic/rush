@@ -17,7 +17,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class NoteSheetCapStarPiece : CompositeDrawable, IHasAccentColour
+    public class StarSheetCapStarPiece : CompositeDrawable, IHasAccentColour
     {
         private const double rotation_time = 1000;
 
@@ -33,11 +33,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
             set => AccentColour.Value = value;
         }
 
-        public NoteSheetCapStarPiece()
+        public StarSheetCapStarPiece()
         {
             Origin = Anchor.Centre;
             Anchor = Anchor.Centre;
-            Size = new Vector2(DrawableNoteSheet.NOTE_SHEET_SIZE);
+            Size = new Vector2(DrawableStarSheet.NOTE_SHEET_SIZE);
 
             AddRangeInternal(new Drawable[]
             {
@@ -53,7 +53,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
-                    BorderThickness = DrawableNoteSheet.NOTE_SHEET_SIZE * 0.1f,
+                    BorderThickness = DrawableStarSheet.NOTE_SHEET_SIZE * 0.1f,
                     BorderColour = Color4.White,
                     Masking = true,
                     Children = new Drawable[]

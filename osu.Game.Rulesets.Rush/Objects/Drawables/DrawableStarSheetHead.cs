@@ -7,12 +7,12 @@ using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableNoteSheetHead : DrawableNoteSheetCap<NoteSheetHead>
+    public class DrawableStarSheetHead : DrawableStarSheetCap<StarSheetHead>
     {
-        protected override RushSkinComponents Component => RushSkinComponents.NoteSheetHead;
+        protected override RushSkinComponents Component => RushSkinComponents.StarSheetHead;
 
-        public DrawableNoteSheetHead(DrawableNoteSheet noteSheet)
-            : base(noteSheet, noteSheet.HitObject.Head)
+        public DrawableStarSheetHead(DrawableStarSheet starSheet)
+            : base(starSheet, starSheet.HitObject.Head)
         {
         }
 

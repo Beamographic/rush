@@ -6,11 +6,11 @@ namespace osu.Game.Rulesets.Rush
     public enum RushSkinComponents
     {
         Minion,
-        NoteSheetHead,
-        NoteSheetTail,
-        NoteSheetBody,
-        NoteSheetHold,
-        NoteSheetExplosion,
+        StarSheetHead,
+        StarSheetTail,
+        StarSheetBody,
+        StarSheetHold,
+        StarSheetExplosion,
         Miniboss,
         Sawblade,
         DualHitPart,
