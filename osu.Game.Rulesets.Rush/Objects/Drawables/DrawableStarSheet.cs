@@ -143,9 +143,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!Head.IsHit)
             {
                 // Head missed, judge as overall missed.
-                if (Head.Result.Type == HitResult.Miss)
+                if (Head.Result.Type == Head.Result.Judgement.MinResult)
                 {
-                    ApplyResult(r => r.Type = HitResult.Miss);
+                    ApplyResult(r => r.Type = r.Judgement.MinResult);
                     return;
                 }
 
@@ -158,7 +158,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             // Released before required progress for completion, judge as overall missed.
             if (userTriggered && Progress < REQUIRED_COMPLETION)
             {
-                ApplyResult(r => r.Type = HitResult.Miss);
+                ApplyResult(r => r.Type = r.Judgement.MinResult);
                 return;
             }
 

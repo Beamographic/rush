@@ -11,7 +11,7 @@ namespace osu.Game.Rulesets.Rush.Judgements
 
         protected override double HealthPointIncreaseFor(HitResult result, bool collided)
         {
-            if (result <= HitResult.Miss && !collided)
+            if (result == MinResult && !collided)
                 return 0.0;
 
             return 50.0;
