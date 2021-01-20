@@ -20,12 +20,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            var overallMissed = StarSheet.Result.Type == HitResult.Miss;
+            var overallMissed = StarSheet.Result.Type == StarSheet.Result.Judgement.MinResult;
 
             // Apply tail miss at its time when the entire star sheet has already been judged as missed.
             if (overallMissed && timeOffset >= 0)
             {
-                ApplyResult(r => r.Type = HitResult.Miss);
+                ApplyResult(r => r.Type = r.Judgement.MinResult);
                 return;
             }
 
@@ -33,7 +33,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!userTriggered)
             {
                 if (timeOffset >= 0)
-                    ApplyResult(r => r.Type = HitResult.Perfect);
+                    ApplyResult(r => r.Type = r.Judgement.MaxResult);
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return;
 
             // ...and an automatic perfect if they release within any "hit" judged period
-            ApplyResult(r => r.Type = HitResult.Perfect);
+            ApplyResult(r => r.Type = r.Judgement.MaxResult);
         }
 
         // FIXME: should logically be TrailingAnchor, not sure why it renders incorrectly

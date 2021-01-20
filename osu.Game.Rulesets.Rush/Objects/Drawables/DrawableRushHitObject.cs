@@ -16,7 +16,6 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.UI;
-using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
 using osuTK.Graphics;
@@ -102,8 +101,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
             if (timeOffset >= 0)
-                // todo: implement judgement logic
-                ApplyResult(r => r.Type = HitResult.Perfect);
+                ApplyResult(r => r.Type = r.Judgement.MaxResult);
         }
 
         public virtual bool OnPressed(RushAction action) => false;

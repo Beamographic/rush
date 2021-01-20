@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
             else if (!HitObject.HitWindows.CanBeHit(timeOffset))
             {
-                ApplyResult(r => r.Type = HitResult.Miss);
+                ApplyResult(r => r.Type = r.Judgement.MinResult);
             }
         }
 

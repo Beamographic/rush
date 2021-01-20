@@ -12,10 +12,6 @@ namespace osu.Game.Rulesets.Rush.Judgements
     public class CollisionDamagingJudgement : RushJudgement
     {
         protected override double HealthPointIncreaseFor(HitResult result, bool playerCollided) =>
-            result switch
-            {
-                HitResult.Miss when playerCollided => -10.0,
-                _ => 0.0,
-            };
+            result == MinResult && playerCollided ? -10.0 : 0.0;
     }
 }

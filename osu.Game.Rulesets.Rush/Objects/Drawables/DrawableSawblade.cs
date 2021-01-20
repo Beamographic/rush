@@ -62,13 +62,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             {
                 case HitResult.None:
                     // if we've reached the trailing "none", we successfully dodged the sawblade
-                    ApplyResult(r => r.Type = HitResult.Perfect);
+                    ApplyResult(r => r.Type = r.Judgement.MaxResult);
                     break;
 
                 case HitResult.Miss:
                     // sawblades only hurt the player if they collide within the trailing "miss" hit window
                     if (playfield.PlayerSprite.CollidesWith(HitObject))
-                        ApplyResult(r => r.Type = HitResult.Miss);
+                        ApplyResult(r => r.Type = r.Judgement.MinResult);
 
                     break;
             }
