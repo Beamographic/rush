@@ -116,11 +116,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             ApplyResult(r =>
             {
                 var lowestResult = Air.Result.Type < Ground.Result.Type ? Air.Result.Type : Ground.Result.Type;
-
-                if (!Air.IsHit && !Ground.IsHit)
-                    r.Type = r.Judgement.MinResult;
-                else
-                    r.Type = lowestResult;
+                r.Type = !Air.IsHit && !Ground.IsHit ? r.Judgement.MinResult : lowestResult;
             });
         }
 

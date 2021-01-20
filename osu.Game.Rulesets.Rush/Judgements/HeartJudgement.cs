@@ -9,12 +9,7 @@ namespace osu.Game.Rulesets.Rush.Judgements
     {
         public override HitResult MaxResult => HitResult.LargeBonus;
 
-        protected override double HealthPointIncreaseFor(HitResult result, bool collided)
-        {
-            if (result == MinResult && !collided)
-                return 0.0;
-
-            return 50.0;
-        }
+        protected override double HealthPointIncreaseFor(HitResult result, bool collided) =>
+            result == MinResult && !collided ? 0.0 : 50.0;
     }
 }

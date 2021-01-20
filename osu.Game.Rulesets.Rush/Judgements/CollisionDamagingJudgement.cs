@@ -11,12 +11,7 @@ namespace osu.Game.Rulesets.Rush.Judgements
     /// </summary>
     public class CollisionDamagingJudgement : RushJudgement
     {
-        protected override double HealthPointIncreaseFor(HitResult result, bool playerCollided)
-        {
-            if (result == MinResult && playerCollided)
-                return -10.0;
-
-            return 0.0;
-        }
+        protected override double HealthPointIncreaseFor(HitResult result, bool playerCollided) =>
+            result == MinResult && playerCollided ? -10.0 : 0.0;
     }
 }
