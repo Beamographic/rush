@@ -25,6 +25,6 @@ namespace osu.Game.Rulesets.Rush
 
         protected override IEnumerable<DifficultyHitObject> CreateDifficultyHitObjects(IBeatmap beatmap, double clockRate) => Enumerable.Empty<DifficultyHitObject>();
 
-        protected override Skill[] CreateSkills(IBeatmap beatmap) => new Skill[0];
+        protected override Skill[] CreateSkills(IBeatmap beatmap, Mod[] mods) => new Skill[0];
     }
 }
