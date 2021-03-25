@@ -16,6 +16,7 @@ using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Scoring;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
@@ -38,6 +39,8 @@ namespace osu.Game.Rulesets.Rush.UI
         protected override Playfield CreatePlayfield() => new RushPlayfield();
 
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new RushFramedReplayInputHandler(replay);
+
+        protected override ReplayRecorder CreateReplayRecorder(Score score) => new RushReplayRecorder(score);
 
         public new RushPlayfield Playfield => (RushPlayfield)base.Playfield;
 
