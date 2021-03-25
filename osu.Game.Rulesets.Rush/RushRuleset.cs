@@ -10,8 +10,10 @@ using osu.Framework.Input.Bindings;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Replays.Types;
 using osu.Game.Rulesets.Rush.Beatmaps;
 using osu.Game.Rulesets.Rush.Mods;
+using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.Rush.Scoring;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
@@ -85,6 +87,8 @@ namespace osu.Game.Rulesets.Rush
             new KeyBinding(InputKey.MouseRight, RushAction.GroundPrimary),
             new KeyBinding(InputKey.MouseLeft, RushAction.AirPrimary),
         };
+
+        public override IConvertibleReplayFrame CreateConvertibleReplayFrame() => new RushReplayFrame();
 
         public override Drawable CreateIcon() => new RushIcon();
 
