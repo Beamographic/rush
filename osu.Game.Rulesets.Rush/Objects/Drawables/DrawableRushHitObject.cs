@@ -198,12 +198,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public abstract class DrawableRushHitObject<TObject> : DrawableRushHitObject
         where TObject : RushHitObject
     {
-        public new readonly TObject HitObject;
+        public new TObject HitObject => (TObject)base.HitObject;
 
         protected DrawableRushHitObject(TObject hitObject)
             : base(hitObject)
         {
-            HitObject = hitObject;
         }
     }
 }

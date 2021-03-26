@@ -31,18 +31,31 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public Anchor TrailingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
 
-        public LanedHitLane Lane => HitObject.Lane;
+        public LanedHitLane Lane => HitObject?.Lane ?? LanedHitLane.Air;
 
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
         {
         }
 
+        protected override void OnApply()
+        {
+            base.OnApply();
+            AdjustAnchor();
+            AccentColour.Value = LaneAccentColour;
+        }
+
+        protected virtual void AdjustAnchor()
+        {
+            if (HitObject is null) return;
+            Anchor = LaneAnchor;
+        }
+
+
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {
             base.OnDirectionChanged(e);
-
-            Anchor = LaneAnchor;
+            AdjustAnchor();
         }
 
         public override bool OnPressed(RushAction action)
@@ -85,8 +98,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void UpdateStartTimeStateTransforms()
         {
             base.UpdateStartTimeStateTransforms();
-
-            AccentColour.Value = LaneAccentColour;
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)

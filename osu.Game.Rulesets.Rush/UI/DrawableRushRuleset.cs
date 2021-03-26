@@ -46,7 +46,7 @@ namespace osu.Game.Rulesets.Rush.UI
             switch (h)
             {
                 case Minion minion:
-                    return new DrawableMinion(minion);
+                    return null;
 
                 case MiniBoss miniBoss:
                     return new DrawableMiniBoss(miniBoss);

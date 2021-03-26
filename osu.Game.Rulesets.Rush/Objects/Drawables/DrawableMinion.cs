@@ -4,9 +4,9 @@
 using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Skinning;
 using osuTK;
 
@@ -25,7 +25,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayExplosion => true;
 
-        public DrawableMinion(Minion hitObject)
+        public DrawableMinion()
+            : this(null)
+        {
+        }
+
+        public DrawableMinion(Minion hitObject = null)
             : base(hitObject)
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);

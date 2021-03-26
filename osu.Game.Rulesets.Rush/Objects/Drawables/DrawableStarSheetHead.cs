@@ -32,6 +32,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
         }
 
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = LeadingAnchor;
+        protected override void AdjustAnchor()
+        {
+            if (HitObject is null) return;
+            Anchor = LeadingAnchor;
+        }
     }
 }

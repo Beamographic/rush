@@ -46,6 +46,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         // FIXME: should logically be TrailingAnchor, not sure why it renders incorrectly
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = LeadingAnchor;
+        protected override void AdjustAnchor()
+        {
+            if (HitObject is null) return;
+            Anchor = LeadingAnchor;
+        }
     }
 }

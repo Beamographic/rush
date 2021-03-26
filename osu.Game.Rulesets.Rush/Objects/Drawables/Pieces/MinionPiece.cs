@@ -32,6 +32,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
         [BackgroundDependencyLoader(true)]
         private void load(TextureStore store, [CanBeNull] DrawableHitObject drawableHitObject)
         {
+            // This poses a problem for pooling, as this code is only executed once, before any HitObject is assigned to the pooled drawable
+
             var laneStr = "air";
             if (drawableHitObject is IDrawableLanedHit drawableLanedHit)
                 laneStr = drawableLanedHit.Lane == LanedHitLane.Air ? "air" : "ground";
