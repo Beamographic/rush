@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Rush for osu! (Tests, Debug)",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "dotnet",
+            "args": [
+                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Debug/net5.0/osu.Game.Rulesets.Rush.Tests.dll"
+            ],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Build tests (Debug)",
+            "console": "internalConsole"
+        },
+        {
+            "name": "Rush for osu! (Tests, Release)",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "dotnet",
+            "args": [
+                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Release/net5.0/osu.Game.Rulesets.Sentakki.Rush.dll"
+            ],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Build tests (Release)",
+            "console": "internalConsole"
+        },
+    ]
+}
