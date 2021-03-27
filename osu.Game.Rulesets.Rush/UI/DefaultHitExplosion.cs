@@ -12,9 +12,7 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Utils;
-using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
-using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
@@ -101,8 +99,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         protected override void PrepareForUse()
         {
-            ApplyTransformsAt(double.MinValue);
-            ClearTransforms();
+            ApplyTransformsAt(double.MinValue, true);
+            ClearTransforms(true);
             ApplyExplosionTransforms();
         }
 
@@ -157,7 +155,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     var scale = 0.8f + random.NextDouble() * 0.2f;
                     var duration = average_duration * (0.8f + random.NextDouble() * 0.4f);
                     var radians = MathUtils.DegreesToRadians(triangle.Rotation + 90);
-                    var distance = 400 * (0.8f + random.NextDouble() * 0.2f);
+                    var distance = DrawWidth * (0.8f + random.NextDouble() * 0.2f);
                     var target = new Vector2(MathF.Cos(radians), MathF.Sin(radians)) * (float)distance;
                     triangle.Scale = new Vector2((float)scale);
                     triangle.MoveTo(target, duration, Easing.OutExpo);

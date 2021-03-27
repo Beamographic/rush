@@ -3,8 +3,6 @@
 
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Judgements;
-using osu.Game.Rulesets.Objects.Drawables;
-using osu.Game.Rulesets.Rush.UI;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
