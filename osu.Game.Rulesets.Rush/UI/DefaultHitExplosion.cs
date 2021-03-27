@@ -26,6 +26,8 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Sprite colouredExplosion;
         private readonly Sprite whiteExplosion;
 
+        private readonly Sparks sparks;
+
         public override bool RemoveWhenNotAlive => true;
         public override bool RemoveCompletedTransforms => false;
 
@@ -56,7 +58,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     Origin = Anchor.Centre,
                     Scale = new Vector2(0.75f)
                 },
-                new Sparks(sparkCount)
+                sparks = new Sparks(sparkCount)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -112,10 +114,14 @@ namespace osu.Game.Rulesets.Rush.UI
             this.ScaleTo(Scale * 0.5f, RushPlayfield.HIT_EXPLOSION_DURATION)
                 .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
                 .Expire(true);
+
+            sparks.Animate();
         }
 
         protected class Sparks : CompositeDrawable
         {
+            public override bool RemoveCompletedTransforms => false;
+
             private const double average_duration = 1500f;
 
             private readonly Random random = new Random();
@@ -144,16 +150,14 @@ namespace osu.Game.Rulesets.Rush.UI
                 InternalChildren = triangles;
             }
 
-            protected override void LoadComplete()
+            public void Animate()
             {
-                base.LoadComplete();
-
                 foreach (var triangle in triangles)
                 {
                     var scale = 0.8f + random.NextDouble() * 0.2f;
                     var duration = average_duration * (0.8f + random.NextDouble() * 0.4f);
                     var radians = MathUtils.DegreesToRadians(triangle.Rotation + 90);
-                    var distance = DrawWidth * (0.8f + random.NextDouble() * 0.2f);
+                    var distance = 400 * (0.8f + random.NextDouble() * 0.2f);
                     var target = new Vector2(MathF.Cos(radians), MathF.Sin(radians)) * (float)distance;
                     triangle.Scale = new Vector2((float)scale);
                     triangle.MoveTo(target, duration, Easing.OutExpo);
