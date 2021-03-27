@@ -1,13 +1,9 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Pooling;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Game.Rulesets.Rush.Objects.Drawables;
-using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osuTK;
 using osuTK.Graphics;
 

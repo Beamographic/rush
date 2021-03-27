@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Diagnostics;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -267,23 +268,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset)
         {
-            // TODO: maybe this explosion can be moved into the mini boss drawable object itself.
-            var explosion = new DefaultHitExplosion(Color4.Yellow.Darken(0.5f))
-            {
-                Alpha = 0,
-                Depth = 0,
-                Origin = Anchor.Centre,
-                Anchor = drawableMiniBoss.Anchor,
-                Size = new Vector2(200, 200),
-                Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f) * 1.5f,
-                Rotation = RNG.NextSingle() * 360f,
-            };
 
-            halfPaddingOverEffectContainer.Add(explosion);
-
-            explosion.ScaleTo(explosion.Scale * 0.5f, 200f)
-                     .FadeOutFromOne(200f)
-                     .Expire(true);
+            halfPaddingOverEffectContainer.Add(explosionPool.Get(h => h.Apply(drawableMiniBoss)));
 
             PlayerSprite.Target = PlayerTargetLane.MiniBoss;
         }

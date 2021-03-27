@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
@@ -69,10 +70,24 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public void Apply(DrawableHitObject HitObject)
         {
-            IDrawableLanedHit laned = HitObject as IDrawableLanedHit;
-            colouredExplosion.Colour = laned.LaneAccentColour;
-            Anchor = laned.LaneAnchor;
-            Rotation = RNG.NextSingle() * 360f;
+            if (HitObject is DrawableMiniBoss miniBoss)
+            {
+                Alpha = 0;
+                Depth = 0;
+                Origin = Anchor.Centre;
+                Anchor = miniBoss.Anchor;
+                Size = new Vector2(200, 200);
+                Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f) * 1.5f;
+                Rotation = RNG.NextSingle() * 360f;
+                colouredExplosion.Colour = Color4.Yellow.Darken(0.5f);
+            }
+            else
+            {
+                IDrawableLanedHit laned = HitObject as IDrawableLanedHit;
+                colouredExplosion.Colour = laned.LaneAccentColour;
+                Anchor = laned.LaneAnchor;
+                Rotation = RNG.NextSingle() * 360f;
+            }
         }
 
         [BackgroundDependencyLoader]
@@ -94,7 +109,7 @@ namespace osu.Game.Rulesets.Rush.UI
         /// </summary>
         protected virtual void ApplyExplosionTransforms()
         {
-            this.ScaleTo(0.5f, RushPlayfield.HIT_EXPLOSION_DURATION)
+            this.ScaleTo(Scale * 0.5f, RushPlayfield.HIT_EXPLOSION_DURATION)
                 .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
                 .Expire(true);
         }
