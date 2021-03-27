@@ -223,11 +223,13 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<Sawblade, DrawableSawblade>(4);
             RegisterPool<Heart, DrawableHeart>(2);
 
-            judgementPool = new DrawablePool<DrawableRushJudgement>(5);
-            explosionPool = new DrawablePool<DefaultHitExplosion>(5);
-            heartsplosionPool = new DrawablePool<HeartHitExplosion>(5);
-            sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(5);
-            healthTextPool = new DrawablePool<HealthText>(2);
+            AddRangeInternal(new Drawable[]{
+                judgementPool = new DrawablePool<DrawableRushJudgement>(5),
+                explosionPool = new DrawablePool<DefaultHitExplosion>(5),
+                heartsplosionPool = new DrawablePool<HeartHitExplosion>(5),
+                sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(5),
+                healthTextPool = new DrawablePool<HealthText>(2),
+            });
         }
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
@@ -312,23 +314,21 @@ namespace osu.Game.Rulesets.Rush.UI
             // Display judgement results in a drawable for objects that allow it.
             if (rushJudgedObject.DisplayResult)
             {
-                DrawableJudgement judgementDrawable = judgementPool.Get(j => j.Apply(result, judgedObject));
+                DrawableRushJudgement judgementDrawable = judgementPool.Get(j => j.Apply(result, judgedObject));
 
                 // TODO: showing judgements based on the judged object suggests that
                 //       this may want to be inside the object class as well.
                 switch (rushJudgedObject.HitObject)
                 {
                     case Sawblade sawblade:
-                        judgementDrawable.Origin = Anchor.Centre;
-                        judgementDrawable.Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite()));
-                        judgementDrawable.Scale = new Vector2(1.2f);
+                        judgementDrawable.StartPosition = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite()));
+                        judgementDrawable.StartScale = new Vector2(1.2f);
 
                         break;
 
                     case LanedHit lanedHit:
-                        judgementDrawable.Origin = Anchor.Centre;
-                        judgementDrawable.Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane));
-                        judgementDrawable.Scale = new Vector2(1.5f);
+                        judgementDrawable.StartPosition = new Vector2(0f, judgementPositionForLane(lanedHit.Lane));
+                        judgementDrawable.StartScale = new Vector2(1.5f);
 
                         break;
                 }

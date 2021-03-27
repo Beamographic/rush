@@ -24,14 +24,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Origin = Anchor.Centre;
         }
 
+        public Vector2 StartPosition = Vector2.Zero;
+        public Vector2 StartScale = Vector2.One;
+
         protected override void ApplyHitAnimations() =>
-            this.ScaleTo(1f, judgement_time)
+            this.MoveTo(StartPosition).ScaleTo(StartScale)
+                .ScaleTo(1f, judgement_time)
                 .Then()
                 .MoveToOffset(new Vector2(-judgement_movement, 0f), judgement_time, Easing.In)
                 .Expire();
 
         protected override void ApplyMissAnimations() =>
-            this.ScaleTo(1f, judgement_time)
+            this.MoveTo(StartPosition).ScaleTo(StartScale)
+                .ScaleTo(1f, judgement_time)
                 .Then()
                 .MoveToOffset(new Vector2(-judgement_movement, 0f), judgement_time, Easing.In)
                 .Expire();
