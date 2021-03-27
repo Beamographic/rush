@@ -10,7 +10,6 @@ using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.Rush.Objects;
-using osu.Game.Rulesets.UI;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Beatmaps
