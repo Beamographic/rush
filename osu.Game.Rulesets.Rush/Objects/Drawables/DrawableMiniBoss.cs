@@ -25,6 +25,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public event Action<DrawableMiniBoss, double> Attacked;
 
+        public DrawableMiniBoss()
+            : this(null)
+        {
+        }
+
         public DrawableMiniBoss(MiniBoss hitObject)
             : base(hitObject)
         {
@@ -56,7 +61,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            ticks.Clear();
+            ticks.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)

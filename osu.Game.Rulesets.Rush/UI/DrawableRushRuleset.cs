@@ -49,7 +49,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     return null;
 
                 case MiniBoss miniBoss:
-                    return new DrawableMiniBoss(miniBoss);
+                    return null;
 
                 case StarSheet starSheet:
                     return new DrawableStarSheet(starSheet);

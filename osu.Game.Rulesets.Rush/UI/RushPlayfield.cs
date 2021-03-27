@@ -203,6 +203,8 @@ namespace osu.Game.Rulesets.Rush.UI
         private void load(TextureStore store)
         {
             RegisterPool<Minion, DrawableMinion>(8);
+            RegisterPool<MiniBoss, DrawableMiniBoss>(4);
+            RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
         }
 
         public override void Add(DrawableHitObject hitObject)

@@ -10,6 +10,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         public override bool DisplayResult => false;
 
+        public DrawableMiniBossTick()
+            : this(null)
+        {
+        }
+
         public DrawableMiniBossTick(MiniBossTick hitObject)
             : base(hitObject)
         {
