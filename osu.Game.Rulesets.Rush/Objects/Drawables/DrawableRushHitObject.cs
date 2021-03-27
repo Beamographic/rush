@@ -110,7 +110,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        protected override void UpdateStartTimeStateTransforms() => UnproxyContent();
+        //protected override void UpdateStartTimeStateTransforms() => UnproxyContent();
 
         protected override void UpdateHitStateTransforms(ArmedState state)
         {
@@ -118,7 +118,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             {
                 case ArmedState.Miss:
                     AccentColour.Value = Color4.Gray;
-                    ProxyContent();
+                    //ProxyContent();
 
                     if (!ExpireOnMiss)
                         LifetimeEnd = HitObject.GetEndTime() + LifetimeEndDelay;
@@ -126,7 +126,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     break;
 
                 case ArmedState.Hit:
-                    ProxyContent();
+                    //ProxyContent();
 
                     if (!ExpireOnHit)
                         LifetimeEnd = HitObject.GetEndTime() + LifetimeEndDelay;

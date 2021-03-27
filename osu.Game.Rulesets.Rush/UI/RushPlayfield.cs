@@ -202,25 +202,35 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
+            NewResult += onNewResult;
+
             RegisterPool<Minion, DrawableMinion>(8);
             RegisterPool<MiniBoss, DrawableMiniBoss>(4);
             RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
         }
-
-        public override void Add(DrawableHitObject hitObject)
+        protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
-            hitObject.OnNewResult += onNewResult;
+            base.OnNewDrawableHitObject(drawableHitObject);
 
-            if (hitObject is DrawableMiniBoss drawableMiniBoss)
+            if (drawableHitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
 
-            switch (hitObject)
+            switch (drawableHitObject)
             {
                 case DrawableRushHitObject drho:
                     proxiedHitObjects.Add(drho.CreateProxiedContent());
                     break;
             }
+        }
 
+        protected override void OnHitObjectAdded(HitObject hitObject)
+        {
+            base.OnHitObjectAdded(hitObject);
+        }
+
+
+        public override void Add(DrawableHitObject hitObject)
+        {
             base.Add(hitObject);
         }
 
@@ -228,8 +238,6 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             if (!base.Remove(hitObject))
                 return false;
-
-            hitObject.OnNewResult -= onNewResult;
 
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked -= onMiniBossAttacked;
