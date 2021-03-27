@@ -189,16 +189,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override void OnReleased(RushAction action)
         {
+            // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
+            if (Judged || !Head.IsHit)
+                return;
+
             if (!LaneMatchesAction(action))
                 return;
 
             // Check if there was also another action holding the same star sheet,
             // and use it in replace to this released one if so. (support for switching keys during hold)
             if (ActionInputManager.PressedActions.Count(LaneMatchesAction) > 1)
-                return;
-
-            // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
-            if (!Head.IsHit || Judged)
                 return;
 
             UpdateResult(true);
