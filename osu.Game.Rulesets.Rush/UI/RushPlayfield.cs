@@ -50,6 +50,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private DrawablePool<DefaultHitExplosion> explosionPool;
         private DrawablePool<HeartHitExplosion> heartsplosionPool;
         private DrawablePool<StarSheetHitExplosion> sheetsplosionPool;
+        private DrawablePool<HealthText> healthTextPool;
 
         public RushPlayfield()
         {
@@ -225,6 +226,7 @@ namespace osu.Game.Rulesets.Rush.UI
             explosionPool = new DrawablePool<DefaultHitExplosion>(5);
             heartsplosionPool = new DrawablePool<HeartHitExplosion>(5);
             sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(5);
+            healthTextPool = new DrawablePool<HealthText>(2);
         }
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
@@ -293,8 +295,6 @@ namespace osu.Game.Rulesets.Rush.UI
 
             PlayerSprite.HandleResult(rushJudgedObject, result);
 
-            const float judgement_time = 250f;
-
             // Display hit explosions for objects that allow it.
             if (result.IsHit && rushJudgedObject.DisplayExplosion)
             {
@@ -321,26 +321,7 @@ namespace osu.Game.Rulesets.Rush.UI
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
             if (pointDifference != 0)
-            {
-                var healthText = new SpriteText
-                {
-                    RelativePositionAxes = Axes.Both,
-                    Position = new Vector2(0.75f, 0.5f),
-                    Origin = Anchor.Centre,
-                    Colour = pointDifference > 0 ? Color4.Green : Color4.Red,
-                    Text = $"{pointDifference:+0;-0}",
-                    Font = FontUsage.Default.With(size: 40),
-                    Scale = new Vector2(1.2f),
-                };
-
-                overPlayerEffectsContainer.Add(healthText);
-
-                healthText.ScaleTo(1f, judgement_time)
-                          .Then()
-                          .FadeOutFromOne(judgement_time)
-                          .MoveToOffset(new Vector2(0f, -20f), judgement_time)
-                          .Expire(true);
-            }
+                overPlayerEffectsContainer.Add(healthTextPool.Get(h => h.Apply(pointDifference)));
 
             // Display judgement results in a drawable for objects that allow it.
             if (rushJudgedObject.DisplayResult)
