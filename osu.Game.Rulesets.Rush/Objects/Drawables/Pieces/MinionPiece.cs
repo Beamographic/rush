@@ -29,16 +29,24 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
             };
         }
 
+        [Resolved]
+        private TextureStore textures { get; set; }
+
         [BackgroundDependencyLoader(true)]
-        private void load(TextureStore store, [CanBeNull] DrawableHitObject drawableHitObject)
+        private void load([CanBeNull] DrawableHitObject drawableHitObject)
         {
-            // This poses a problem for pooling, as this code is only executed once, before any HitObject is assigned to the pooled drawable
+            if (drawableHitObject is DrawableMinion drawableMinion)
+                drawableMinion.OnHitObjectApplied += ApplyVisuals;
+        }
+
+        public void ApplyVisuals(LanedHit HitObject)
+        {
+            animation.ClearFrames();
 
             var laneStr = "air";
-            if (drawableHitObject is IDrawableLanedHit drawableLanedHit)
-                laneStr = drawableLanedHit.Lane == LanedHitLane.Air ? "air" : "ground";
+            laneStr = HitObject.Lane == LanedHitLane.Air ? "air" : "ground";
 
-            animation.AddFrames(new[] { store.Get($"Minion/pippidon_{laneStr}_0"), store.Get($"Minion/pippidon_{laneStr}_1") });
+            animation.AddFrames(new[] { textures.Get($"Minion/pippidon_{laneStr}_0"), textures.Get($"Minion/pippidon_{laneStr}_1") });
         }
     }
 }
