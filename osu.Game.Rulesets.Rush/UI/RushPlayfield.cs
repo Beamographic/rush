@@ -1,10 +1,11 @@
-﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
+// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
@@ -44,6 +45,8 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container overPlayerEffectsContainer;
         private readonly ProxyContainer proxiedHitObjects;
         private readonly JudgementContainer<DrawableJudgement> judgementContainer;
+
+        private DrawablePool<DrawableRushJudgement> judgementPool;
 
         public RushPlayfield()
         {
@@ -214,6 +217,8 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<DualHitPart, DrawableDualHitPart>(16);
             RegisterPool<Sawblade, DrawableSawblade>(4);
             RegisterPool<Heart, DrawableHeart>(2);
+
+            judgementPool = new DrawablePool<DrawableRushJudgement>(5);
         }
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
@@ -328,35 +333,28 @@ namespace osu.Game.Rulesets.Rush.UI
             // Display judgement results in a drawable for objects that allow it.
             if (rushJudgedObject.DisplayResult)
             {
-                DrawableJudgement judgementDrawable = null;
+                DrawableJudgement judgementDrawable = judgementPool.Get(j => j.Apply(result, judgedObject));
 
                 // TODO: showing judgements based on the judged object suggests that
                 //       this may want to be inside the object class as well.
                 switch (rushJudgedObject.HitObject)
                 {
                     case Sawblade sawblade:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
-                            Scale = new Vector2(1.2f)
-                        };
+                        judgementDrawable.Origin = Anchor.Centre;
+                        judgementDrawable.Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite()));
+                        judgementDrawable.Scale = new Vector2(1.2f);
 
                         break;
 
                     case LanedHit lanedHit:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
-                            Scale = new Vector2(1.5f)
-                        };
+                        judgementDrawable.Origin = Anchor.Centre;
+                        judgementDrawable.Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane));
+                        judgementDrawable.Scale = new Vector2(1.5f);
 
                         break;
                 }
 
-                if (judgementDrawable != null)
-                    judgementContainer.Add(judgementDrawable);
+                judgementContainer.Add(judgementDrawable);
             }
         }
 

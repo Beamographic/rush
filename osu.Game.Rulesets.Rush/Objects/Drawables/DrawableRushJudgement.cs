@@ -3,6 +3,8 @@
 
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.UI;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -12,9 +14,14 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private const float judgement_time = 250f;
         private const float judgement_movement = 300;
 
+        public DrawableRushJudgement()
+            : this(null, null)
+        { }
+
         public DrawableRushJudgement(JudgementResult result, DrawableRushHitObject judgedObject)
             : base(result, judgedObject)
         {
+            Origin = Anchor.Centre;
         }
 
         protected override void ApplyHitAnimations() =>
