@@ -21,6 +21,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override float LifetimeEndDelay => 0f;
         protected override bool ExpireOnHit => false;
 
+        public DrawableHeart()
+            : this(null)
+        { }
+
         public DrawableHeart(Heart hitObject)
             : base(hitObject)
         {

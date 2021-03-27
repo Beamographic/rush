@@ -41,31 +41,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public new RushPlayfield Playfield => (RushPlayfield)base.Playfield;
 
-        public override DrawableHitObject<RushHitObject> CreateDrawableRepresentation(RushHitObject h)
-        {
-            switch (h)
-            {
-                case Minion minion:
-                    return null;
-
-                case MiniBoss miniBoss:
-                    return null;
-
-                case StarSheet starSheet:
-                    return null;
-
-                case DualHit dualHit:
-                    return null;
-
-                case Sawblade sawblade:
-                    return null;
-
-                case Heart heart:
-                    return new DrawableHeart(heart);
-            }
-
-            return null;
-        }
+        public override DrawableHitObject<RushHitObject> CreateDrawableRepresentation(RushHitObject h) => null;
 
         protected override PassThroughInputManager CreateInputManager() => new RushInputManager(Ruleset?.RulesetInfo);
     }
