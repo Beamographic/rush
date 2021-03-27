@@ -47,6 +47,9 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly JudgementContainer<DrawableJudgement> judgementContainer;
 
         private DrawablePool<DrawableRushJudgement> judgementPool;
+        private DrawablePool<DefaultHitExplosion> explosionPool;
+        private DrawablePool<HeartHitExplosion> heartsplosionPool;
+        private DrawablePool<StarSheetHitExplosion> sheetsplosionPool;
 
         public RushPlayfield()
         {
@@ -219,6 +222,9 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<Heart, DrawableHeart>(2);
 
             judgementPool = new DrawablePool<DrawableRushJudgement>(5);
+            explosionPool = new DrawablePool<DefaultHitExplosion>(5);
+            heartsplosionPool = new DrawablePool<HeartHitExplosion>(5);
+            sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(5);
         }
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
@@ -292,7 +298,13 @@ namespace osu.Game.Rulesets.Rush.UI
             // Display hit explosions for objects that allow it.
             if (result.IsHit && rushJudgedObject.DisplayExplosion)
             {
-                var explosion = rushJudgedObject.CreateHitExplosion();
+                Drawable explosion = rushJudgedObject switch
+                {
+                    DrawableStarSheetHead head => sheetsplosionPool.Get(s => s.Apply(head)),
+                    DrawableStarSheetTail tail => sheetsplosionPool.Get(s => s.Apply(tail)),
+                    DrawableHeart heart => heartsplosionPool.Get(h => h.Apply(heart)),
+                    _ => explosionPool.Get(h => h.Apply(rushJudgedObject)),
+                };
 
                 if (explosion != null)
                 {

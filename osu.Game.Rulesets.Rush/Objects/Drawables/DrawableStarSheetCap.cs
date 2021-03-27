@@ -56,8 +56,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             AccentColour.UnbindFrom(StarSheet.AccentColour);
         }
 
-        public override Drawable CreateHitExplosion() => new StarSheetHitExplosion(this);
-
         protected override void UpdateStartTimeStateTransforms()
         {
             Scale = Vector2.One;
@@ -82,51 +80,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override void OnReleased(RushAction action)
         {
-        }
-
-        private class StarSheetHitExplosion : CompositeDrawable
-        {
-            private readonly StarSheetCapStarPiece explosionStar;
-            private readonly Circle flashCircle;
-
-            public StarSheetHitExplosion(DrawableStarSheetCap<TObject> drawableStarSheet)
-            {
-                Anchor = drawableStarSheet.LaneAnchor;
-                Origin = Anchor.Centre;
-                Size = drawableStarSheet.Size;
-
-                InternalChildren = new Drawable[]
-                {
-                    explosionStar = new StarSheetCapStarPiece(),
-                    flashCircle = new Circle
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Alpha = 0.4f,
-                        RelativeSizeAxes = Axes.Both,
-                        Scale = new Vector2(0.5f),
-                        Colour = drawableStarSheet.LaneAccentColour.Lighten(0.5f)
-                    }
-                };
-            }
-
-            protected override void LoadComplete()
-            {
-                base.LoadComplete();
-
-                explosionStar.ScaleTo(2f, RushPlayfield.HIT_EXPLOSION_DURATION)
-                             .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
-                             .Expire(true);
-
-                flashCircle.ScaleTo(4f, RushPlayfield.HIT_EXPLOSION_DURATION / 2)
-                           .Then()
-                           .ScaleTo(0.5f, RushPlayfield.HIT_EXPLOSION_DURATION / 2)
-                           .FadeOut(RushPlayfield.HIT_EXPLOSION_DURATION / 2)
-                           .Expire(true);
-
-                // TODO: very low priority for now, but this shouldn't stay as-is in every similar composite.
-                this.Delay(InternalChildren.Max(d => d.LatestTransformEndTime)).Expire(true);
-            }
         }
     }
 }

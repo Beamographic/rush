@@ -6,26 +6,39 @@ using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Utils;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects;
+using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class DefaultHitExplosion : CompositeDrawable
+    public class DefaultHitExplosion : PoolableDrawable
     {
         private readonly Sprite colouredExplosion;
         private readonly Sprite whiteExplosion;
 
         public override bool RemoveWhenNotAlive => true;
+        public override bool RemoveCompletedTransforms => false;
+
+        public DefaultHitExplosion()
+            : this(Color4.White)
+        {
+        }
 
         public DefaultHitExplosion(Color4 explosionColour, int sparkCount = 10, Color4? sparkColour = null)
         {
-            Origin = Anchor.Centre;
             Depth = 1f;
+            Origin = Anchor.Centre;
+            Size = new Vector2(200, 200);
+            Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f);
 
             InternalChildren = new Drawable[]
             {
@@ -54,6 +67,14 @@ namespace osu.Game.Rulesets.Rush.UI
             };
         }
 
+        public void Apply(DrawableHitObject HitObject)
+        {
+            IDrawableLanedHit laned = HitObject as IDrawableLanedHit;
+            colouredExplosion.Colour = laned.LaneAccentColour;
+            Anchor = laned.LaneAnchor;
+            Rotation = RNG.NextSingle() * 360f;
+        }
+
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
@@ -61,10 +82,10 @@ namespace osu.Game.Rulesets.Rush.UI
             whiteExplosion.Texture = store.Get("Effects/explosion");
         }
 
-        protected override void LoadComplete()
+        protected override void PrepareForUse()
         {
-            base.LoadComplete();
-
+            ApplyTransformsAt(double.MinValue);
+            ClearTransforms();
             ApplyExplosionTransforms();
         }
 

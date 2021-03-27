@@ -44,8 +44,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             });
         }
 
-        public override Drawable CreateHitExplosion() => new HeartHitExplosion(this);
-
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
             if (AllJudged)
@@ -72,26 +70,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             // else if we're still able to hit it, check if the player is in the correct lane
             else if (playfield.PlayerSprite.CollidesWith(HitObject))
                 ApplyResult(r => r.Type = r.Judgement.MaxResult);
-        }
-
-        private class HeartHitExplosion : HeartPiece
-        {
-            public HeartHitExplosion(DrawableHeart drawableHeart)
-            {
-                Anchor = drawableHeart.LaneAnchor;
-                Origin = Anchor.Centre;
-                Size = drawableHeart.Size;
-                Scale = new Vector2(0.5f);
-            }
-
-            protected override void LoadComplete()
-            {
-                base.LoadComplete();
-
-                this.ScaleTo(1.25f, RushPlayfield.HIT_EXPLOSION_DURATION)
-                    .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
-                    .Expire(true);
-            }
         }
     }
 }
