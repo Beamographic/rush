@@ -24,17 +24,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private readonly Drawable capPiece;
 
-        protected readonly DrawableStarSheet StarSheet;
+        protected DrawableStarSheet StarSheet => (DrawableStarSheet)ParentHitObject;
 
         [Resolved]
         private RushPlayfield playfield { get; set; }
 
         public override bool DisplayExplosion => true;
 
-        protected DrawableStarSheetCap(DrawableStarSheet starSheet, TObject hitObject)
+        protected DrawableStarSheetCap(TObject hitObject)
             : base(hitObject)
         {
-            StarSheet = starSheet;
             Size = new Vector2(DrawableStarSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
@@ -44,6 +43,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 Anchor = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
             };
+        }
+
+        protected override void OnApply()
+        {
+            base.OnApply();
+            AccentColour.BindTo(StarSheet.AccentColour);
+        }
+        protected override void OnFree()
+        {
+            base.OnFree();
+            AccentColour.UnbindFrom(StarSheet.AccentColour);
         }
 
         public override Drawable CreateHitExplosion() => new StarSheetHitExplosion(this);

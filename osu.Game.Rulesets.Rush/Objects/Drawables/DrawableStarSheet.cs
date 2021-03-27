@@ -7,10 +7,10 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
@@ -56,6 +56,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool DisplayResult => false;
 
+        public DrawableStarSheet()
+            : this(null) { }
+
         public DrawableStarSheet(StarSheet hitObject)
             : base(hitObject)
         {
@@ -97,24 +100,24 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            headContainer.Clear();
-            tailContainer.Clear();
+            headContainer.Clear(false);
+            tailContainer.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
         {
             switch (hitObject)
             {
-                case StarSheetHead _:
-                    return new DrawableStarSheetHead(this)
+                case StarSheetHead head:
+                    return new DrawableStarSheetHead(head)
                     {
                         Anchor = LeadingAnchor,
                         Origin = Anchor.Centre,
                         AccentColour = { BindTarget = AccentColour }
                     };
 
-                case StarSheetTail _:
-                    return new DrawableStarSheetTail(this)
+                case StarSheetTail tail:
+                    return new DrawableStarSheetTail(tail)
                     {
                         Anchor = TrailingAnchor,
                         Origin = Anchor.Centre,

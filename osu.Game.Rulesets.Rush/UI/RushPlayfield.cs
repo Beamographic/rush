@@ -207,6 +207,9 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<Minion, DrawableMinion>(8);
             RegisterPool<MiniBoss, DrawableMiniBoss>(4);
             RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
+            RegisterPool<StarSheet, DrawableStarSheet>(8);
+            RegisterPool<StarSheetHead, DrawableStarSheetHead>(8);
+            RegisterPool<StarSheetTail, DrawableStarSheetTail>(8);
         }
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {

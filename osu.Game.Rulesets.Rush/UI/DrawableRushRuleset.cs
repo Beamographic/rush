@@ -52,7 +52,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     return null;
 
                 case StarSheet starSheet:
-                    return new DrawableStarSheet(starSheet);
+                    return null;
 
                 case DualHit dualHit:
                     return new DrawableDualHit(dualHit);

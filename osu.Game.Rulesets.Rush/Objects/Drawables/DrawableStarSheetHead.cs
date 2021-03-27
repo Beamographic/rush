@@ -11,8 +11,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         protected override RushSkinComponents Component => RushSkinComponents.StarSheetHead;
 
-        public DrawableStarSheetHead(DrawableStarSheet starSheet)
-            : base(starSheet, starSheet.HitObject.Head)
+        public DrawableStarSheetHead()
+            : this(null)
+        { }
+
+        public DrawableStarSheetHead(StarSheetHead starSheetHead)
+            : base(starSheetHead)
         {
         }
 
