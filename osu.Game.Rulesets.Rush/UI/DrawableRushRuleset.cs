@@ -58,7 +58,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     return null;
 
                 case Sawblade sawblade:
-                    return new DrawableSawblade(sawblade);
+                    return null;
 
                 case Heart heart:
                     return new DrawableHeart(heart);

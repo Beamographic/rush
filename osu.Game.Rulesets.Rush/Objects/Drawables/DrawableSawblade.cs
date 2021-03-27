@@ -24,6 +24,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override bool ExpireOnHit => false;
         protected override bool ExpireOnMiss => false;
 
+        private readonly Container sawbladeContainer;
+        private readonly Drawable sawblade;
+
+        public DrawableSawblade()
+            : this(null)
+        { }
+
         public DrawableSawblade(Sawblade hitObject)
             : base(hitObject)
         {
@@ -31,22 +38,28 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             Content.AddRange(new[]
             {
-                new Container
+                sawbladeContainer = new Container
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
-                    Masking = hitObject.Lane == LanedHitLane.Ground,
-                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
+                    Child = sawblade = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
                     {
                         Origin = Anchor.Centre,
-                        Anchor = hitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre,
                         RelativeSizeAxes = Axes.Both,
                         Size = new Vector2(0.8f)
                     }
                 }
             });
+        }
+
+        protected override void OnApply()
+        {
+            base.OnApply();
+
+            sawbladeContainer.Masking = HitObject.Lane == LanedHitLane.Ground;
+            sawblade.Anchor = HitObject.Lane == LanedHitLane.Ground ? Anchor.BottomCentre : Anchor.TopCentre;
         }
 
         // Sawblade doesn't handle user presses at all.
