@@ -22,6 +22,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public DrawableDualHitPart Air => airHitContainer.Child;
         public DrawableDualHitPart Ground => groundHitContainer.Child;
 
+        public DrawableDualHit()
+        : this(null)
+        { }
+
         public DrawableDualHit(DualHit hitObject)
             : base(hitObject)
         {
@@ -51,8 +55,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            airHitContainer.Clear();
-            groundHitContainer.Clear();
+            airHitContainer.Clear(false);
+            groundHitContainer.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)

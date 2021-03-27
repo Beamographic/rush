@@ -2,9 +2,9 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Graphics;
-using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Skinning;
 using osuTK;
 
@@ -13,6 +13,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public class DrawableDualHitPart : DrawableLanedHit<DualHitPart>
     {
         public override bool DisplayExplosion => true;
+
+        public DrawableDualHitPart()
+            : this(null)
+        { }
 
         public DrawableDualHitPart(DualHitPart hitObject)
             : base(hitObject)

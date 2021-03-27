@@ -210,6 +210,8 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<StarSheet, DrawableStarSheet>(8);
             RegisterPool<StarSheetHead, DrawableStarSheetHead>(8);
             RegisterPool<StarSheetTail, DrawableStarSheetTail>(8);
+            RegisterPool<DualHit, DrawableDualHit>(8);
+            RegisterPool<DualHitPart, DrawableDualHitPart>(16);
         }
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
