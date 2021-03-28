@@ -323,16 +323,14 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 Samples = original.Samples
             };
 
-        private StarSheet createStarSheet(HitObject original, LanedHitLane lane, IList<HitSampleInfo> samples)
-        {
-            return new StarSheet
+        private StarSheet createStarSheet(HitObject original, LanedHitLane lane, IList<HitSampleInfo> samples) =>
+            new StarSheet
             {
                 StartTime = original.StartTime,
                 EndTime = original.GetEndTime(),
                 NodeSamples = (original as IHasRepeats)?.NodeSamples ?? new List<IList<HitSampleInfo>> { samples },
                 Lane = lane
             };
-        }
 
         private DualHit createDualHit(HitObject original) =>
             new DualHit
