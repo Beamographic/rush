@@ -9,8 +9,8 @@ using osu.Framework.Extensions.EnumExtensions;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
-using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Objects.Types;
+using osu.Game.Rulesets.Rush.Objects;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Beatmaps
@@ -329,7 +329,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             {
                 StartTime = original.StartTime,
                 EndTime = original.GetEndTime(),
-                Samples = samples ?? new List<HitSampleInfo>(),
+                NodeSamples = (original as IHasRepeats)?.NodeSamples ?? new List<IList<HitSampleInfo>> { samples },
                 Lane = lane
             };
 
