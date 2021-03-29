@@ -20,3 +20,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Rush
+        path: osu.Game.Rulesets.Rush/bin/Release/netstandard2.1/osu.Game.Rulesets.Rush.dll
