@@ -318,13 +318,16 @@ namespace osu.Game.Rulesets.Rush.UI
                     case Sawblade sawblade:
                         judgementDrawable.StartPosition = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite()));
                         judgementDrawable.StartScale = new Vector2(1.2f);
-
                         break;
 
                     case LanedHit lanedHit:
                         judgementDrawable.StartPosition = new Vector2(0f, judgementPositionForLane(lanedHit.Lane));
                         judgementDrawable.StartScale = new Vector2(1.5f);
+                        break;
 
+                    case MiniBoss _:
+                        judgementDrawable.StartPosition = new Vector2(0f, judgementPositionForLane(LanedHitLane.Air));
+                        judgementDrawable.StartScale = new Vector2(1.5f);
                         break;
                 }
 
