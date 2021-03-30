@@ -7,10 +7,10 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
@@ -170,9 +170,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!Tail.Judged)
                 return;
 
-            // Determine the overall judgement for the object when the tail is judged.
-            var minimumResult = (HitResult)Math.Min((int)Head.Result.Type, (int)Tail.Result.Type);
-            ApplyResult(r => r.Type = minimumResult);
+            ApplyResult(r => r.Type = r.Judgement.MaxResult);
         }
 
         public override bool OnPressed(RushAction action)
