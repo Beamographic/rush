@@ -77,7 +77,7 @@ namespace osu.Game.Rulesets.Rush.Objects
             Tail.Samples = NodeSamples.Last();
         }
 
-        public override Judgement CreateJudgement() => new RushJudgement();
+        public override Judgement CreateJudgement() => new RushIgnoreJudgement();
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
     }
