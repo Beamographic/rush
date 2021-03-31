@@ -106,14 +106,40 @@ namespace osu.Game.Rulesets.Rush
                         Origin = Anchor.Centre,
                         Icon = FontAwesome.Regular.Circle,
                     },
-                    new SpriteIcon
+                };
+
+                if (!RushRuleset.IsDevelopmentBuild)
+                {
+                    AddInternal(new SpriteIcon
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         Scale = new Vector2(0.6f),
                         Icon = FontAwesome.Solid.Running,
-                    }
-                };
+                    });
+                }
+                else
+                {
+                    AddRangeInternal(new[]
+                    {
+                        new SpriteIcon
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Scale = new Vector2(0.4f),
+                            Icon = FontAwesome.Solid.Running,
+                            Margin = new MarginPadding { Bottom = 0.5f, Right = 0.5f },
+                        },
+                        new SpriteIcon
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Scale = new Vector2(0.4f),
+                            Icon = FontAwesome.Solid.Wrench,
+                            Margin = new MarginPadding { Top = 0.5f, Left = 0.5f },
+                        }
+                    });
+                }
             }
         }
     }
