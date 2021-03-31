@@ -1,30 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+  <PropertyGroup Label="Project">
     <Configurations>Debug;Release;Development</Configurations>
-    <Platforms>AnyCPU</Platforms>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <OutputType>Library</OutputType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RootNamespace>osu.Game.Rulesets.Rush</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Development' ">
     <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
   </PropertyGroup>
   <Choose>
     <When Condition=" '$(Configuration)' == 'Release' ">
-      <PropertyGroup Label="Project">
-        <TargetFramework>netstandard2.1</TargetFramework>
+      <PropertyGroup>
         <AssemblyName>osu.Game.Rulesets.Rush</AssemblyName>
         <AssemblyTitle>rush for osu!</AssemblyTitle>
-        <OutputType>Library</OutputType>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <RootNamespace>osu.Game.Rulesets.Rush</RootNamespace>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
         <AssemblyName>osu.Game.Rulesets.Rush-dev</AssemblyName>
         <AssemblyTitle>rush for osu! (development build)</AssemblyTitle>
-        <OutputType>Library</OutputType>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <RootNamespace>osu.Game.Rulesets.Rush</RootNamespace>
       </PropertyGroup>
     </Otherwise>
   </Choose>
