@@ -24,7 +24,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\**" />
+    <!-- The automated version of this (<EmbeddedResource Include="xyz />) would prepend the RootNamespace to name,
+         that will not work well with DllResourceStore as it can only determine the root namespace via AssemblyName,
+         and we change that based on the build configuration for separation purposes.
+         Therefore prepend the AssemblyName to embedded resources names instead. -->
+    <EmbeddedResource Include="Resources\**">
+      <LogicalName>$(AssemblyName).$([System.String]::Copy(&quot;%(Identity)&quot;).Replace(&quot;/&quot;,&quot;.&quot;))</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ppy.osu.Game" Version="2021.323.0" />
