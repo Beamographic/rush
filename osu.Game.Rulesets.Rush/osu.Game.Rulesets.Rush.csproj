@@ -24,7 +24,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <!-- The automated version of this (<EmbeddedResource Include="xyz />) would prepend the RootNamespace to name,
+    <!-- The automated version of this (<EmbeddedResource Include="xyz\**" />) would prepend the RootNamespace to name,
          that will not work well with DllResourceStore as it can only determine the root namespace via AssemblyName,
          and we change that based on the build configuration for separation purposes.
          Therefore prepend the AssemblyName to embedded resources names instead. -->
