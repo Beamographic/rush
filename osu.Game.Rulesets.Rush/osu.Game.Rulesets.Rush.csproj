@@ -29,7 +29,7 @@
          and we change that based on the build configuration for separation purposes.
          Therefore prepend the AssemblyName to embedded resources names instead. -->
     <EmbeddedResource Include="Resources\**">
-      <LogicalName>$(AssemblyName).$([System.String]::Copy(&quot;%(Identity)&quot;).Replace($([System.IO.Path]::DirectorySeparatorChar.ToString()),&quot;.&quot;))</LogicalName>
+      <LogicalName>$(AssemblyName).$([System.String]::Copy(%(Identity)).Replace($([System.IO.Path]::DirectorySeparatorChar.ToString()), '.'))</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
