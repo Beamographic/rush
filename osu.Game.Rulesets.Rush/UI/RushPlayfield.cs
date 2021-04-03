@@ -44,6 +44,10 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly ProxyContainer proxiedHitObjects;
         private readonly JudgementContainer<DrawableJudgement> judgementContainer;
 
+
+        private readonly LanePlayfield airLane;
+        private readonly LanePlayfield groundLane;
+
         public RushPlayfield()
         {
             InternalChildren = new Drawable[]
@@ -152,6 +156,8 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                                             },
+                                            airLane = new LanePlayfield(LanedHitLane.Air),
+                                            groundLane = new LanePlayfield(LanedHitLane.Ground),
                                             new Container
                                             {
                                                 Name = "Hit Objects",
@@ -196,6 +202,8 @@ namespace osu.Game.Rulesets.Rush.UI
                     }
                 }
             };
+            AddNested(airLane);
+            AddNested(groundLane);
         }
 
         [BackgroundDependencyLoader]
@@ -215,6 +223,15 @@ namespace osu.Game.Rulesets.Rush.UI
                 case DrawableRushHitObject drho:
                     proxiedHitObjects.Add(drho.CreateProxiedContent());
                     break;
+            }
+
+            if (hitObject is IDrawableLanedHit laned)
+            {
+                if (laned.Lane == LanedHitLane.Air)
+                    airLane.Add(hitObject);
+                else if (laned.Lane == LanedHitLane.Ground)
+                    groundLane.Add(hitObject);
+                return;
             }
 
             base.Add(hitObject);
@@ -265,22 +282,6 @@ namespace osu.Game.Rulesets.Rush.UI
 
             const float judgement_time = 250f;
 
-            // Display hit explosions for objects that allow it.
-            if (result.IsHit && rushJudgedObject.DisplayExplosion)
-            {
-                var explosion = rushJudgedObject.CreateHitExplosion();
-
-                if (explosion != null)
-                {
-                    // TODO: low priority, but the explosion should be added in a container
-                    //       that has the hit object container to avoid this kinda hacky check.
-                    if (explosion.Depth <= 0)
-                        overEffectContainer.Add(explosion);
-                    else
-                        underEffectContainer.Add(explosion);
-                }
-            }
-
             // Display health point difference if the judgement result implies it.
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
@@ -304,40 +305,6 @@ namespace osu.Game.Rulesets.Rush.UI
                           .FadeOutFromOne(judgement_time)
                           .MoveToOffset(new Vector2(0f, -20f), judgement_time)
                           .Expire(true);
-            }
-
-            // Display judgement results in a drawable for objects that allow it.
-            if (rushJudgedObject.DisplayResult)
-            {
-                DrawableJudgement judgementDrawable = null;
-
-                // TODO: showing judgements based on the judged object suggests that
-                //       this may want to be inside the object class as well.
-                switch (rushJudgedObject.HitObject)
-                {
-                    case Sawblade sawblade:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
-                            Scale = new Vector2(1.2f)
-                        };
-
-                        break;
-
-                    case LanedHit lanedHit:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
-                            Scale = new Vector2(1.5f)
-                        };
-
-                        break;
-                }
-
-                if (judgementDrawable != null)
-                    judgementContainer.Add(judgementDrawable);
             }
         }
 

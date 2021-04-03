@@ -57,7 +57,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override Drawable CreateHitExplosion() => new DefaultHitExplosion(LaneAccentColour)
         {
-            Anchor = LaneAnchor,
+            Anchor = Anchor.Centre,
             Origin = Anchor.Centre,
             Size = new Vector2(200, 200),
             Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f),
