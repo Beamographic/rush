@@ -15,10 +15,7 @@ using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI.Ground;
-using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
-using osu.Game.Skinning;
-using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
@@ -37,13 +34,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public RushPlayerSprite PlayerSprite { get; }
 
-        private readonly Container underEffectContainer;
-        private readonly Container overEffectContainer;
         private readonly Container halfPaddingOverEffectContainer;
         private readonly Container overPlayerEffectsContainer;
-
-        private readonly JudgementContainer<DrawableJudgement> judgementContainer;
-
 
         private readonly LanePlayfield airLane;
         private readonly LanePlayfield groundLane;
@@ -115,32 +107,15 @@ namespace osu.Game.Rulesets.Rush.UI
                                         Origin = Anchor.CentreLeft,
                                         Children = new Drawable[]
                                         {
-                                            underEffectContainer = new Container
-                                            {
-                                                Name = "Under Effects",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                                            },
-                                            judgementContainer = new JudgementContainer<DrawableJudgement>
-                                            {
-                                                Name = "Judgement",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                                            },
                                             airLane = new LanePlayfield(LanedHitLane.Air),
                                             groundLane = new LanePlayfield(LanedHitLane.Ground),
+                                            // Contains miniboss and duals for now
                                             new Container
                                             {
                                                 Name = "Hit Objects",
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                                                 Child = HitObjectContainer
-                                            },
-                                            overEffectContainer = new Container
-                                            {
-                                                Name = "Over Effects",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                                             },
                                             halfPaddingOverEffectContainer = new Container
                                             {

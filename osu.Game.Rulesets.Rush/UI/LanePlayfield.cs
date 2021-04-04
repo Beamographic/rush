@@ -30,6 +30,7 @@ namespace osu.Game.Rulesets.Rush.UI
             AddRangeInternal(new Drawable[]{
                 new Container
                 {
+                    Name = "Hit Target",
                     Anchor = Anchor.CentreLeft,
                     Origin = Anchor.Centre,
                     Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE),
