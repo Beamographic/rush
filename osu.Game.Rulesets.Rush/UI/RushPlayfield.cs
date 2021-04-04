@@ -6,7 +6,6 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Utils;
 using osu.Game.Rulesets.Judgements;
@@ -16,6 +15,7 @@ using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI.Scrolling;
+using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
