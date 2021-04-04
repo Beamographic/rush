@@ -41,7 +41,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container overEffectContainer;
         private readonly Container halfPaddingOverEffectContainer;
         private readonly Container overPlayerEffectsContainer;
-        private readonly ProxyContainer proxiedHitObjects;
+
         private readonly JudgementContainer<DrawableJudgement> judgementContainer;
 
 
@@ -115,35 +115,6 @@ namespace osu.Game.Rulesets.Rush.UI
                                         Origin = Anchor.CentreLeft,
                                         Children = new Drawable[]
                                         {
-                                            new Container
-                                            {
-                                                Name = "Hit target indicators",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                                                Children = new Drawable[]
-                                                {
-                                                    new Container
-                                                    {
-                                                        Anchor = Anchor.TopLeft,
-                                                        Origin = Anchor.Centre,
-                                                        Size = new Vector2(HIT_TARGET_SIZE),
-                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.AirHitTarget), _ => new HitTarget()
-                                                        {
-                                                            RelativeSizeAxes = Axes.Both,
-                                                        }, confineMode: ConfineMode.ScaleToFit),
-                                                    },
-                                                    new Container
-                                                    {
-                                                        Anchor = Anchor.BottomLeft,
-                                                        Origin = Anchor.Centre,
-                                                        Size = new Vector2(HIT_TARGET_SIZE),
-                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.GroundHitTarget), _ => new HitTarget()
-                                                        {
-                                                            RelativeSizeAxes = Axes.Both,
-                                                        }, confineMode: ConfineMode.ScaleToFit),
-                                                    },
-                                                }
-                                            },
                                             underEffectContainer = new Container
                                             {
                                                 Name = "Under Effects",
@@ -164,11 +135,6 @@ namespace osu.Game.Rulesets.Rush.UI
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                                                 Child = HitObjectContainer
-                                            },
-                                            proxiedHitObjects = new ProxyContainer
-                                            {
-                                                Name = "Proxied Hit Objects",
-                                                RelativeSizeAxes = Axes.Both,
                                             },
                                             overEffectContainer = new Container
                                             {
@@ -204,26 +170,13 @@ namespace osu.Game.Rulesets.Rush.UI
             };
             AddNested(airLane);
             AddNested(groundLane);
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(TextureStore store)
-        {
+            NewResult += onNewResult;
         }
 
         public override void Add(DrawableHitObject hitObject)
         {
-            hitObject.OnNewResult += onNewResult;
-
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
-
-            switch (hitObject)
-            {
-                case DrawableRushHitObject drho:
-                    proxiedHitObjects.Add(drho.CreateProxiedContent());
-                    break;
-            }
 
             if (hitObject is IDrawableLanedHit laned)
             {
@@ -241,8 +194,6 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             if (!base.Remove(hitObject))
                 return false;
-
-            hitObject.OnNewResult -= onNewResult;
 
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked -= onMiniBossAttacked;
@@ -308,22 +259,10 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
-        private float judgementPositionForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? -JUDGEMENT_OFFSET : judgementContainer.DrawHeight - JUDGEMENT_OFFSET;
-
         public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
 
         public void OnReleased(RushAction action)
         {
-        }
-
-        private class ProxyContainer : LifetimeManagementContainer
-        {
-            public new MarginPadding Padding
-            {
-                set => base.Padding = value;
-            }
-
-            public void Add(Drawable proxy) => AddInternal(proxy);
         }
     }
 }

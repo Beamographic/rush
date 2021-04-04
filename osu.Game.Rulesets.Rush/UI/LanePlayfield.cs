@@ -9,6 +9,7 @@ using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
@@ -19,17 +20,24 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container effectsContainer;
         public LanePlayfield(LanedHitLane type)
         {
+            bool isAirLane = type == LanedHitLane.Air;
+
             Padding = new MarginPadding { Left = RushPlayfield.HIT_TARGET_OFFSET };
-
-            if (type == LanedHitLane.Air)
-                Anchor = Origin = Anchor.TopCentre;
-            else
-                Anchor = Origin = Anchor.BottomCentre;
-
+            Anchor = Origin = isAirLane ? Anchor.TopCentre : Anchor.BottomCentre;
             RelativeSizeAxes = Axes.Both;
             Size = new Vector2(1, 0);
 
             AddRangeInternal(new Drawable[]{
+                new Container
+                {
+                    Anchor = Anchor.CentreLeft,
+                    Origin = Anchor.Centre,
+                    Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE),
+                    Child = new SkinnableDrawable(new RushSkinComponent(isAirLane ? RushSkinComponents.AirHitTarget : RushSkinComponents.GroundHitTarget), _ => new HitTarget()
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                    }, confineMode: ConfineMode.ScaleToFit),
+                },
                 effectsContainer = new Container(),
                 judgementContainer = new JudgementContainer<DrawableJudgement>(),
                 HitObjectContainer,
