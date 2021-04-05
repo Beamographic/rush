@@ -172,6 +172,8 @@ namespace osu.Game.Rulesets.Rush.UI
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
 
+            ((DrawableRushHitObject)hitObject).CheckHittable = hitPolicy.IsHittable;
+
             if (hitObject is IDrawableLanedHit laned)
             {
                 if (laned.Lane == LanedHitLane.Air)
