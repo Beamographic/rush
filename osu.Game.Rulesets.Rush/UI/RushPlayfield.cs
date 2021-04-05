@@ -161,7 +161,11 @@ namespace osu.Game.Rulesets.Rush.UI
             AddNested(airLane);
             AddNested(groundLane);
             NewResult += onNewResult;
+
+            hitPolicy = new RushHitPolicy(this);
         }
+
+        private readonly RushHitPolicy hitPolicy;
 
         public override void Add(DrawableHitObject hitObject)
         {
