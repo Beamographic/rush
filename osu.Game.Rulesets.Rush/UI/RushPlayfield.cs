@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Collections.Generic;
+using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -39,6 +41,19 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private readonly LanePlayfield airLane;
         private readonly LanePlayfield groundLane;
+
+        public IEnumerable<DrawableHitObject> AllAliveHitObjects
+        {
+            get
+            {
+                if (HitObjectContainer == null)
+                    return Enumerable.Empty<DrawableHitObject>();
+
+                // Intentionally counting on the fact that we don't have nested playfields in our nested playfields
+                IEnumerable<DrawableHitObject> enumerable = HitObjectContainer.AliveObjects.Concat(NestedPlayfields.SelectMany(p => p.HitObjectContainer.AliveObjects)).OrderBy(d => d.HitObject.StartTime);
+                return enumerable;
+            }
+        }
 
         public RushPlayfield()
         {
