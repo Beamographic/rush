@@ -82,11 +82,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool OnPressed(RushAction action)
         {
-            var targetPart = RushActionExtensions.Lane(action) == LanedHitLane.Air ? Air : Ground;
-            if (!CheckHittable(targetPart))
+            if (AllJudged)
                 return false;
 
-            if (AllJudged)
+            var targetPart = RushActionExtensions.Lane(action) == LanedHitLane.Air ? Air : Ground;
+            if (!CheckHittable(targetPart))
                 return false;
 
             var airResult = !Air.AllJudged && Air.LaneMatchesAction(action) && Air.UpdateResult(true);

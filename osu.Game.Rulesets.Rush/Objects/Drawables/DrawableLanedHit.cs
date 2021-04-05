@@ -47,10 +47,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool OnPressed(RushAction action)
         {
-            if (!CheckHittable(this))
+            if (!LaneMatchesAction(action) || AllJudged)
                 return false;
 
-            if (!LaneMatchesAction(action))
+            if (!CheckHittable(this))
                 return false;
 
             return UpdateResult(true);
