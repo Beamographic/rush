@@ -57,9 +57,6 @@ namespace osu.Game.Rulesets.Rush.UI
                 case DualHit dualHit:
                     return new DrawableDualHit(dualHit);
 
-                case DualHitPart dualHitpart:
-                    return new DrawableDualHitPart(dualHitpart);
-
                 case Sawblade sawblade:
                     return new DrawableSawblade(sawblade);
 

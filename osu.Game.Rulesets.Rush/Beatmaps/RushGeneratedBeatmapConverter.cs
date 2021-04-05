@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -218,8 +217,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 && random.NextDouble() < dualhit_probability)
             {
                 nextDualHitTime = original.StartTime + min_dualhit_time;
-                foreach (var part in createDualHit(original))
-                    yield return part;
+                yield return createDualHit(original);
 
                 updatePrevious(null, flags);
                 yield break;
@@ -335,22 +333,13 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 Lane = lane
             };
 
-        private IEnumerable<DualHitPart> createDualHit(HitObject original)
-        {
-            yield return new DualHitPart
+        private DualHit createDualHit(HitObject original) =>
+            new DualHit
             {
-                Lane = LanedHitLane.Air,
                 StartTime = original.StartTime,
-                Samples = original.Samples,
-            };
-            yield return new DualHitPart
-            {
-                Lane = LanedHitLane.Ground,
-                StartTime = original.StartTime,
-                Samples = original.Samples,
+                Samples = original.Samples
             };
 
-        }
         private Sawblade createSawblade(HitObject original, LanedHitLane lane) =>
             new Sawblade
             {
