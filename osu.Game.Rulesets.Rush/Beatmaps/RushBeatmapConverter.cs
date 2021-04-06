@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             bool crafted = !string.IsNullOrEmpty(beatmap.Metadata.Tags)
                            && beatmap.Metadata.Tags
                                      .Split(" ")
-                                     .Any(tag => tag.Equals(CRAFTED_TAG, StringComparison.InvariantCultureIgnoreCase));
+                                     .Any(tag => tag.Equals(CRAFTED_TAG, StringComparison.OrdinalIgnoreCase));
 
             BackedConverter = crafted
                 ? (IBeatmapConverter)new RushCraftedBeatmapConverter(beatmap, ruleset)
