@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
       <StartupObject>osu.Game.Rulesets.Rush.Tests.VisualTestRunner</StartupObject>
+      <Configurations>Debug;Release;Development</Configurations>
+      <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
     <ItemGroup Label="Service">
       <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
@@ -10,13 +12,16 @@
     </PropertyGroup>
   <ItemGroup Label="Package References">
     <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
   </ItemGroup>
   <PropertyGroup Label="Project">
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Development' ">
+    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\osu.Game.Rulesets.Rush\osu.Game.Rulesets.Rush.csproj" />

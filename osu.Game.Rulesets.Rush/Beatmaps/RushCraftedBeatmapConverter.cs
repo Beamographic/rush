@@ -116,7 +116,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                         {
                             StartTime = original.StartTime,
                             EndTime = original.GetEndTime(),
-                            Samples = original.Samples,
+                            NodeSamples = (original as IHasRepeats)?.NodeSamples ?? new List<IList<HitSampleInfo>> { original.Samples },
                             Lane = LanedHitLane.Ground
                         };
                     }

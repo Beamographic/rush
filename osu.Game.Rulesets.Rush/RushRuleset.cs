@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -24,15 +26,17 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
-        public const string DESCRIPTION = "Rush!";
-        public const string PLAYING_VERB = "Punching doods";
         public const string SHORT_NAME = "rush";
 
-        public override string Description => DESCRIPTION;
+        private static readonly Lazy<bool> is_development_build = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetName().Name.EndsWith("-dev"));
 
-        public override string PlayingVerb => PLAYING_VERB;
+        public static bool IsDevelopmentBuild => is_development_build.Value;
 
-        public override string ShortName => SHORT_NAME;
+        public override string ShortName => !IsDevelopmentBuild ? SHORT_NAME : $"{SHORT_NAME}-dev";
+
+        public override string Description => !IsDevelopmentBuild ? "Rush!" : "Rush! (dev build)";
+
+        public override string PlayingVerb => "Punching doods";
 
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new DrawableRushRuleset(this, beatmap, mods);
 
@@ -106,14 +110,40 @@ namespace osu.Game.Rulesets.Rush
                         Origin = Anchor.Centre,
                         Icon = FontAwesome.Regular.Circle,
                     },
-                    new SpriteIcon
+                };
+
+                if (!RushRuleset.IsDevelopmentBuild)
+                {
+                    AddInternal(new SpriteIcon
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         Scale = new Vector2(0.6f),
                         Icon = FontAwesome.Solid.Running,
-                    }
-                };
+                    });
+                }
+                else
+                {
+                    AddRangeInternal(new[]
+                    {
+                        new SpriteIcon
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Scale = new Vector2(0.4f),
+                            Icon = FontAwesome.Solid.Running,
+                            Margin = new MarginPadding { Bottom = 0.5f, Right = 0.5f },
+                        },
+                        new SpriteIcon
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Scale = new Vector2(0.4f),
+                            Icon = FontAwesome.Solid.Wrench,
+                            Margin = new MarginPadding { Top = 0.5f, Left = 0.5f },
+                        }
+                    });
+                }
             }
         }
     }

@@ -2,9 +2,9 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Graphics;
-using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
+using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Skinning;
 using osuTK;
 
@@ -23,12 +23,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
-
-        public override bool OnPressed(RushAction action) => false;
-
-        public override void OnReleased(RushAction action)
-        {
-        }
 
         protected override void UpdateHitStateTransforms(ArmedState state)
         {
