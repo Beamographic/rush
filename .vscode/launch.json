@@ -25,5 +25,17 @@
             "preLaunchTask": "Build tests (Release)",
             "console": "internalConsole"
         },
+        {
+            "name": "Rush for osu! (Tests, Development)",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "dotnet",
+            "args": [
+                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Development/net5.0/osu.Game.Rulesets.Rush.Tests.dll"
+            ],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Build tests (Development)",
+            "console": "internalConsole"
+        },
     ]
 }
