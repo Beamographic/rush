@@ -80,10 +80,10 @@ namespace osu.Game.Rulesets.Rush.Replays
         private enum RushSideActionFlags
         {
             None = 0,
-            AirTertiary = 1,
-            AirQuaternary = 2,
-            GroundTertiary = 4,
-            GroundQuaternary = 8,
+            AirTertiary = 1 << 2,
+            AirQuaternary = 1 << 3,
+            GroundTertiary = 1 << 6,
+            GroundQuaternary = 1 << 7,
         }
     }
 }
