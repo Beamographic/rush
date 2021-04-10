@@ -72,7 +72,9 @@ namespace osu.Game.Rulesets.Rush.Objects
 
         private void updateNestedSamples()
         {
-            if (NodeSamples.Count == 0) return;
+            if (NodeSamples.Count == 0)
+                return;
+
             Head.Samples = NodeSamples.First();
             Tail.Samples = NodeSamples.Last();
         }

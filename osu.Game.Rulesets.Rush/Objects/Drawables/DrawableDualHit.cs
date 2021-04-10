@@ -7,7 +7,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
-using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
 
@@ -80,48 +79,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Origin = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
         }
 
-        public override bool OnPressed(RushAction action)
-        {
-            if (AllJudged)
-                return false;
-
-            var targetPart = RushActionExtensions.Lane(action) == LanedHitLane.Air ? Air : Ground;
-            if (!CheckHittable(targetPart))
-                return false;
-
-            var airResult = !Air.AllJudged && Air.LaneMatchesAction(action) && Air.UpdateResult(true);
-            var groundResult = !Ground.AllJudged && Ground.LaneMatchesAction(action) && Ground.UpdateResult(true);
-
-            if (Air.AllJudged && Ground.AllJudged)
-                return UpdateResult(true);
-
-            return airResult || groundResult;
-        }
+        // Input are handled by the DualHit parts, since they still act like normal minions
+        public override bool OnPressed(RushAction action) => false;
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            if (AllJudged)
-                return;
+            if (AllJudged) return;
 
-            if (!userTriggered && timeOffset < 0)
-                return;
-
-            if (!Ground.AllJudged)
-                Ground.UpdateResult(false);
-
-            if (!Air.AllJudged)
-                Air.UpdateResult(false);
-
-            if (Air.Result.Type == HitResult.None || Ground.Result.Type == HitResult.None)
-                return;
-
-            // If we missed either, it's an overall miss.
-            // If we hit both, the overall judgement is the lowest score of the two.
-            ApplyResult(r =>
-            {
-                var lowestResult = Air.Result.Type < Ground.Result.Type ? Air.Result.Type : Ground.Result.Type;
-                r.Type = !Air.IsHit && !Ground.IsHit ? r.Judgement.MinResult : lowestResult;
-            });
+            // We can judge this object the instant the nested objects are judged
+            if (Air.AllJudged && Ground.AllJudged)
+                ApplyResult(r => r.Type = (Air.IsHit && Ground.IsHit) ? r.Judgement.MaxResult : r.Judgement.MinResult);
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)

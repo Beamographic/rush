@@ -47,7 +47,6 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private LanedHitLane? previousLane;
         private Vector2? previousSourcePosition;
         private double previousSourceTime;
-        private HitObjectFlags previousFlags;
 
         private readonly Dictionary<LanedHitLane, StarSheet> currentStarSheets = new Dictionary<LanedHitLane, StarSheet>();
 
@@ -86,12 +85,11 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
         protected override IEnumerable<RushHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap, CancellationToken cancellationToken)
         {
-            void updatePrevious(LanedHitLane? newLane, HitObjectFlags newFlags)
+            void updatePrevious(LanedHitLane? newLane)
             {
                 previousLane = newLane;
                 previousSourceTime = original.GetEndTime();
                 previousSourcePosition = (original as IHasPosition)?.Position;
-                previousFlags = newFlags;
             }
 
             // if it's definitely a spinner, return a miniboss
@@ -99,19 +97,19 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             {
                 yield return createMiniBoss(original);
 
-                updatePrevious(null, HitObjectFlags.None);
+                updatePrevious(null);
                 yield break;
             }
 
             // otherwise do some flag magic
             Random random = new Random((int)original.StartTime);
 
-            HitObjectFlags flags = flagsForHitObject(original, beatmap);
+            HitObjectFlags flags = flagsForHitObject(original);
 
             // if no flags, completely skip this object
             if (flags == HitObjectFlags.None)
             {
-                updatePrevious(previousLane, HitObjectFlags.None);
+                updatePrevious(previousLane);
                 yield break;
             }
 
@@ -192,7 +190,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     yield return currentStarSheets[otherLane];
                 }
 
-                updatePrevious(sheetLane, flags);
+                updatePrevious(sheetLane);
                 yield break;
             }
 
@@ -206,7 +204,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             // if it's low probability, potentially skip this object
             if (flags.HasFlagFast(HitObjectFlags.LowProbability) && random.NextDouble() < skip_probability)
             {
-                updatePrevious(lane ?? previousLane, flags);
+                updatePrevious(lane ?? previousLane);
                 yield break;
             }
 
@@ -219,7 +217,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 nextDualHitTime = original.StartTime + min_dualhit_time;
                 yield return createDualHit(original);
 
-                updatePrevious(null, flags);
+                updatePrevious(null);
                 yield break;
             }
 
@@ -233,6 +231,9 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                     ? LanedHitLane.Ground
                     : (LanedHitLane?)null;
 
+            // ReSharper disable once MergeSequentialChecks
+            // weirdness, merging both checks result in IOE warning
+            // for accessing nullable value, just disable it for now.
             if (blockedLane != null && finalLane == blockedLane)
                 finalLane = blockedLane.Value.Opposite();
 
@@ -255,10 +256,6 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
                 // if the new sawblade is too close to the previous hit in the same lane, skip it
                 var tooCloseToSameLane = previousLane == null || previousLane == sawbladeLane && original.StartTime - previousSourceTime < sawblade_same_lane_safety_time;
-
-                // if a ground sawblade is too far from the previous hit in the air lane, skip it (as the player may not have time to jump upon landing)
-                var canFallOntoSawblade = previousLane == LanedHitLane.Air && sawbladeLane == LanedHitLane.Ground && original.StartTime - previousSourceTime > sawblade_fall_safety_near_time
-                                          && original.StartTime - previousSourceTime < sawblade_fall_safety_far_time;
 
                 // air sawblades may only appear in a kiai section, and not too close to a hit in the same lane (or laneless)
                 // also need to account for a gap where the player may fall onto the blade
@@ -287,7 +284,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             if (finalLane != blockedLane && !tooCloseToLastSawblade && (!sawbladeAdded || !flags.HasFlagFast(HitObjectFlags.AllowSawbladeReplace)))
                 yield return createNormalHit(original, finalLane);
 
-            updatePrevious(finalLane, flags);
+            updatePrevious(finalLane);
         }
 
         private LanedHit createNormalHit(HitObject original, LanedHitLane lane, IList<HitSampleInfo> samples = null, double? time = null)
@@ -350,7 +347,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
         private LanedHitLane? laneForHitObject(HitObject hitObject) =>
             hitObject is IHasYPosition hasYPosition ? (LanedHitLane?)(hasYPosition.Y < half_height ? LanedHitLane.Air : LanedHitLane.Ground) : null;
 
-        private HitObjectFlags flagsForHitObject(HitObject hitObject, IBeatmap beatmap)
+        private HitObjectFlags flagsForHitObject(HitObject hitObject)
         {
             HitObjectFlags flags = HitObjectFlags.None;
 

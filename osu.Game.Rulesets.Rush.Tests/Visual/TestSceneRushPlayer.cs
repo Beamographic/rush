@@ -1,12 +1,10 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using NUnit.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.UserInterface;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Tests.Visual;
 
@@ -15,7 +13,6 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
     [TestFixture]
     public class TestSceneRushPlayer : PlayerTestScene
     {
-        private Checkbox pauseCheckbox;
         private readonly BindableBool pausedBindable = new BindableBool();
 
         protected new RushPlayer Player => (RushPlayer)base.Player;
@@ -27,7 +24,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
         [BackgroundDependencyLoader]
         private void load()
         {
-            Add(pauseCheckbox = new OsuCheckbox
+            Add(new OsuCheckbox
             {
                 LabelText = "Pause",
                 RelativeSizeAxes = Axes.None,
@@ -36,7 +33,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
                 Origin = Anchor.TopLeft,
                 Anchor = Anchor.TopLeft,
                 Margin = new MarginPadding { Top = 40f, Left = 10f },
-                Depth = Single.NegativeInfinity,
+                Depth = float.NegativeInfinity,
                 Current = { BindTarget = pausedBindable }
             });
 
