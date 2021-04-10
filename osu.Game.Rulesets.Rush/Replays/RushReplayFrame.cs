@@ -51,9 +51,9 @@ namespace osu.Game.Rulesets.Rush.Replays
 
         public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
         {
-            int flags = 0;
+            uint flags = 0;
             foreach (var action in Actions)
-                flags |= 1 << (int)action;
+                flags |= 1u << (int)action;
 
             return new LegacyReplayFrame(Time, flags, 0f, ReplayButtonState.None);
         }
