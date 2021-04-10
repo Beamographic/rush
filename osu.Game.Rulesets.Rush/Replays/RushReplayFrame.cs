@@ -41,47 +41,49 @@ namespace osu.Game.Rulesets.Rush.Replays
             if (currentFrame.MouseRight2) Actions.Add(RushAction.GroundSecondary);
 
             if (currentFrame.MouseX != null)
-                Actions.AddRange(getActionsFromFlags((RushSideActionFlags)currentFrame.MouseX));
+                Actions.AddRange(getActionsFromFlags((RushActionFlags)currentFrame.MouseX));
         }
 
-        public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
+        public LegacyReplayFrame ToLegacy(IBeatmap beatmap) => new LegacyReplayFrame(Time, (float)getFlagsFromActions(Actions), 0f, ReplayButtonState.None);
+
+        private static RushActionFlags getFlagsFromActions(IEnumerable<RushAction> actions)
         {
-            ReplayButtonState state = ReplayButtonState.None;
+            RushActionFlags flags = RushActionFlags.None;
 
-            if (Actions.Contains(RushAction.AirPrimary)) state |= ReplayButtonState.Left1;
-            if (Actions.Contains(RushAction.AirSecondary)) state |= ReplayButtonState.Left2;
-            if (Actions.Contains(RushAction.GroundPrimary)) state |= ReplayButtonState.Right1;
-            if (Actions.Contains(RushAction.GroundSecondary)) state |= ReplayButtonState.Right2;
-
-            return new LegacyReplayFrame(Time, (float)getFlagsFromActions(Actions), 0f, state);
-        }
-
-        private static RushSideActionFlags getFlagsFromActions(IEnumerable<RushAction> actions)
-        {
-            RushSideActionFlags flags = RushSideActionFlags.None;
-
-            if (actions.Contains(RushAction.AirTertiary)) flags |= RushSideActionFlags.AirTertiary;
-            if (actions.Contains(RushAction.AirQuaternary)) flags |= RushSideActionFlags.AirQuaternary;
-            if (actions.Contains(RushAction.GroundTertiary)) flags |= RushSideActionFlags.GroundTertiary;
-            if (actions.Contains(RushAction.GroundQuaternary)) flags |= RushSideActionFlags.GroundQuaternary;
+            if (actions.Contains(RushAction.AirPrimary)) flags |= RushActionFlags.AirPrimary;
+            if (actions.Contains(RushAction.AirSecondary)) flags |= RushActionFlags.AirSecondary;
+            if (actions.Contains(RushAction.AirTertiary)) flags |= RushActionFlags.AirTertiary;
+            if (actions.Contains(RushAction.AirQuaternary)) flags |= RushActionFlags.AirQuaternary;
+            if (actions.Contains(RushAction.GroundPrimary)) flags |= RushActionFlags.GroundPrimary;
+            if (actions.Contains(RushAction.GroundSecondary)) flags |= RushActionFlags.GroundSecondary;
+            if (actions.Contains(RushAction.GroundTertiary)) flags |= RushActionFlags.GroundTertiary;
+            if (actions.Contains(RushAction.GroundQuaternary)) flags |= RushActionFlags.GroundQuaternary;
 
             return flags;
         }
 
-        private static IEnumerable<RushAction> getActionsFromFlags(RushSideActionFlags sideFlags)
+        private static IEnumerable<RushAction> getActionsFromFlags(RushActionFlags flags)
         {
-            if (sideFlags.HasFlagFast(RushSideActionFlags.AirTertiary)) yield return RushAction.AirTertiary;
-            if (sideFlags.HasFlagFast(RushSideActionFlags.AirQuaternary)) yield return RushAction.AirQuaternary;
-            if (sideFlags.HasFlagFast(RushSideActionFlags.GroundTertiary)) yield return RushAction.GroundTertiary;
-            if (sideFlags.HasFlagFast(RushSideActionFlags.GroundQuaternary)) yield return RushAction.GroundQuaternary;
+            if (flags.HasFlagFast(RushActionFlags.AirPrimary)) yield return RushAction.AirPrimary;
+            if (flags.HasFlagFast(RushActionFlags.AirSecondary)) yield return RushAction.AirSecondary;
+            if (flags.HasFlagFast(RushActionFlags.AirTertiary)) yield return RushAction.AirTertiary;
+            if (flags.HasFlagFast(RushActionFlags.AirQuaternary)) yield return RushAction.AirQuaternary;
+            if (flags.HasFlagFast(RushActionFlags.GroundPrimary)) yield return RushAction.GroundPrimary;
+            if (flags.HasFlagFast(RushActionFlags.GroundSecondary)) yield return RushAction.GroundSecondary;
+            if (flags.HasFlagFast(RushActionFlags.GroundTertiary)) yield return RushAction.GroundTertiary;
+            if (flags.HasFlagFast(RushActionFlags.GroundQuaternary)) yield return RushAction.GroundQuaternary;
         }
 
         [Flags]
-        private enum RushSideActionFlags
+        private enum RushActionFlags
         {
             None = 0,
+            AirPrimary = 1 << 0,
+            AirSecondary = 1 << 1,
             AirTertiary = 1 << 2,
             AirQuaternary = 1 << 3,
+            GroundPrimary = 1 << 4,
+            GroundSecondary = 1 << 5,
             GroundTertiary = 1 << 6,
             GroundQuaternary = 1 << 7,
         }
