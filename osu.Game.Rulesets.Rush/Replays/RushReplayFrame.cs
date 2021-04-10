@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using osu.Framework.Extensions.EnumExtensions;
 using osu.Game.Beatmaps;
@@ -35,16 +36,14 @@ namespace osu.Game.Rulesets.Rush.Replays
 
         public void FromLegacy(LegacyReplayFrame currentFrame, IBeatmap beatmap, ReplayFrame lastFrame = null)
         {
-            if (currentFrame.MouseLeft1) Actions.Add(RushAction.AirPrimary);
-            if (currentFrame.MouseLeft2) Actions.Add(RushAction.AirSecondary);
-            if (currentFrame.MouseRight1) Actions.Add(RushAction.GroundPrimary);
-            if (currentFrame.MouseRight2) Actions.Add(RushAction.GroundSecondary);
-
-            if (currentFrame.MouseX != null)
-                Actions.AddRange(getActionsFromFlags((RushActionFlags)currentFrame.MouseX));
+            Debug.Assert(currentFrame.MouseX != null);
+            Actions.AddRange(getActionsFromFlags((RushActionFlags)currentFrame.MouseX));
         }
 
-        public LegacyReplayFrame ToLegacy(IBeatmap beatmap) => new LegacyReplayFrame(Time, (float)getFlagsFromActions(Actions), 0f, ReplayButtonState.None);
+        public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
+        {
+            return new LegacyReplayFrame(Time, (float)getFlagsFromActions(Actions), 0f, ReplayButtonState.None);
+        }
 
         private static RushActionFlags getFlagsFromActions(IEnumerable<RushAction> actions)
         {
