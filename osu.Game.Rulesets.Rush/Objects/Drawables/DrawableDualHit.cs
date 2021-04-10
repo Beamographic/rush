@@ -59,7 +59,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (hitObject)
             {
                 case DualHitPart part:
-                    return new DrawableDualHitPart(part);
+                    return new DrawableDualHitPart(part) { CheckHittable = CheckHittable };
             }
 
             return base.CreateNestedHitObject(hitObject);
