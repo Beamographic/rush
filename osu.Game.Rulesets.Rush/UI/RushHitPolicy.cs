@@ -7,6 +7,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+
 namespace osu.Game.Rulesets.Rush.UI
 {
     public class RushHitPolicy
@@ -14,6 +15,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly RushPlayfield playfield;
 
         private IEnumerable<DrawableHitObject> aliveHitObjects => playfield.AllAliveHitObjects;
+
         public RushHitPolicy(RushPlayfield playfield)
         {
             this.playfield = playfield;
@@ -24,12 +26,14 @@ namespace osu.Game.Rulesets.Rush.UI
         private IEnumerable<DrawableHitObject> enumerateHitObjectsUpTo(HitObject hitobject)
         {
             double targetTime = hitobject.StartTime;
+
             foreach (var obj in aliveHitObjects)
             {
                 if (obj.HitObject.StartTime >= targetTime)
                     yield break;
 
                 var laned = hitobject as LanedHit;
+
                 if (laned != null)
                 {
                     // We don't want objects from another lane to block inputs
@@ -46,7 +50,9 @@ namespace osu.Game.Rulesets.Rush.UI
                             yield return laned.Lane == LanedHitLane.Air ? dual.Air : dual.Ground;
                         else
                             yield return dual;
+
                         break;
+
                     case DrawableStarSheet sheet:
                         yield return sheet.Head;
 
@@ -54,6 +60,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
                     default:
                         yield return obj;
+
                         break;
                 }
             }
