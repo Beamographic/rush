@@ -2,11 +2,15 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using osu.Game.Beatmaps;
+using osu.Game.Replays.Legacy;
 using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Replays.Types;
 
 namespace osu.Game.Rulesets.Rush.Replays
 {
-    public class RushReplayFrame : ReplayFrame
+    public class RushReplayFrame : ReplayFrame, IConvertibleReplayFrame
     {
         public List<RushAction> Actions = new List<RushAction>();
 
@@ -25,6 +29,33 @@ namespace osu.Game.Rulesets.Rush.Replays
             : base(time)
         {
             Actions.AddRange(buttons);
+        }
+
+        public void FromLegacy(LegacyReplayFrame currentFrame, IBeatmap beatmap, ReplayFrame lastFrame = null)
+        {
+            Debug.Assert(currentFrame.MouseX != null);
+
+            uint flags = (uint)currentFrame.MouseX;
+
+            int currentBit = 0;
+
+            while (flags > 0)
+            {
+                if ((flags & 1) > 0)
+                    Actions.Add((RushAction)currentBit);
+
+                ++currentBit;
+                flags >>= 1;
+            }
+        }
+
+        public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
+        {
+            uint flags = 0;
+            foreach (var action in Actions)
+                flags |= 1u << (int)action;
+
+            return new LegacyReplayFrame(Time, flags, 0f, ReplayButtonState.None);
         }
     }
 }
