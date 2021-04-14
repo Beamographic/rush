@@ -37,7 +37,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
-            Content.AddRange(new[]
+            AddRangeInternal(new[]
             {
                 sawbladeContainer = new Container
                 {

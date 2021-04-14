@@ -26,12 +26,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Size = new Vector2(DrawableStarSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
-            Content.Child = new SkinnableDrawable(new RushSkinComponent(Component), _ => new StarSheetCapStarPiece())
+            AddInternal(new SkinnableDrawable(new RushSkinComponent(Component), _ => new StarSheetCapStarPiece())
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
-            };
+            });
         }
 
         protected override void OnApply()

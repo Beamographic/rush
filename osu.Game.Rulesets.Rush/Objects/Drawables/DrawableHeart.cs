@@ -31,7 +31,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
-            Content.Add(new ActionBeatSyncedContainer
+            AddInternal(new ActionBeatSyncedContainer
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,

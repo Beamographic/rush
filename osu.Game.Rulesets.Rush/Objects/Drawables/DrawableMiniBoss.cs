@@ -147,8 +147,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     break;
 
                 case ArmedState.Hit:
-                    ProxyContent();
-
                     const float gravity_time = 300;
                     const float gravity_travel_height = 500f;
 

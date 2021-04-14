@@ -35,7 +35,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-            Content.Add(minionPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new MinionPiece())
+            AddInternal(minionPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new MinionPiece())
             {
                 RelativeSizeAxes = Axes.Both
             });

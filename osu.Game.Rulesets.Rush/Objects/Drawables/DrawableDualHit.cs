@@ -34,7 +34,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             RelativeSizeAxes = Axes.Y;
             Height = 1f;
 
-            Content.AddRange(new Drawable[]
+            AddRangeInternal(new Drawable[]
             {
                 skinnedJoin = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitJoin), _ => new DualHitJoinPiece()),
                 airHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
@@ -109,7 +109,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     break;
 
                 case ArmedState.Hit:
-                    ProxyContent();
                     skinnedJoin.Hide();
                     this.FadeOut(animation_time);
                     break;

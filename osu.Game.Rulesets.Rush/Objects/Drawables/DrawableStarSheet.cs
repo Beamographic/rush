@@ -65,7 +65,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Height = NOTE_SHEET_SIZE;
 
-            Content.AddRange(new[]
+            AddRangeInternal(new[]
             {
                 bodyContainer = new Container<SkinnableDrawable>
                 {
