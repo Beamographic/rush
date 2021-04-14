@@ -5,6 +5,7 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Shapes;
+using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osuTK;
@@ -35,7 +36,7 @@ namespace osu.Game.Rulesets.Rush.UI
             };
         }
 
-        public void Apply(Drawable drawable)
+        public void Apply(DrawableHitObject drawable)
         {
             IDrawableLanedHit laned = (IDrawableLanedHit)drawable;
             Size = drawable.Size;
