@@ -82,6 +82,8 @@ namespace osu.Game.Rulesets.Rush.UI
         public void AddExplosion(Drawable drawable) => effectsContainer.Add(drawable);
         public void AddJudgement(DrawableRushJudgement judgement) => judgementContainer.Add(judgement);
 
+        // This pool pre-initializes created DrawableLanedObjects with a predefined lane value
+        // The lane value needs to be set beforehand so that the pieces (Minion, etc) can load using the correct information
         private class DrawableLanedObjectPool<T> : DrawablePool<T> where T : PoolableDrawable, IDrawableLanedHit, new()
         {
             private readonly LanedHitLane lane;
