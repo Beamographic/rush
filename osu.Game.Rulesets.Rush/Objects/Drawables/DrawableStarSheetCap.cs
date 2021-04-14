@@ -18,6 +18,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected DrawableStarSheet StarSheet => (DrawableStarSheet)ParentHitObject;
 
+        protected abstract Anchor CapAnchor { get; }
+
         public override bool DisplayExplosion => true;
 
         protected DrawableStarSheetCap(TObject hitObject)
@@ -37,6 +39,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void OnApply()
         {
             base.OnApply();
+
+            Anchor = CapAnchor;
             AccentColour.BindTo(StarSheet.AccentColour);
         }
 
@@ -62,9 +66,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public bool TriggerResult() => UpdateResult(true);
 
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
-        {
-        }
+        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = CapAnchor;
 
         public override bool OnPressed(RushAction action) => false; // Handled by the star sheet object itself.
 

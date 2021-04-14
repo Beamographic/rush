@@ -45,23 +45,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void OnApply()
         {
             base.OnApply();
+
             Lane = HitObject.Lane;
-            AdjustAnchor();
-            AccentColour.Value = LaneAccentColour;
-        }
-
-        protected virtual void AdjustAnchor()
-        {
-            if (HitObject is null)
-                return;
-
             Anchor = LaneAnchor;
+            AccentColour.Value = LaneAccentColour;
         }
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {
             base.OnDirectionChanged(e);
-            AdjustAnchor();
+
+            if (HitObject != null)
+                Anchor = LaneAnchor;
         }
 
         public override bool OnPressed(RushAction action)

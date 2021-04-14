@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Graphics;
 using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -8,6 +9,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     public class DrawableStarSheetHead : DrawableStarSheetCap<StarSheetHead>
     {
         protected override RushSkinComponents Component => RushSkinComponents.StarSheetHead;
+
+        protected override Anchor CapAnchor => LeadingAnchor;
 
         public DrawableStarSheetHead()
             : this(null)
@@ -33,14 +36,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             {
                 ApplyResult(r => r.Type = r.Judgement.MinResult);
             }
-        }
-
-        protected override void AdjustAnchor()
-        {
-            if (HitObject is null)
-                return;
-
-            Anchor = LeadingAnchor;
         }
     }
 }
