@@ -21,6 +21,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public DrawableDualHitPart Air => airHitContainer.Child;
         public DrawableDualHitPart Ground => groundHitContainer.Child;
 
+        public override bool DisplayResult => false;
+
         public DrawableDualHit()
         : this(null)
         { }
