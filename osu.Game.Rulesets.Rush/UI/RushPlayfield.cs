@@ -264,7 +264,6 @@ namespace osu.Game.Rulesets.Rush.UI
                     playfieldForLane(laned.Lane).AddExplosion(explosion);
             }
 
-            //const float judgement_time = 250f;
             // Display health point difference if the judgement result implies it.
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
