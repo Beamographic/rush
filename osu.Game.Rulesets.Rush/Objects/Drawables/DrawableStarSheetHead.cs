@@ -11,7 +11,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public DrawableStarSheetHead()
             : this(null)
-        { }
+        {
+        }
 
         public DrawableStarSheetHead(StarSheetHead starSheetHead)
             : base(starSheetHead)

@@ -56,7 +56,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public override bool DisplayResult => false;
 
         public DrawableStarSheet()
-            : this(null) { }
+            : this(null)
+        {
+        }
 
         public DrawableStarSheet(StarSheet hitObject)
             : base(hitObject)

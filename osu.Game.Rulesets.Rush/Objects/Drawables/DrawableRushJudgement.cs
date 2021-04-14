@@ -14,7 +14,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public DrawableRushJudgement()
             : this(null, null)
-        { }
+        {
+        }
 
         public DrawableRushJudgement(JudgementResult result, DrawableRushHitObject judgedObject)
             : base(result, judgedObject)

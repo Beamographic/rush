@@ -23,7 +23,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public DrawableHeart()
             : this(null)
-        { }
+        {
+        }
 
         public DrawableHeart(Heart hitObject)
             : base(hitObject)

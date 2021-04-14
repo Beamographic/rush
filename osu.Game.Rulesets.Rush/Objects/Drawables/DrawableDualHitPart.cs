@@ -16,7 +16,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public DrawableDualHitPart()
             : this(null)
-        { }
+        {
+        }
 
         public DrawableDualHitPart(DualHitPart hitObject)
             : base(hitObject)

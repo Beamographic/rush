@@ -29,7 +29,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public DrawableSawblade()
             : this(null)
-        { }
+        {
+        }
 
         public DrawableSawblade(Sawblade hitObject)
             : base(hitObject)
