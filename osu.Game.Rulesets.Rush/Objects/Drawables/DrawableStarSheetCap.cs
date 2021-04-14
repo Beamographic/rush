@@ -18,12 +18,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         protected abstract RushSkinComponents Component { get; }
 
-        private readonly Drawable capPiece;
-
         protected DrawableStarSheet StarSheet => (DrawableStarSheet)ParentHitObject;
-
-        [Resolved]
-        private RushPlayfield playfield { get; set; }
 
         public override bool DisplayExplosion => true;
 
@@ -33,7 +28,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             Size = new Vector2(DrawableStarSheet.NOTE_SHEET_SIZE * 1.1f);
             Origin = Anchor.Centre;
 
-            Content.Child = capPiece = new SkinnableDrawable(new RushSkinComponent(Component), _ => new StarSheetCapStarPiece())
+            Content.Child = new SkinnableDrawable(new RushSkinComponent(Component), _ => new StarSheetCapStarPiece())
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,

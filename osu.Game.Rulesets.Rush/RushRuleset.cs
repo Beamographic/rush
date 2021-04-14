@@ -10,8 +10,10 @@ using osu.Framework.Input.Bindings;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Replays.Types;
 using osu.Game.Rulesets.Rush.Beatmaps;
 using osu.Game.Rulesets.Rush.Mods;
+using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.Rush.Scoring;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
@@ -22,15 +24,17 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
-        public const string DESCRIPTION = "Rush!";
-        public const string PLAYING_VERB = "Punching doods";
         public const string SHORT_NAME = "rush";
 
-        public override string Description => DESCRIPTION;
+        private static readonly Lazy<bool> is_development_build = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetName().Name.EndsWith("-dev"));
 
-        public override string PlayingVerb => PLAYING_VERB;
+        public static bool IsDevelopmentBuild => is_development_build.Value;
 
-        public override string ShortName => SHORT_NAME;
+        public override string ShortName => !IsDevelopmentBuild ? SHORT_NAME : $"{SHORT_NAME}-dev";
+
+        public override string Description => !IsDevelopmentBuild ? "Rush!" : "Rush! (dev build)";
+
+        public override string PlayingVerb => "Punching doods";
 
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new DrawableRushRuleset(this, beatmap, mods);
 
@@ -86,7 +90,20 @@ namespace osu.Game.Rulesets.Rush
             new KeyBinding(InputKey.MouseLeft, RushAction.AirPrimary),
         };
 
+        public override IConvertibleReplayFrame CreateConvertibleReplayFrame() => new RushReplayFrame();
+
         public override Drawable CreateIcon() => new RushIcon();
+
+
+        protected override IEnumerable<HitResult> GetValidHitResults()
+        {
+            return new[]
+            {
+                HitResult.Perfect,
+                HitResult.Great,
+            };
+        }
+
 
         public class RushIcon : CompositeDrawable
         {
@@ -102,14 +119,40 @@ namespace osu.Game.Rulesets.Rush
                         Origin = Anchor.Centre,
                         Icon = FontAwesome.Regular.Circle,
                     },
-                    new SpriteIcon
+                };
+
+                if (!RushRuleset.IsDevelopmentBuild)
+                {
+                    AddInternal(new SpriteIcon
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         Scale = new Vector2(0.6f),
                         Icon = FontAwesome.Solid.Running,
-                    }
-                };
+                    });
+                }
+                else
+                {
+                    AddRangeInternal(new[]
+                    {
+                        new SpriteIcon
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Scale = new Vector2(0.4f),
+                            Icon = FontAwesome.Solid.Running,
+                            Margin = new MarginPadding { Bottom = 0.5f, Right = 0.5f },
+                        },
+                        new SpriteIcon
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Scale = new Vector2(0.4f),
+                            Icon = FontAwesome.Solid.Wrench,
+                            Margin = new MarginPadding { Top = 0.5f, Left = 0.5f },
+                        }
+                    });
+                }
             }
         }
     }

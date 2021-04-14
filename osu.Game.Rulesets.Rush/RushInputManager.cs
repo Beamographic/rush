@@ -25,28 +25,28 @@ namespace osu.Game.Rulesets.Rush
     public enum RushAction
     {
         [Description("Ground (Primary)")]
-        GroundPrimary,
+        GroundPrimary = 0,
 
         [Description("Ground (Secondary)")]
-        GroundSecondary,
+        GroundSecondary = 1,
 
         [Description("Ground (Tertiary)")]
-        GroundTertiary,
+        GroundTertiary = 2,
 
         [Description("Ground (Quaternary)")]
-        GroundQuaternary,
+        GroundQuaternary = 3,
 
         [Description("Air (Primary)")]
-        AirPrimary,
+        AirPrimary = 4,
 
         [Description("Air (Secondary)")]
-        AirSecondary,
+        AirSecondary = 5,
 
         [Description("Air (Tertiary)")]
-        AirTertiary,
+        AirTertiary = 6,
 
         [Description("Air (Quaternary)")]
-        AirQuaternary
+        AirQuaternary = 7
     }
 
     public static class RushActionExtensions

@@ -30,6 +30,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         private readonly Container nonProxiedContent;
 
+        public Func<DrawableHitObject, bool> CheckHittable;
+
         protected readonly IBindable<ScrollingDirection> Direction = new Bindable<ScrollingDirection>();
 
         public override double LifetimeStart

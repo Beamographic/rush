@@ -29,22 +29,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
             };
         }
 
-        [Resolved]
-        private TextureStore textures { get; set; }
-
         [BackgroundDependencyLoader(true)]
-        private void load([CanBeNull] DrawableHitObject drawableHitObject)
+        private void load(IDrawableLanedHit laned, TextureStore textures)
         {
-            if (drawableHitObject is DrawableMinion drawableMinion)
-                drawableMinion.OnHitObjectApplied += ApplyVisuals;
-        }
-
-        public void ApplyVisuals(LanedHit HitObject)
-        {
-            animation.ClearFrames();
-
-            var laneStr = "air";
-            laneStr = HitObject.Lane == LanedHitLane.Air ? "air" : "ground";
+            var laneStr = laned.Lane == LanedHitLane.Air ? "air" : "ground";
 
             animation.AddFrames(new[] { textures.Get($"Minion/pippidon_{laneStr}_0"), textures.Get($"Minion/pippidon_{laneStr}_1") });
         }

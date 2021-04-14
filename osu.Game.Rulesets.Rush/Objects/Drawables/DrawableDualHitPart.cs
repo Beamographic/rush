@@ -28,12 +28,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
 
-        public override bool OnPressed(RushAction action) => false;
-
-        public override void OnReleased(RushAction action)
-        {
-        }
-
         protected override void UpdateHitStateTransforms(ArmedState state)
         {
             const float animation_time = 300f;

@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Diagnostics;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
@@ -11,6 +12,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
+    [Cached(typeof(IDrawableLanedHit))]
     public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
         where TLanedHit : LanedHit
     {
@@ -28,7 +30,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public Anchor TrailingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
 
-        public LanedHitLane Lane => HitObject?.Lane ?? LanedHitLane.Air;
+        public LanedHitLane Lane { get; set; }
+
+        public DrawableLanedHit()
+        : base(null) { }
 
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
@@ -38,6 +43,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void OnApply()
         {
             base.OnApply();
+            Lane = HitObject.Lane;
             AdjustAnchor();
             AccentColour.Value = LaneAccentColour;
         }
@@ -57,7 +63,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool OnPressed(RushAction action)
         {
-            if (!LaneMatchesAction(action))
+            if (!LaneMatchesAction(action) || AllJudged)
+                return false;
+
+            if (!CheckHittable(this))
                 return false;
 
             return UpdateResult(true);

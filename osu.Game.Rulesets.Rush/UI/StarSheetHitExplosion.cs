@@ -19,6 +19,7 @@ namespace osu.Game.Rulesets.Rush.UI
         public StarSheetHitExplosion()
         {
             Origin = Anchor.Centre;
+            Anchor = Anchor.CentreLeft;
 
             InternalChildren = new Drawable[]
             {
@@ -37,7 +38,6 @@ namespace osu.Game.Rulesets.Rush.UI
         public void Apply(Drawable drawable)
         {
             IDrawableLanedHit laned = (IDrawableLanedHit)drawable;
-            Anchor = laned.LaneAnchor;
             Size = drawable.Size;
             flashCircle.Colour = laned.LaneAccentColour.Lighten(0.5f);
         }
