@@ -56,8 +56,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private DrawablePool<DrawableRushJudgement> judgementPool;
         private DrawablePool<DefaultHitExplosion> explosionPool;
-        private DrawablePool<StarSheetHitExplosion> sheetsplosionPool;
-        private DrawablePool<HeartHitExplosion> heartsplosionPool;
+        private DrawablePool<StarSheetHitExplosion> sheetExplosionPool;
+        private DrawablePool<HeartHitExplosion> heartExplosionPool;
         private DrawablePool<HealthText> healthTextPool;
 
         [Cached]
@@ -184,8 +184,8 @@ namespace osu.Game.Rulesets.Rush.UI
             {
                 judgementPool = new DrawablePool<DrawableRushJudgement>(5),
                 explosionPool = new DrawablePool<DefaultHitExplosion>(15),
-                sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(10),
-                heartsplosionPool = new DrawablePool<HeartHitExplosion>(2),
+                sheetExplosionPool = new DrawablePool<StarSheetHitExplosion>(10),
+                heartExplosionPool = new DrawablePool<HeartHitExplosion>(2),
                 healthTextPool = new DrawablePool<HealthText>(2),
             });
         }
@@ -254,9 +254,9 @@ namespace osu.Game.Rulesets.Rush.UI
             {
                 Drawable explosion = rushJudgedObject switch
                 {
-                    DrawableStarSheetHead head => sheetsplosionPool.Get(s => s.Apply(head)),
-                    DrawableStarSheetTail tail => sheetsplosionPool.Get(s => s.Apply(tail)),
-                    DrawableHeart heart => heartsplosionPool.Get(h => h.Apply(heart)),
+                    DrawableStarSheetHead head => sheetExplosionPool.Get(s => s.Apply(head)),
+                    DrawableStarSheetTail tail => sheetExplosionPool.Get(s => s.Apply(tail)),
+                    DrawableHeart heart => heartExplosionPool.Get(h => h.Apply(heart)),
                     _ => explosionPool.Get(h => h.Apply(rushJudgedObject)),
                 };
 
