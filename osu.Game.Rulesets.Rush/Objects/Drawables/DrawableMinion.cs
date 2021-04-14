@@ -41,16 +41,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             });
         }
 
-        public Action<LanedHit> OnHitObjectApplied;
-
-        protected override void OnApply()
-        {
-            base.OnApply();
-
-            // Not clean at all, I hate it
-            OnHitObjectApplied?.Invoke(HitObject);
-        }
-
         protected override void Update()
         {
             base.Update();
