@@ -68,9 +68,9 @@ namespace osu.Game.Rulesets.Rush.UI
             };
         }
 
-        public void Apply(DrawableHitObject HitObject)
+        public void Apply(DrawableHitObject hitObject)
         {
-            if (HitObject is DrawableMiniBoss miniBoss)
+            if (hitObject is DrawableMiniBoss miniBoss)
             {
                 Alpha = 0;
                 Depth = 0;
@@ -81,9 +81,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 Rotation = RNG.NextSingle() * 360f;
                 colouredExplosion.Colour = Color4.Yellow.Darken(0.5f);
             }
-            else
+            else if (hitObject is IDrawableLanedHit laned)
             {
-                IDrawableLanedHit laned = HitObject as IDrawableLanedHit;
                 colouredExplosion.Colour = laned.LaneAccentColour;
                 Anchor = laned.LaneAnchor;
                 Rotation = RNG.NextSingle() * 360f;

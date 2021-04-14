@@ -87,6 +87,7 @@ namespace osu.Game.Rulesets.Rush.UI
         private class DrawableLanedObjectPool<T> : DrawablePool<T> where T : PoolableDrawable, IDrawableLanedHit, new()
         {
             private readonly LanedHitLane lane;
+
             public DrawableLanedObjectPool(LanedHitLane lane, int initialSize, int? maximumSize)
                 : base(initialSize, maximumSize)
             {

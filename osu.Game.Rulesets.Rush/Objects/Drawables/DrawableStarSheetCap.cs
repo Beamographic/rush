@@ -39,6 +39,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.OnApply();
             AccentColour.BindTo(StarSheet.AccentColour);
         }
+
         protected override void OnFree()
         {
             base.OnFree();

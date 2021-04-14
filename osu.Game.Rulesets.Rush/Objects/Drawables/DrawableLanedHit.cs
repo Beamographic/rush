@@ -33,7 +33,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public LanedHitLane Lane { get; set; }
 
         public DrawableLanedHit()
-        : base(null) { }
+            : base(null)
+        {
+        }
 
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
@@ -50,10 +52,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected virtual void AdjustAnchor()
         {
-            if (HitObject is null) return;
+            if (HitObject is null)
+                return;
+
             Anchor = LaneAnchor;
         }
-
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {
@@ -90,11 +93,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return;
 
             ApplyResult(r => r.Type = result);
-        }
-
-        protected override void UpdateStartTimeStateTransforms()
-        {
-            base.UpdateStartTimeStateTransforms();
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)

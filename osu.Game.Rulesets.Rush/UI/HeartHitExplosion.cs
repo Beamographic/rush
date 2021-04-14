@@ -11,6 +11,7 @@ namespace osu.Game.Rulesets.Rush.UI
     public class HeartHitExplosion : HeartPiece
     {
         public override bool RemoveCompletedTransforms => false;
+
         public HeartHitExplosion()
         {
             Origin = Anchor.Centre;

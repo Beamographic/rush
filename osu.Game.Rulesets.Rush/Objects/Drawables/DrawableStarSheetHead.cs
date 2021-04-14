@@ -36,7 +36,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void AdjustAnchor()
         {
-            if (HitObject is null) return;
+            if (HitObject is null)
+                return;
+
             Anchor = LeadingAnchor;
         }
     }

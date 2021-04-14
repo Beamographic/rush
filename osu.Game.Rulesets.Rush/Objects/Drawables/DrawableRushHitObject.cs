@@ -181,6 +181,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             public override bool RemoveWhenNotAlive => false;
         }
+
         #endregion
     }
 

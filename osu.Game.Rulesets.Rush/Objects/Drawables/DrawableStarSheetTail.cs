@@ -51,7 +51,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         // FIXME: should logically be TrailingAnchor, not sure why it renders incorrectly
         protected override void AdjustAnchor()
         {
-            if (HitObject is null) return;
+            if (HitObject is null)
+                return;
+
             Anchor = LeadingAnchor;
         }
     }

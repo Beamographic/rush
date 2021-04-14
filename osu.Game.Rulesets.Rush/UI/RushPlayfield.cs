@@ -180,7 +180,8 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<DualHit, DrawableDualHit>(8);
             RegisterPool<DualHitPart, DrawableDualHitPart>(16);
 
-            AddRangeInternal(new Drawable[]{
+            AddRangeInternal(new Drawable[]
+            {
                 judgementPool = new DrawablePool<DrawableRushJudgement>(5),
                 explosionPool = new DrawablePool<DefaultHitExplosion>(5),
                 heartsplosionPool = new DrawablePool<HeartHitExplosion>(5),
@@ -188,6 +189,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 healthTextPool = new DrawablePool<HealthText>(2),
             });
         }
+
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
             base.OnNewDrawableHitObject(drawableHitObject);
@@ -200,15 +202,15 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public override void Add(DrawableHitObject hitObject)
         {
-            if (hitObject is IDrawableLanedHit laned)
-            {
-                if (laned.Lane == LanedHitLane.Air)
-                    airLane.Add(hitObject);
-                else if (laned.Lane == LanedHitLane.Ground)
-                    groundLane.Add(hitObject);
+            if (!(hitObject is IDrawableLanedHit laned))
                 return;
-            }
+
+            if (laned.Lane == LanedHitLane.Air)
+                airLane.Add(hitObject);
+            else if (laned.Lane == LanedHitLane.Ground)
+                groundLane.Add(hitObject);
         }
+
         public override bool Remove(DrawableHitObject hitObject)
         {
             if (!base.Remove(hitObject))
@@ -220,7 +222,6 @@ namespace osu.Game.Rulesets.Rush.UI
             return true;
         }
 
-
         public override void Add(HitObject hitObject)
         {
             switch (hitObject)
@@ -229,6 +230,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     playfieldForLane(laned.Lane).Add(hitObject);
                     return;
             }
+
             base.Add(hitObject);
         }
 
@@ -261,6 +263,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 if (rushJudgedObject is IDrawableLanedHit laned)
                     playfieldForLane(laned.Lane).AddExplosion(explosion);
             }
+
             //const float judgement_time = 250f;
             // Display health point difference if the judgement result implies it.
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);

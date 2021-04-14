@@ -94,7 +94,6 @@ namespace osu.Game.Rulesets.Rush
 
         public override Drawable CreateIcon() => new RushIcon();
 
-
         protected override IEnumerable<HitResult> GetValidHitResults()
         {
             return new[]
@@ -103,7 +102,6 @@ namespace osu.Game.Rulesets.Rush
                 HitResult.Great,
             };
         }
-
 
         public class RushIcon : CompositeDrawable
         {

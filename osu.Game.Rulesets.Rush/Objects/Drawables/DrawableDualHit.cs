@@ -24,8 +24,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public override bool DisplayResult => false;
 
         public DrawableDualHit()
-        : this(null)
-        { }
+            : this(null)
+        {
+        }
 
         public DrawableDualHit(DualHit hitObject)
             : base(hitObject)

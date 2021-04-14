@@ -23,15 +23,15 @@ namespace osu.Game.Rulesets.Rush.UI
 
             InternalChildren = new Drawable[]
             {
-                    explosionStar = new StarSheetCapStarPiece(),
-                    flashCircle = new Circle
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Alpha = 0.4f,
-                        RelativeSizeAxes = Axes.Both,
-                        Scale = new Vector2(0.5f),
-                    }
+                explosionStar = new StarSheetCapStarPiece(),
+                flashCircle = new Circle
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Alpha = 0.4f,
+                    RelativeSizeAxes = Axes.Both,
+                    Scale = new Vector2(0.5f),
+                }
             };
         }
 
