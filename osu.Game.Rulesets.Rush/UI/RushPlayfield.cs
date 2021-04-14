@@ -56,8 +56,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private DrawablePool<DrawableRushJudgement> judgementPool;
         private DrawablePool<DefaultHitExplosion> explosionPool;
-        private DrawablePool<HeartHitExplosion> heartsplosionPool;
         private DrawablePool<StarSheetHitExplosion> sheetsplosionPool;
+        private DrawablePool<HeartHitExplosion> heartsplosionPool;
         private DrawablePool<HealthText> healthTextPool;
 
         [Cached]
@@ -183,9 +183,9 @@ namespace osu.Game.Rulesets.Rush.UI
             AddRangeInternal(new Drawable[]
             {
                 judgementPool = new DrawablePool<DrawableRushJudgement>(5),
-                explosionPool = new DrawablePool<DefaultHitExplosion>(5),
-                heartsplosionPool = new DrawablePool<HeartHitExplosion>(5),
-                sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(5),
+                explosionPool = new DrawablePool<DefaultHitExplosion>(15),
+                sheetsplosionPool = new DrawablePool<StarSheetHitExplosion>(10),
+                heartsplosionPool = new DrawablePool<HeartHitExplosion>(2),
                 healthTextPool = new DrawablePool<HealthText>(2),
             });
         }
