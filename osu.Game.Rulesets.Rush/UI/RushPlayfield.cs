@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Collections.Generic;
+using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Utils;
 using osu.Game.Rulesets.Judgements;
@@ -15,9 +16,7 @@ using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI.Ground;
-using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
-using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
@@ -37,12 +36,24 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public RushPlayerSprite PlayerSprite { get; }
 
-        private readonly Container underEffectContainer;
-        private readonly Container overEffectContainer;
         private readonly Container halfPaddingOverEffectContainer;
         private readonly Container overPlayerEffectsContainer;
-        private readonly ProxyContainer proxiedHitObjects;
-        private readonly JudgementContainer<DrawableJudgement> judgementContainer;
+
+        private readonly LanePlayfield airLane;
+        private readonly LanePlayfield groundLane;
+
+        public IEnumerable<DrawableHitObject> AllAliveHitObjects
+        {
+            get
+            {
+                if (HitObjectContainer == null)
+                    return Enumerable.Empty<DrawableHitObject>();
+
+                // Intentionally counting on the fact that we don't have nested playfields in our nested playfields
+                IEnumerable<DrawableHitObject> enumerable = HitObjectContainer.AliveObjects.Concat(NestedPlayfields.SelectMany(p => p.HitObjectContainer.AliveObjects)).OrderBy(d => d.HitObject.StartTime);
+                return enumerable;
+            }
+        }
 
         public RushPlayfield()
         {
@@ -111,64 +122,15 @@ namespace osu.Game.Rulesets.Rush.UI
                                         Origin = Anchor.CentreLeft,
                                         Children = new Drawable[]
                                         {
-                                            new Container
-                                            {
-                                                Name = "Hit target indicators",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                                                Children = new Drawable[]
-                                                {
-                                                    new Container
-                                                    {
-                                                        Anchor = Anchor.TopLeft,
-                                                        Origin = Anchor.Centre,
-                                                        Size = new Vector2(HIT_TARGET_SIZE),
-                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.AirHitTarget), _ => new HitTarget()
-                                                        {
-                                                            RelativeSizeAxes = Axes.Both,
-                                                        }, confineMode: ConfineMode.ScaleToFit),
-                                                    },
-                                                    new Container
-                                                    {
-                                                        Anchor = Anchor.BottomLeft,
-                                                        Origin = Anchor.Centre,
-                                                        Size = new Vector2(HIT_TARGET_SIZE),
-                                                        Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.GroundHitTarget), _ => new HitTarget()
-                                                        {
-                                                            RelativeSizeAxes = Axes.Both,
-                                                        }, confineMode: ConfineMode.ScaleToFit),
-                                                    },
-                                                }
-                                            },
-                                            underEffectContainer = new Container
-                                            {
-                                                Name = "Under Effects",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                                            },
-                                            judgementContainer = new JudgementContainer<DrawableJudgement>
-                                            {
-                                                Name = "Judgement",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
-                                            },
+                                            airLane = new LanePlayfield(LanedHitLane.Air),
+                                            groundLane = new LanePlayfield(LanedHitLane.Ground),
+                                            // Contains miniboss and duals for now
                                             new Container
                                             {
                                                 Name = "Hit Objects",
                                                 RelativeSizeAxes = Axes.Both,
                                                 Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                                                 Child = HitObjectContainer
-                                            },
-                                            proxiedHitObjects = new ProxyContainer
-                                            {
-                                                Name = "Proxied Hit Objects",
-                                                RelativeSizeAxes = Axes.Both,
-                                            },
-                                            overEffectContainer = new Container
-                                            {
-                                                Name = "Over Effects",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET }
                                             },
                                             halfPaddingOverEffectContainer = new Container
                                             {
@@ -196,25 +158,29 @@ namespace osu.Game.Rulesets.Rush.UI
                     }
                 }
             };
+            AddNested(airLane);
+            AddNested(groundLane);
+            NewResult += onNewResult;
+
+            hitPolicy = new RushHitPolicy(this);
         }
 
-        [BackgroundDependencyLoader]
-        private void load(TextureStore store)
-        {
-        }
+        private readonly RushHitPolicy hitPolicy;
 
         public override void Add(DrawableHitObject hitObject)
         {
-            hitObject.OnNewResult += onNewResult;
-
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
 
-            switch (hitObject)
+            ((DrawableRushHitObject)hitObject).CheckHittable = hitPolicy.IsHittable;
+
+            if (hitObject is IDrawableLanedHit laned)
             {
-                case DrawableRushHitObject drho:
-                    proxiedHitObjects.Add(drho.CreateProxiedContent());
-                    break;
+                if (laned.Lane == LanedHitLane.Air)
+                    airLane.Add(hitObject);
+                else if (laned.Lane == LanedHitLane.Ground)
+                    groundLane.Add(hitObject);
+                return;
             }
 
             base.Add(hitObject);
@@ -224,8 +190,6 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             if (!base.Remove(hitObject))
                 return false;
-
-            hitObject.OnNewResult -= onNewResult;
 
             if (hitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked -= onMiniBossAttacked;
@@ -265,22 +229,6 @@ namespace osu.Game.Rulesets.Rush.UI
 
             const float judgement_time = 250f;
 
-            // Display hit explosions for objects that allow it.
-            if (result.IsHit && rushJudgedObject.DisplayExplosion)
-            {
-                var explosion = rushJudgedObject.CreateHitExplosion();
-
-                if (explosion != null)
-                {
-                    // TODO: low priority, but the explosion should be added in a container
-                    //       that has the hit object container to avoid this kinda hacky check.
-                    if (explosion.Depth <= 0)
-                        overEffectContainer.Add(explosion);
-                    else
-                        underEffectContainer.Add(explosion);
-                }
-            }
-
             // Display health point difference if the judgement result implies it.
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
@@ -305,58 +253,12 @@ namespace osu.Game.Rulesets.Rush.UI
                           .MoveToOffset(new Vector2(0f, -20f), judgement_time)
                           .Expire(true);
             }
-
-            // Display judgement results in a drawable for objects that allow it.
-            if (rushJudgedObject.DisplayResult)
-            {
-                DrawableJudgement judgementDrawable = null;
-
-                // TODO: showing judgements based on the judged object suggests that
-                //       this may want to be inside the object class as well.
-                switch (rushJudgedObject.HitObject)
-                {
-                    case Sawblade sawblade:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(sawblade.Lane.Opposite())),
-                            Scale = new Vector2(1.2f)
-                        };
-
-                        break;
-
-                    case LanedHit lanedHit:
-                        judgementDrawable = new DrawableRushJudgement(result, rushJudgedObject)
-                        {
-                            Origin = Anchor.Centre,
-                            Position = new Vector2(0f, judgementPositionForLane(lanedHit.Lane)),
-                            Scale = new Vector2(1.5f)
-                        };
-
-                        break;
-                }
-
-                if (judgementDrawable != null)
-                    judgementContainer.Add(judgementDrawable);
-            }
         }
-
-        private float judgementPositionForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? -JUDGEMENT_OFFSET : judgementContainer.DrawHeight - JUDGEMENT_OFFSET;
 
         public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
 
         public void OnReleased(RushAction action)
         {
-        }
-
-        private class ProxyContainer : LifetimeManagementContainer
-        {
-            public new MarginPadding Padding
-            {
-                set => base.Padding = value;
-            }
-
-            public void Add(Drawable proxy) => AddInternal(proxy);
         }
     }
 }

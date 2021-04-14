@@ -177,6 +177,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!LaneMatchesAction(action) || Head.Judged)
                 return false;
 
+            if (!CheckHittable(this))
+                return false;
+
             UpdateResult(true);
             return Head.Judged;
         }
