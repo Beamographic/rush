@@ -205,10 +205,7 @@ namespace osu.Game.Rulesets.Rush.UI
             if (!(hitObject is IDrawableLanedHit laned))
                 return;
 
-            if (laned.Lane == LanedHitLane.Air)
-                airLane.Add(hitObject);
-            else if (laned.Lane == LanedHitLane.Ground)
-                groundLane.Add(hitObject);
+            playfieldForLane(laned.Lane).Add(hitObject);
         }
 
         public override bool Remove(DrawableHitObject hitObject)
