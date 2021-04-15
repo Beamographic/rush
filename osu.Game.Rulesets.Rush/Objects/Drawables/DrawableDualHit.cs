@@ -1,13 +1,11 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
-using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -77,13 +75,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.UpdateInitialTransforms();
 
             skinnedJoin.Show();
-        }
-
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
-        {
-            base.OnDirectionChanged(e);
-
-            Origin = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
         }
 
         // Input are handled by the DualHit parts, since they still act like normal minions
