@@ -47,20 +47,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
         }
 
-        [Resolved]
-        private IScrollingInfo scrollingInfo { get; set; }
-
-        [Resolved]
-        private RushPlayfield playfield { get; set; }
-
         public override bool DisplayResult => false;
+
+        public DrawableStarSheet()
+            : this(null)
+        {
+        }
 
         public DrawableStarSheet(StarSheet hitObject)
             : base(hitObject)
         {
             Height = NOTE_SHEET_SIZE;
 
-            Content.AddRange(new[]
+            AddRangeInternal(new[]
             {
                 bodyContainer = new Container<SkinnableDrawable>
                 {
@@ -96,24 +95,24 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            headContainer.Clear();
-            tailContainer.Clear();
+            headContainer.Clear(false);
+            tailContainer.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
         {
             switch (hitObject)
             {
-                case StarSheetHead _:
-                    return new DrawableStarSheetHead(this)
+                case StarSheetHead head:
+                    return new DrawableStarSheetHead(head)
                     {
                         Anchor = LeadingAnchor,
                         Origin = Anchor.Centre,
                         AccentColour = { BindTarget = AccentColour }
                     };
 
-                case StarSheetTail _:
-                    return new DrawableStarSheetTail(this)
+                case StarSheetTail tail:
+                    return new DrawableStarSheetTail(tail)
                     {
                         Anchor = TrailingAnchor,
                         Origin = Anchor.Centre,
@@ -186,16 +185,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override void OnReleased(RushAction action)
         {
+            // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
+            if (Judged || !Head.IsHit)
+                return;
+
             if (!LaneMatchesAction(action))
                 return;
 
             // Check if there was also another action holding the same star sheet,
             // and use it in replace to this released one if so. (support for switching keys during hold)
             if (ActionInputManager.PressedActions.Count(LaneMatchesAction) > 1)
-                return;
-
-            // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
-            if (!Head.IsHit || Judged)
                 return;
 
             UpdateResult(true);

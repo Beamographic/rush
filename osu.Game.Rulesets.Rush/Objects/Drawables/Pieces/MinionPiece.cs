@@ -1,13 +1,11 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Animations;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Textures;
-using osu.Game.Rulesets.Objects.Drawables;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
@@ -30,13 +28,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
         }
 
         [BackgroundDependencyLoader(true)]
-        private void load(TextureStore store, [CanBeNull] DrawableHitObject drawableHitObject)
+        private void load(IDrawableLanedHit laned, TextureStore textures)
         {
-            var laneStr = "air";
-            if (drawableHitObject is IDrawableLanedHit drawableLanedHit)
-                laneStr = drawableLanedHit.Lane == LanedHitLane.Air ? "air" : "ground";
+            var laneStr = laned.Lane == LanedHitLane.Air ? "air" : "ground";
 
-            animation.AddFrames(new[] { store.Get($"Minion/pippidon_{laneStr}_0"), store.Get($"Minion/pippidon_{laneStr}_1") });
+            animation.AddFrames(new[] { textures.Get($"Minion/pippidon_{laneStr}_0"), textures.Get($"Minion/pippidon_{laneStr}_1") });
         }
     }
 }

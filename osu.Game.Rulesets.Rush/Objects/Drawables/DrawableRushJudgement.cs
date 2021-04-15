@@ -12,9 +12,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private const float judgement_time = 250f;
         private const float judgement_movement = 300;
 
+        public DrawableRushJudgement()
+            : this(null, null)
+        {
+        }
+
         public DrawableRushJudgement(JudgementResult result, DrawableRushHitObject judgedObject)
             : base(result, judgedObject)
         {
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
+            Position = new Vector2(0f, -80f);
+            Scale = new Vector2(1.5f);
         }
 
         protected override void ApplyHitAnimations() =>

@@ -1,16 +1,15 @@
-﻿// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
+// Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
+using osu.Framework.Graphics.Pooling;
 using osu.Framework.Input.Bindings;
-using osu.Framework.Utils;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
@@ -18,7 +17,6 @@ using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
-using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
@@ -55,8 +53,18 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
+        private DrawablePool<DrawableRushJudgement> judgementPool;
+        private DrawablePool<DefaultHitExplosion> explosionPool;
+        private DrawablePool<StarSheetHitExplosion> sheetExplosionPool;
+        private DrawablePool<HeartHitExplosion> heartExplosionPool;
+        private DrawablePool<HealthText> healthTextPool;
+
+        [Cached]
+        private readonly RushHitPolicy hitPolicy;
+
         public RushPlayfield()
         {
+            hitPolicy = new RushHitPolicy(this);
             InternalChildren = new Drawable[]
             {
                 new GridContainer
@@ -161,62 +169,58 @@ namespace osu.Game.Rulesets.Rush.UI
             AddNested(airLane);
             AddNested(groundLane);
             NewResult += onNewResult;
-
-            hitPolicy = new RushHitPolicy(this);
         }
 
-        private readonly RushHitPolicy hitPolicy;
-
-        public override void Add(DrawableHitObject hitObject)
+        [BackgroundDependencyLoader]
+        private void load()
         {
-            if (hitObject is DrawableMiniBoss drawableMiniBoss)
+            RegisterPool<MiniBoss, DrawableMiniBoss>(4);
+            RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
+            RegisterPool<DualHit, DrawableDualHit>(8);
+            RegisterPool<DualHitPart, DrawableDualHitPart>(16);
+
+            AddRangeInternal(new Drawable[]
+            {
+                judgementPool = new DrawablePool<DrawableRushJudgement>(5),
+                explosionPool = new DrawablePool<DefaultHitExplosion>(15),
+                sheetExplosionPool = new DrawablePool<StarSheetHitExplosion>(10),
+                heartExplosionPool = new DrawablePool<HeartHitExplosion>(2),
+                healthTextPool = new DrawablePool<HealthText>(2),
+            });
+        }
+
+        protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
+        {
+            base.OnNewDrawableHitObject(drawableHitObject);
+
+            if (drawableHitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
 
-            ((DrawableRushHitObject)hitObject).CheckHittable = hitPolicy.IsHittable;
+            ((DrawableRushHitObject)drawableHitObject).CheckHittable = hitPolicy.IsHittable;
+        }
 
-            if (hitObject is IDrawableLanedHit laned)
+        public override void Add(HitObject hitObject)
+        {
+            switch (hitObject)
             {
-                if (laned.Lane == LanedHitLane.Air)
-                    airLane.Add(hitObject);
-                else if (laned.Lane == LanedHitLane.Ground)
-                    groundLane.Add(hitObject);
-                return;
+                case LanedHit laned:
+                    laned.LaneBindable.BindValueChanged(lane =>
+                    {
+                        if (lane.OldValue != lane.NewValue)
+                            playfieldForLane(lane.OldValue).Remove(hitObject);
+                        playfieldForLane(lane.OldValue).Add(hitObject);
+                    }, true);
+                    return;
             }
 
             base.Add(hitObject);
         }
 
-        public override bool Remove(DrawableHitObject hitObject)
-        {
-            if (!base.Remove(hitObject))
-                return false;
-
-            if (hitObject is DrawableMiniBoss drawableMiniBoss)
-                drawableMiniBoss.Attacked -= onMiniBossAttacked;
-
-            return true;
-        }
+        private LanePlayfield playfieldForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? airLane : groundLane;
 
         private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset)
         {
-            // TODO: maybe this explosion can be moved into the mini boss drawable object itself.
-            var explosion = new DefaultHitExplosion(Color4.Yellow.Darken(0.5f))
-            {
-                Alpha = 0,
-                Depth = 0,
-                Origin = Anchor.Centre,
-                Anchor = drawableMiniBoss.Anchor,
-                Size = new Vector2(200, 200),
-                Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f) * 1.5f,
-                Rotation = RNG.NextSingle() * 360f,
-            };
-
-            halfPaddingOverEffectContainer.Add(explosion);
-
-            explosion.ScaleTo(explosion.Scale * 0.5f, 200f)
-                     .FadeOutFromOne(200f)
-                     .Expire(true);
-
+            halfPaddingOverEffectContainer.Add(explosionPool.Get(h => h.Apply(drawableMiniBoss)));
             PlayerSprite.Target = PlayerTargetLane.MiniBoss;
         }
 
@@ -227,31 +231,50 @@ namespace osu.Game.Rulesets.Rush.UI
 
             PlayerSprite.HandleResult(rushJudgedObject, result);
 
-            const float judgement_time = 250f;
+            // Display hit explosions for objects that allow it.
+            if (result.IsHit && rushJudgedObject.DisplayExplosion)
+            {
+                Drawable explosion = rushJudgedObject switch
+                {
+                    DrawableStarSheetHead head => sheetExplosionPool.Get(s => s.Apply(head)),
+                    DrawableStarSheetTail tail => sheetExplosionPool.Get(s => s.Apply(tail)),
+                    DrawableHeart heart => heartExplosionPool.Get(h => h.Apply(heart)),
+                    _ => explosionPool.Get(h => h.Apply(rushJudgedObject)),
+                };
+
+                if (rushJudgedObject is IDrawableLanedHit laned)
+                    playfieldForLane(laned.Lane).AddExplosion(explosion);
+            }
 
             // Display health point difference if the judgement result implies it.
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
             if (pointDifference != 0)
+                overPlayerEffectsContainer.Add(healthTextPool.Get(h => h.Apply(pointDifference)));
+
+            // Display judgement results in a drawable for objects that allow it.
+            if (rushJudgedObject.DisplayResult)
             {
-                var healthText = new SpriteText
+                DrawableRushJudgement judgementDrawable = judgementPool.Get(j => j.Apply(result, judgedObject));
+                LanedHitLane judgementLane = LanedHitLane.Air;
+
+                // TODO: showing judgements based on the judged object suggests that
+                //       this may want to be inside the object class as well.
+                switch (rushJudgedObject.HitObject)
                 {
-                    RelativePositionAxes = Axes.Both,
-                    Position = new Vector2(0.75f, 0.5f),
-                    Origin = Anchor.Centre,
-                    Colour = pointDifference > 0 ? Color4.Green : Color4.Red,
-                    Text = $"{pointDifference:+0;-0}",
-                    Font = FontUsage.Default.With(size: 40),
-                    Scale = new Vector2(1.2f),
-                };
+                    case Sawblade sawblade:
+                        judgementLane = sawblade.Lane.Opposite();
+                        break;
 
-                overPlayerEffectsContainer.Add(healthText);
+                    case LanedHit lanedHit:
+                        judgementLane = lanedHit.Lane;
+                        break;
 
-                healthText.ScaleTo(1f, judgement_time)
-                          .Then()
-                          .FadeOutFromOne(judgement_time)
-                          .MoveToOffset(new Vector2(0f, -20f), judgement_time)
-                          .Expire(true);
+                    case MiniBoss _:
+                        break;
+                }
+
+                playfieldForLane(judgementLane).AddJudgement(judgementDrawable);
             }
         }
 

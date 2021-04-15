@@ -21,12 +21,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override float LifetimeEndDelay => 0f;
         protected override bool ExpireOnHit => false;
 
+        public DrawableHeart()
+            : this(null)
+        {
+        }
+
         public DrawableHeart(Heart hitObject)
             : base(hitObject)
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE * 2f);
 
-            Content.Add(new ActionBeatSyncedContainer
+            AddInternal(new ActionBeatSyncedContainer
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
@@ -39,8 +44,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 })
             });
         }
-
-        public override Drawable CreateHitExplosion() => new HeartHitExplosion(this);
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
@@ -68,26 +71,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             // else if we're still able to hit it, check if the player is in the correct lane
             else if (playfield.PlayerSprite.CollidesWith(HitObject))
                 ApplyResult(r => r.Type = r.Judgement.MaxResult);
-        }
-
-        private class HeartHitExplosion : HeartPiece
-        {
-            public HeartHitExplosion(DrawableHeart drawableHeart)
-            {
-                Anchor = drawableHeart.LaneAnchor;
-                Origin = Anchor.Centre;
-                Size = drawableHeart.Size;
-                Scale = new Vector2(0.5f);
-            }
-
-            protected override void LoadComplete()
-            {
-                base.LoadComplete();
-
-                this.ScaleTo(1.25f, RushPlayfield.HIT_EXPLOSION_DURATION)
-                    .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
-                    .Expire(true);
-            }
         }
     }
 }

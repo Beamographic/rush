@@ -1,9 +1,8 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
+using osu.Framework.Graphics;
 using osu.Game.Rulesets.Scoring;
-using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -11,8 +10,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         protected override RushSkinComponents Component => RushSkinComponents.StarSheetHead;
 
-        public DrawableStarSheetHead(DrawableStarSheet starSheet)
-            : base(starSheet, starSheet.HitObject.Head)
+        protected override Anchor CapAnchor => LeadingAnchor;
+
+        public DrawableStarSheetHead()
+            : this(null)
+        {
+        }
+
+        public DrawableStarSheetHead(StarSheetHead starSheetHead)
+            : base(starSheetHead)
         {
         }
 
@@ -31,7 +37,5 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 ApplyResult(r => r.Type = r.Judgement.MinResult);
             }
         }
-
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = LeadingAnchor;
     }
 }

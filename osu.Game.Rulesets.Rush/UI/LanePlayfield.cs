@@ -1,8 +1,10 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
@@ -19,9 +21,12 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly JudgementContainer<DrawableJudgement> judgementContainer;
         private readonly Container effectsContainer;
 
+        private readonly LanedHitLane lane;
+
         public LanePlayfield(LanedHitLane type)
         {
             bool isAirLane = type == LanedHitLane.Air;
+            lane = type;
 
             Name = $"{(isAirLane ? "Air" : "Ground")} Playfield";
             Padding = new MarginPadding { Left = RushPlayfield.HIT_TARGET_OFFSET };
@@ -46,28 +51,50 @@ namespace osu.Game.Rulesets.Rush.UI
                 judgementContainer = new JudgementContainer<DrawableJudgement>(),
                 HitObjectContainer,
             });
-
-            NewResult += onNewResult;
         }
 
-        private void onNewResult(DrawableHitObject hitObject, JudgementResult result)
+        [Resolved]
+        private RushHitPolicy hitPolicy { get; set; }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
-            var rushHitObject = (DrawableRushHitObject)hitObject;
+            registerLanedPool<Sawblade, DrawableSawblade>(4);
+            registerLanedPool<Heart, DrawableHeart>(2);
+            registerLanedPool<StarSheet, DrawableStarSheet>(8);
+            registerLanedPool<StarSheetHead, DrawableStarSheetHead>(8);
+            registerLanedPool<StarSheetTail, DrawableStarSheetTail>(8);
+            registerLanedPool<Minion, DrawableMinion>(8);
+        }
 
-            // Display hit explosions for objects that allow it.
-            if (result.IsHit && rushHitObject.DisplayExplosion)
-                effectsContainer.Add(rushHitObject.CreateHitExplosion());
+        protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
+        {
+            base.OnNewDrawableHitObject(drawableHitObject);
 
-            if (hitObject.DisplayResult)
+            ((DrawableRushHitObject)drawableHitObject).CheckHittable = hitPolicy.IsHittable;
+        }
+
+        private void registerLanedPool<TObject, TDrawable>(int initialSize, int? maximumSize = null) where TObject : LanedHit where TDrawable : DrawableLanedHit<TObject>, new()
+        {
+            RegisterPool<TObject, TDrawable>(new DrawableLanedObjectPool<TDrawable>(lane, initialSize, maximumSize));
+        }
+
+        public void AddExplosion(Drawable drawable) => effectsContainer.Add(drawable);
+        public void AddJudgement(DrawableRushJudgement judgement) => judgementContainer.Add(judgement);
+
+        // This pool pre-initializes created DrawableLanedObjects with a predefined lane value
+        // The lane value needs to be set beforehand so that the pieces (Minion, etc) can load using the correct information
+        private class DrawableLanedObjectPool<T> : DrawablePool<T> where T : PoolableDrawable, IDrawableLanedHit, new()
+        {
+            private readonly LanedHitLane lane;
+
+            public DrawableLanedObjectPool(LanedHitLane lane, int initialSize, int? maximumSize)
+                : base(initialSize, maximumSize)
             {
-                judgementContainer.Add(new DrawableRushJudgement(result, rushHitObject)
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Position = new Vector2(0f, -80f),
-                    Scale = new Vector2(1.5f)
-                });
+                this.lane = lane;
             }
+
+            protected override T CreateNewDrawable() => new T() { Lane = lane };
         }
     }
 }

@@ -12,7 +12,6 @@ using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
-using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -44,31 +43,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public new RushPlayfield Playfield => (RushPlayfield)base.Playfield;
 
-        public override DrawableHitObject<RushHitObject> CreateDrawableRepresentation(RushHitObject h)
-        {
-            switch (h)
-            {
-                case Minion minion:
-                    return new DrawableMinion(minion);
-
-                case MiniBoss miniBoss:
-                    return new DrawableMiniBoss(miniBoss);
-
-                case StarSheet starSheet:
-                    return new DrawableStarSheet(starSheet);
-
-                case DualHit dualHit:
-                    return new DrawableDualHit(dualHit);
-
-                case Sawblade sawblade:
-                    return new DrawableSawblade(sawblade);
-
-                case Heart heart:
-                    return new DrawableHeart(heart);
-            }
-
-            return null;
-        }
+        public override DrawableHitObject<RushHitObject> CreateDrawableRepresentation(RushHitObject h) => null;
 
         protected override PassThroughInputManager CreateInputManager() => new RushInputManager(Ruleset?.RulesetInfo);
     }

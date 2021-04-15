@@ -2,47 +2,55 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Diagnostics;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Utils;
 using osu.Game.Rulesets.Objects.Drawables;
-using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
-using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
+    [Cached(typeof(IDrawableLanedHit))]
     public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
         where TLanedHit : LanedHit
     {
         public virtual Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;
 
-        public Anchor LaneAnchor =>
-            HitObject.Lane switch
-            {
-                LanedHitLane.Air => Direction.Value == ScrollingDirection.Left ? Anchor.TopLeft : Anchor.TopRight,
-                LanedHitLane.Ground => Direction.Value == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight,
-                _ => Direction.Value == ScrollingDirection.Left ? Anchor.BottomLeft : Anchor.BottomRight
-            };
+        public Anchor LaneAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
 
         public Anchor LeadingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
 
         public Anchor TrailingAnchor => Direction.Value == ScrollingDirection.Left ? Anchor.CentreRight : Anchor.CentreLeft;
 
-        public LanedHitLane Lane => HitObject.Lane;
+        public LanedHitLane Lane { get; set; }
+
+        public DrawableLanedHit()
+            : base(null)
+        {
+        }
 
         public DrawableLanedHit(TLanedHit hitObject)
             : base(hitObject)
         {
         }
 
+        protected override void OnApply()
+        {
+            base.OnApply();
+
+            Lane = HitObject.Lane;
+            Anchor = LaneAnchor;
+            AccentColour.Value = LaneAccentColour;
+        }
+
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
         {
             base.OnDirectionChanged(e);
 
-            Anchor = LaneAnchor;
+            if (HitObject != null)
+                Anchor = LaneAnchor;
         }
 
         public override bool OnPressed(RushAction action)
@@ -57,15 +65,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         public virtual bool LaneMatchesAction(RushAction action) => action.Lane() == HitObject.Lane;
-
-        public override Drawable CreateHitExplosion() => new DefaultHitExplosion(LaneAccentColour)
-        {
-            Anchor = Anchor.Centre,
-            Origin = Anchor.Centre,
-            Size = new Vector2(200, 200),
-            Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f),
-            Rotation = RNG.NextSingle() * 360f,
-        };
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
@@ -83,13 +82,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return;
 
             ApplyResult(r => r.Type = result);
-        }
-
-        protected override void UpdateStartTimeStateTransforms()
-        {
-            base.UpdateStartTimeStateTransforms();
-
-            AccentColour.Value = LaneAccentColour;
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)

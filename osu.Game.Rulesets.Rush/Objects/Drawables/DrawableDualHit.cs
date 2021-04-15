@@ -1,13 +1,11 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
-using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
@@ -21,17 +19,24 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public DrawableDualHitPart Air => airHitContainer.Child;
         public DrawableDualHitPart Ground => groundHitContainer.Child;
 
+        public override bool DisplayResult => false;
+
+        public DrawableDualHit()
+            : this(null)
+        {
+        }
+
         public DrawableDualHit(DualHit hitObject)
             : base(hitObject)
         {
             RelativeSizeAxes = Axes.Y;
             Height = 1f;
 
-            Content.AddRange(new Drawable[]
+            AddRangeInternal(new Drawable[]
             {
                 skinnedJoin = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitJoin), _ => new DualHitJoinPiece()),
-                airHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
-                groundHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
+                airHitContainer = new Container<DrawableDualHitPart> { Anchor = Anchor.TopCentre },
+                groundHitContainer = new Container<DrawableDualHitPart> { Anchor = Anchor.BottomCentre },
             });
         }
 
@@ -50,8 +55,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void ClearNestedHitObjects()
         {
             base.ClearNestedHitObjects();
-            airHitContainer.Clear();
-            groundHitContainer.Clear();
+            airHitContainer.Clear(false);
+            groundHitContainer.Clear(false);
         }
 
         protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
@@ -70,13 +75,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             base.UpdateInitialTransforms();
 
             skinnedJoin.Show();
-        }
-
-        protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e)
-        {
-            base.OnDirectionChanged(e);
-
-            Origin = e.NewValue == ScrollingDirection.Left ? Anchor.CentreLeft : Anchor.CentreRight;
         }
 
         // Input are handled by the DualHit parts, since they still act like normal minions
@@ -102,7 +100,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     break;
 
                 case ArmedState.Hit:
-                    ProxyContent();
                     skinnedJoin.Hide();
                     this.FadeOut(animation_time);
                     break;

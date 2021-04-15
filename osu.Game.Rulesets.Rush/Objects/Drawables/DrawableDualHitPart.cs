@@ -14,12 +14,17 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         public override bool DisplayExplosion => true;
 
+        public DrawableDualHitPart()
+            : this(null)
+        {
+        }
+
         public DrawableDualHitPart(DualHitPart hitObject)
             : base(hitObject)
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-            Content.Add(new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitPart), _ => new DualHitPartPiece()));
+            AddInternal(new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitPart), _ => new DualHitPartPiece()));
         }
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);
@@ -35,8 +40,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     break;
 
                 case ArmedState.Hit:
-                    ProxyContent();
-
                     float travelY = 400f * (HitObject.Lane == LanedHitLane.Air ? -1 : 1);
 
                     this.MoveToY(travelY, animation_time, Easing.Out);

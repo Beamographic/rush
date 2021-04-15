@@ -8,8 +8,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public interface IDrawableLanedHit
     {
-        Color4 LaneAccentColour { get; }
+        LanedHitLane Lane { get; set; }
         Anchor LaneAnchor { get; }
-        LanedHitLane Lane { get; }
+        Color4 LaneAccentColour { get; }
     }
 }

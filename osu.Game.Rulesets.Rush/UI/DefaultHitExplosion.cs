@@ -4,28 +4,42 @@
 using System;
 using System.Linq;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Utils;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class DefaultHitExplosion : CompositeDrawable
+    public class DefaultHitExplosion : PoolableDrawable
     {
         private readonly Sprite colouredExplosion;
         private readonly Sprite whiteExplosion;
 
+        private readonly Sparks sparks;
+
         public override bool RemoveWhenNotAlive => true;
+        public override bool RemoveCompletedTransforms => false;
+
+        public DefaultHitExplosion()
+            : this(Color4.White)
+        {
+        }
 
         public DefaultHitExplosion(Color4 explosionColour, int sparkCount = 10, Color4? sparkColour = null)
         {
-            Origin = Anchor.Centre;
             Depth = 1f;
+            Origin = Anchor.Centre;
+            Size = new Vector2(200, 200);
+            Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f);
 
             InternalChildren = new Drawable[]
             {
@@ -42,7 +56,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     Origin = Anchor.Centre,
                     Scale = new Vector2(0.75f)
                 },
-                new Sparks(sparkCount)
+                sparks = new Sparks(sparkCount)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -54,6 +68,27 @@ namespace osu.Game.Rulesets.Rush.UI
             };
         }
 
+        public void Apply(DrawableHitObject hitObject)
+        {
+            if (hitObject is DrawableMiniBoss miniBoss)
+            {
+                Alpha = 0;
+                Depth = 0;
+                Origin = Anchor.Centre;
+                Anchor = miniBoss.Anchor;
+                Size = new Vector2(200, 200);
+                Scale = new Vector2(0.9f + RNG.NextSingle() * 0.2f) * 1.5f;
+                Rotation = RNG.NextSingle() * 360f;
+                colouredExplosion.Colour = Color4.Yellow.Darken(0.5f);
+            }
+            else if (hitObject is IDrawableLanedHit laned)
+            {
+                colouredExplosion.Colour = laned.LaneAccentColour;
+                Anchor = laned.LaneAnchor;
+                Rotation = RNG.NextSingle() * 360f;
+            }
+        }
+
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
@@ -61,10 +96,10 @@ namespace osu.Game.Rulesets.Rush.UI
             whiteExplosion.Texture = store.Get("Effects/explosion");
         }
 
-        protected override void LoadComplete()
+        protected override void PrepareForUse()
         {
-            base.LoadComplete();
-
+            ApplyTransformsAt(double.MinValue, true);
+            ClearTransforms(true);
             ApplyExplosionTransforms();
         }
 
@@ -73,13 +108,17 @@ namespace osu.Game.Rulesets.Rush.UI
         /// </summary>
         protected virtual void ApplyExplosionTransforms()
         {
-            this.ScaleTo(0.5f, RushPlayfield.HIT_EXPLOSION_DURATION)
+            this.ScaleTo(Scale * 0.5f, RushPlayfield.HIT_EXPLOSION_DURATION)
                 .FadeOutFromOne(RushPlayfield.HIT_EXPLOSION_DURATION)
                 .Expire(true);
+
+            sparks.Animate();
         }
 
         protected class Sparks : CompositeDrawable
         {
+            public override bool RemoveCompletedTransforms => false;
+
             private const double average_duration = 1500f;
 
             private readonly Random random = new Random();
@@ -108,10 +147,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 InternalChildren = triangles;
             }
 
-            protected override void LoadComplete()
+            public void Animate()
             {
-                base.LoadComplete();
-
                 foreach (var triangle in triangles)
                 {
                     var scale = 0.8f + random.NextDouble() * 0.2f;
