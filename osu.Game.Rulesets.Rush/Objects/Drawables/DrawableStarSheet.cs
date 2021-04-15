@@ -47,12 +47,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             }
         }
 
-        [Resolved]
-        private IScrollingInfo scrollingInfo { get; set; }
-
-        [Resolved]
-        private RushPlayfield playfield { get; set; }
-
         public override bool DisplayResult => false;
 
         public DrawableStarSheet()
