@@ -7,7 +7,6 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
-using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects;
@@ -173,7 +172,7 @@ namespace osu.Game.Rulesets.Rush.UI
         }
 
         [BackgroundDependencyLoader]
-        private void load(TextureStore store)
+        private void load()
         {
             RegisterPool<MiniBoss, DrawableMiniBoss>(4);
             RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
@@ -224,7 +223,12 @@ namespace osu.Game.Rulesets.Rush.UI
             switch (hitObject)
             {
                 case LanedHit laned:
-                    playfieldForLane(laned.Lane).Add(hitObject);
+                    laned.LaneBindable.BindValueChanged(lane =>
+                    {
+                        if (lane.OldValue != lane.NewValue)
+                            playfieldForLane(lane.OldValue).Remove(hitObject);
+                        playfieldForLane(lane.OldValue).Add(hitObject);
+                    }, true);
                     return;
             }
 
