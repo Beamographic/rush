@@ -7,6 +7,7 @@ using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Skinning;
 using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -36,8 +37,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (state)
             {
                 case ArmedState.Miss:
-                    this.FadeOut(animation_time);
+                    const float miss_time = 150;
+                    this.FadeColour(Color4.Red, miss_time)
+                        .MoveToY(100, miss_time)
+                        .RotateTo(-45, miss_time)
+                        .FadeOut(miss_time);
                     break;
+
 
                 case ArmedState.Hit:
                     float travelY = 400f * (HitObject.Lane == LanedHitLane.Air ? -1 : 1);
