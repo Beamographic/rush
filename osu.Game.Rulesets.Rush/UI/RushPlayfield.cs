@@ -199,25 +199,6 @@ namespace osu.Game.Rulesets.Rush.UI
             ((DrawableRushHitObject)drawableHitObject).CheckHittable = hitPolicy.IsHittable;
         }
 
-        public override void Add(DrawableHitObject hitObject)
-        {
-            if (!(hitObject is IDrawableLanedHit laned))
-                return;
-
-            playfieldForLane(laned.Lane).Add(hitObject);
-        }
-
-        public override bool Remove(DrawableHitObject hitObject)
-        {
-            if (!base.Remove(hitObject))
-                return false;
-
-            if (hitObject is DrawableMiniBoss drawableMiniBoss)
-                drawableMiniBoss.Attacked -= onMiniBossAttacked;
-
-            return true;
-        }
-
         public override void Add(HitObject hitObject)
         {
             switch (hitObject)
