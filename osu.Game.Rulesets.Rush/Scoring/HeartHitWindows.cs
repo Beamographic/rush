@@ -9,10 +9,10 @@ namespace osu.Game.Rulesets.Rush.Scoring
     {
         protected override DifficultyRange[] GetRanges() => new[]
         {
-            new DifficultyRange(HitResult.Perfect, 50, 50, 50),
+            new DifficultyRange(HitResult.Great, 50, 50, 50),
             new DifficultyRange(HitResult.Miss, 200, 200, 200)
         };
 
-        public override bool IsHitResultAllowed(HitResult result) => result == HitResult.Perfect || result == HitResult.Miss;
+        public override bool IsHitResultAllowed(HitResult result) => result == HitResult.Great || result == HitResult.Miss;
     }
 }
