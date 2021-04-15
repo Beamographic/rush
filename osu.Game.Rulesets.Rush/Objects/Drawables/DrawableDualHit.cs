@@ -37,8 +37,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             AddRangeInternal(new Drawable[]
             {
                 skinnedJoin = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitJoin), _ => new DualHitJoinPiece()),
-                airHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
-                groundHitContainer = new Container<DrawableDualHitPart> { RelativeSizeAxes = Axes.Both },
+                airHitContainer = new Container<DrawableDualHitPart> { Anchor = Anchor.TopCentre },
+                groundHitContainer = new Container<DrawableDualHitPart> { Anchor = Anchor.BottomCentre },
             });
         }
 
