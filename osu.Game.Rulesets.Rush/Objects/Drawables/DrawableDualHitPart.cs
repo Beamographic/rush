@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
@@ -37,13 +38,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (state)
             {
                 case ArmedState.Miss:
-                    const float miss_time = 150;
-                    this.FadeColour(Color4.Red, miss_time)
-                        .MoveToY(100, miss_time)
-                        .RotateTo(-45, miss_time)
-                        .FadeOut(miss_time);
+                    const float miss_time = 100;
+                    this.FadeColour(Color4.DarkGray.Darken(0.9f), miss_time);
                     break;
-
 
                 case ArmedState.Hit:
                     float travelY = 400f * (HitObject.Lane == LanedHitLane.Air ? -1 : 1);
