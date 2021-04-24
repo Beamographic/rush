@@ -60,13 +60,21 @@ namespace osu.Game.Rulesets.Rush
                 case ModType.DifficultyIncrease:
                     return new Mod[]
                     {
-                        new MultiMod(new RushModDoubleTime(), new RushModNightcore())
+                        new MultiMod(new RushModSuddenDeath(), new RushModPerfect()),
+                        new MultiMod(new RushModDoubleTime(), new RushModNightcore()),
+                        new RushModFlashlight()
                     };
 
                 case ModType.Automation:
                     return new[]
                     {
                         new MultiMod(new RushModAutoplay(), new RushModCinema())
+                    };
+
+                case ModType.Fun:
+                    return new[]
+                    {
+                        new MultiMod(new ModWindUp(), new ModWindDown())
                     };
 
                 default:
