@@ -1,8 +1,11 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Rush.UI.Ground
 {
@@ -25,6 +28,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
                 {
                     AutoSizeAxes = Axes.X,
                     RelativeSizeAxes = Axes.Y,
+                   // RelativePositionAxes = Axes.X,
                     Direction = FillDirection.Horizontal,
                     Children = new Drawable[]
                     {
@@ -35,19 +39,23 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             };
         }
 
-        protected override void LoadComplete()
+        [Resolved(canBeNull: true)]
+        private IScrollingInfo scrollingInfo { get; set; }
+
+        private double scrollingRange => scrollingInfo.TimeRange.Value;
+
+        private double? startTime;
+
+        protected override void UpdateAfterChildren()
         {
-            base.LoadComplete();
+            base.UpdateAfterChildren();
 
-            ScheduleAfterChildren(() =>
-            {
-                var pieceWidth = groundFlow.Width / 2;
+            if (!startTime.HasValue)
+                startTime = Time.Current;
 
-                groundFlow.MoveToX(-pieceWidth, pieceWidth / scroll_speed)
-                          .Then()
-                          .MoveToX(0f)
-                          .Loop(1f);
-            });
+            if (scrollingInfo is null) return;
+
+            groundFlow.X = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth) % (groundFlow.Width / 2f);
         }
     }
 }

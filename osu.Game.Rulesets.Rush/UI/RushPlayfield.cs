@@ -101,7 +101,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     Anchor = Anchor.BottomCentre,
                     Origin = Anchor.TopCentre,
                     // Due to the size of the player sprite, we have to push the ground even more to the bottom.
-                    Padding = new MarginPadding { Top = 50f },
+                    Padding = new MarginPadding { Top = 50f, Left = HIT_TARGET_OFFSET*2 },
                     Depth = float.MaxValue,
                     Child = new GroundDisplay(),
                 },
