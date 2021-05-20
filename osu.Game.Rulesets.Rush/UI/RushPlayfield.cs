@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Rush.UI
     public class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>
     {
         public const float DEFAULT_HEIGHT = 178;
-        public const float HIT_TARGET_OFFSET = 120;
+        public const float HIT_TARGET_OFFSET = 240;
         public const float HIT_TARGET_SIZE = 100;
         public const float PLAYER_OFFSET = 130;
         public const float JUDGEMENT_OFFSET = 100;
@@ -69,49 +69,24 @@ namespace osu.Game.Rulesets.Rush.UI
             Size = new Vector2(1, DEFAULT_HEIGHT);
             Anchor = Origin = Anchor.Centre;
             InternalChildren = new Drawable[]{
-                new Container{
-                    Name = "Right area",
-                    RelativeSizeAxes = Axes.Both,
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft,
-                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                    Children = new Drawable[]{
-                        airLane = new LanePlayfield(LanedHitLane.Air),
-                        groundLane = new LanePlayfield(LanedHitLane.Ground),
-                        // Contains miniboss and duals for now
-                        new Container
-                        {
-                            Name = "Hit Objects",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                            Child = HitObjectContainer
-                        },
-                        halfPaddingOverEffectContainer = new Container
-                        {
-                            Name = "Over Effects (Half Padding)",
-                            RelativeSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 2f }
-                        }
-                    }
-                },
+                airLane = new LanePlayfield(LanedHitLane.Air),
+                groundLane = new LanePlayfield(LanedHitLane.Ground),
+                // Contains miniboss and duals for now
                 new Container
                 {
-                    Name = "Ground area",
+                    Name = "Hit Objects",
                     RelativeSizeAxes = Axes.Both,
-                    Anchor = Anchor.BottomCentre,
-                    Origin = Anchor.TopCentre,
-                    // Due to the size of the player sprite, we have to push the ground even more to the bottom.
-                    Padding = new MarginPadding { Top = 50f, Left = HIT_TARGET_OFFSET*2 },
-                    Depth = float.MaxValue,
-                    Child = new GroundDisplay(),
+                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                    Child = HitObjectContainer
                 },
-                PlayerSprite = new RushPlayerSprite(0, -DEFAULT_HEIGHT)
+                halfPaddingOverEffectContainer = new Container
                 {
-                    Anchor = Anchor.BottomLeft,
-                    Origin = Anchor.BottomLeft,
-                    Position = new Vector2(PLAYER_OFFSET,0),
-                    Scale = new Vector2(0.75f),
+                    Name = "Over Effects (Half Padding)",
+                    RelativeSizeAxes = Axes.Both,
+                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 4f }
                 },
+                new GroundDisplay(),
+                PlayerSprite = new RushPlayerSprite(),
                 overPlayerEffectsContainer = new Container
                 {
                     Origin = Anchor.CentreLeft,

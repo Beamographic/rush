@@ -20,7 +20,10 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
 
         public GroundDisplay()
         {
+            Anchor = Anchor.BottomCentre;
+            Origin = Anchor.TopCentre;
             RelativeSizeAxes = Axes.Both;
+            Padding = new MarginPadding { Top = 50f, Left = RushPlayfield.HIT_TARGET_OFFSET };
 
             InternalChildren = new[]
             {

@@ -134,17 +134,19 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
-        private readonly float groundY;
-        private readonly float airY;
+        private float groundY => 0;
+        private float airY => -RushPlayfield.DEFAULT_HEIGHT;
 
         private float playHeight => Math.Abs(groundY - airY);
         private float distanceToGround => Math.Abs(Y - groundY);
         private float distanceToAir => Math.Abs(Y - airY);
 
-        public RushPlayerSprite(float groundY, float airY)
+        public RushPlayerSprite()
         {
-            this.groundY = groundY;
-            this.airY = airY;
+            Scale = new Vector2(0.75f);
+            Anchor = Anchor.BottomLeft;
+            Origin = Anchor.BottomLeft;
+            X = RushPlayfield.PLAYER_OFFSET;
 
             AddRangeInternal(Enum.GetValues(typeof(PlayerAnimation)).Cast<PlayerAnimation>().Select(createTextureAnimation));
         }
