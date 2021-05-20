@@ -3,12 +3,14 @@
 
 using System;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Skinning;
 using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -55,6 +57,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             switch (state)
             {
+                case ArmedState.Miss:
+                    this.FadeColour(Color4.DarkGray.Darken(0.9f), 100);
+                    break;
+
                 case ArmedState.Hit:
                     const float gravity_time = 300;
                     float randomness = -0.5f + (float)random.NextDouble();

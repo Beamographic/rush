@@ -1,12 +1,14 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Skinning;
 using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -36,7 +38,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (state)
             {
                 case ArmedState.Miss:
-                    this.FadeOut(animation_time);
+                    this.FadeColour(Color4.DarkGray.Darken(0.9f), 100);
                     break;
 
                 case ArmedState.Hit:
