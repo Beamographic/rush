@@ -31,7 +31,6 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
                 {
                     AutoSizeAxes = Axes.X,
                     RelativeSizeAxes = Axes.Y,
-                   // RelativePositionAxes = Axes.X,
                     Direction = FillDirection.Horizontal,
                     Children = new Drawable[]
                     {
@@ -45,17 +44,11 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
         [Resolved(canBeNull: true)]
         private IScrollingInfo scrollingInfo { get; set; }
 
-        private double scrollingRange => scrollingInfo.TimeRange.Value;
-
-        private double? startTime;
-
         protected override void UpdateAfterChildren()
         {
             base.UpdateAfterChildren();
 
-            if (!startTime.HasValue)
-                startTime = Time.Current;
-
+            // Tests don't have scrolling info yet
             if (scrollingInfo is null) return;
 
             groundFlow.X = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth) % (groundFlow.Width / 2f);
