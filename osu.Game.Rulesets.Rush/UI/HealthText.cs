@@ -18,8 +18,7 @@ namespace osu.Game.Rulesets.Rush.UI
         public HealthText()
         {
             Origin = Anchor.Centre;
-            RelativePositionAxes = Axes.Both;
-            Position = new Vector2(0.75f, 0.5f);
+            Anchor = Anchor.CentreLeft;
 
             InternalChildren = new Drawable[]
             {
