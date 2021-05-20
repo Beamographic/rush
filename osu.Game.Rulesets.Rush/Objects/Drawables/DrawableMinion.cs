@@ -58,8 +58,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             switch (state)
             {
                 case ArmedState.Miss:
-                    const float miss_time = 100;
-                    this.FadeColour(Color4.DarkGray.Darken(0.9f), miss_time);
+                    this.FadeColour(Color4.DarkGray.Darken(0.9f), 100);
                     break;
 
                 case ArmedState.Hit:
