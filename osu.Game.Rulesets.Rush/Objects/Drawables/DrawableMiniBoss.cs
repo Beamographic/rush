@@ -129,9 +129,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 }
 
                 var hitResult = numHits == HitObject.RequiredHits
-                    ? HitResult.Perfect
+                    ? HitResult.Great
                     : numHits > HitObject.RequiredHits / 2
-                        ? HitResult.Great
+                        ? HitResult.Good
                         : HitResult.Miss;
 
                 ApplyResult(r => r.Type = hitResult);

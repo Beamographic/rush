@@ -98,8 +98,8 @@ namespace osu.Game.Rulesets.Rush
         {
             return new[]
             {
-                HitResult.Perfect,
                 HitResult.Great,
+                HitResult.Good,
             };
         }
 

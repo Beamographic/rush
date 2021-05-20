@@ -9,6 +9,8 @@ namespace osu.Game.Rulesets.Rush.Judgements
 {
     public class RushJudgement : Judgement
     {
+        public override HitResult MaxResult => HitResult.Great;
+
         /// <summary>
         /// Retrieves the numeric health point increase of a <see cref="RushJudgementResult"/>.
         /// </summary>
