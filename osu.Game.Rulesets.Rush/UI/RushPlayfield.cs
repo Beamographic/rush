@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Rush.UI
     public class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>
     {
         public const float DEFAULT_HEIGHT = 178;
-        public const float HIT_TARGET_OFFSET = 120;
+        public const float HIT_TARGET_OFFSET = 240;
         public const float HIT_TARGET_SIZE = 100;
         public const float PLAYER_OFFSET = 130;
         public const float JUDGEMENT_OFFSET = 100;
@@ -65,107 +65,38 @@ namespace osu.Game.Rulesets.Rush.UI
         public RushPlayfield()
         {
             hitPolicy = new RushHitPolicy(this);
+            RelativeSizeAxes = Axes.X;
+            Size = new Vector2(1, DEFAULT_HEIGHT);
+            Anchor = Origin = Anchor.Centre;
             InternalChildren = new Drawable[]
             {
-                new GridContainer
+                airLane = new LanePlayfield(LanedHitLane.Air),
+                groundLane = new LanePlayfield(LanedHitLane.Ground),
+                // Contains miniboss and duals for now
+                new Container
                 {
+                    Name = "Hit Objects",
                     RelativeSizeAxes = Axes.Both,
-                    RowDimensions = new[]
-                    {
-                        new Dimension(GridSizeMode.Distributed), // Top empty area
-                        new Dimension(GridSizeMode.Absolute, DEFAULT_HEIGHT), // Playfield area
-                        new Dimension(GridSizeMode.Distributed), // Ground area, extends to overall height
-                    },
-                    Content = new[]
-                    {
-                        new[]
-                        {
-                            Empty()
-                        },
-                        new Drawable[]
-                        {
-                            new Container
-                            {
-                                Name = "Playfield area",
-                                RelativeSizeAxes = Axes.Both,
-                                Children = new[]
-                                {
-                                    new Container
-                                    {
-                                        Name = "Left area",
-                                        Width = HIT_TARGET_OFFSET,
-                                        RelativeSizeAxes = Axes.Y,
-                                        Anchor = Anchor.CentreLeft,
-                                        Origin = Anchor.CentreLeft,
-                                        Depth = -1,
-                                        Child = new Container
-                                        {
-                                            Name = "Left Play Zone",
-                                            RelativeSizeAxes = Axes.Both,
-                                            Anchor = Anchor.CentreLeft,
-                                            Origin = Anchor.CentreLeft,
-                                            Children = new Drawable[]
-                                            {
-                                                PlayerSprite = new RushPlayerSprite(DEFAULT_HEIGHT, 0)
-                                                {
-                                                    Origin = Anchor.Centre,
-                                                    Position = new Vector2(PLAYER_OFFSET, DEFAULT_HEIGHT),
-                                                    Scale = new Vector2(0.75f),
-                                                },
-                                                overPlayerEffectsContainer = new Container
-                                                {
-                                                    Origin = Anchor.Centre,
-                                                    Anchor = Anchor.Centre,
-                                                    RelativeSizeAxes = Axes.Both,
-                                                }
-                                            }
-                                        },
-                                    },
-                                    new Container
-                                    {
-                                        Name = "Right area",
-                                        RelativeSizeAxes = Axes.Both,
-                                        Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                                        Anchor = Anchor.CentreLeft,
-                                        Origin = Anchor.CentreLeft,
-                                        Children = new Drawable[]
-                                        {
-                                            airLane = new LanePlayfield(LanedHitLane.Air),
-                                            groundLane = new LanePlayfield(LanedHitLane.Ground),
-                                            // Contains miniboss and duals for now
-                                            new Container
-                                            {
-                                                Name = "Hit Objects",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                                                Child = HitObjectContainer
-                                            },
-                                            halfPaddingOverEffectContainer = new Container
-                                            {
-                                                Name = "Over Effects (Half Padding)",
-                                                RelativeSizeAxes = Axes.Both,
-                                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 2f }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                        },
-                        new Drawable[]
-                        {
-                            new Container
-                            {
-                                Name = "Ground area",
-                                RelativeSizeAxes = Axes.Both,
-                                // Due to the size of the player sprite, we have to push the ground even more to the bottom.
-                                Padding = new MarginPadding { Top = 50f },
-                                Depth = float.MaxValue,
-                                Child = new GroundDisplay(),
-                            }
-                        }
-                    }
-                }
+                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                    Child = HitObjectContainer
+                },
+                halfPaddingOverEffectContainer = new Container
+                {
+                    Name = "Over Effects (Half Padding)",
+                    RelativeSizeAxes = Axes.Both,
+                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET * 0.75f }
+                },
+                new GroundDisplay(),
+                PlayerSprite = new RushPlayerSprite(),
+                overPlayerEffectsContainer = new Container
+                {
+                    Origin = Anchor.CentreLeft,
+                    Anchor = Anchor.CentreLeft,
+                    RelativeSizeAxes = Axes.Both,
+                    Padding = new MarginPadding { Left = PLAYER_OFFSET }
+                },
             };
+
             AddNested(airLane);
             AddNested(groundLane);
             NewResult += onNewResult;
