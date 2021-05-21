@@ -83,7 +83,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 {
                     Name = "Over Effects (Half Padding)",
                     RelativeSizeAxes = Axes.Both,
-                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET / 4f }
+                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET * 0.75f }
                 },
                 new GroundDisplay(),
                 PlayerSprite = new RushPlayerSprite(),
@@ -92,7 +92,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     Origin = Anchor.CentreLeft,
                     Anchor = Anchor.CentreLeft,
                     RelativeSizeAxes = Axes.Both,
-                    Position = new Vector2(PLAYER_OFFSET,0),
+                    Padding = new MarginPadding{ Left = PLAYER_OFFSET }
                 },
             };
             AddNested(airLane);
