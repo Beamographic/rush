@@ -14,8 +14,6 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
     /// </summary>
     public class GroundDisplay : CompositeDrawable
     {
-        private const double scroll_speed = 1f;
-
         private readonly FillFlowContainer groundFlow;
 
         public GroundDisplay()
@@ -23,7 +21,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             Anchor = Anchor.BottomCentre;
             Origin = Anchor.TopCentre;
             RelativeSizeAxes = Axes.Both;
-            Padding = new MarginPadding { Top = 50f, Left = RushPlayfield.HIT_TARGET_OFFSET };
+            Padding = new MarginPadding { Top = 50f };
 
             InternalChildren = new[]
             {
@@ -51,7 +49,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             // Tests don't have scrolling info yet
             if (scrollingInfo is null) return;
 
-            groundFlow.X = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth) % (groundFlow.Width / 2f);
+            groundFlow.X = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth - RushPlayfield.HIT_TARGET_OFFSET) % (groundFlow.Width / 2f);
         }
     }
 }
