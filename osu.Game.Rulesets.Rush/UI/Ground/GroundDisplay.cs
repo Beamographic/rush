@@ -1,7 +1,6 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -14,7 +13,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
     /// </summary>
     public class GroundDisplay : CompositeDrawable
     {
-        private readonly FillFlowContainer groundFlow;
+        private readonly CompositeDrawable ground;
 
         public GroundDisplay()
         {
@@ -23,19 +22,9 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             RelativeSizeAxes = Axes.Both;
             Padding = new MarginPadding { Top = 50f };
 
-            InternalChildren = new[]
+            InternalChildren = new Drawable[]
             {
-                groundFlow = new FillFlowContainer
-                {
-                    AutoSizeAxes = Axes.X,
-                    RelativeSizeAxes = Axes.Y,
-                    Direction = FillDirection.Horizontal,
-                    Children = new Drawable[]
-                    {
-                        new DefaultGround { Name = "Leaving-out piece" },
-                        new DefaultGround { Name = "Coming-in piece" },
-                    }
-                }
+                ground = new DefaultGround(),
             };
         }
 
@@ -49,7 +38,14 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             // Tests don't have scrolling info yet
             if (scrollingInfo is null) return;
 
-            groundFlow.X = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth - RushPlayfield.HIT_TARGET_OFFSET) % (groundFlow.Width / 2f);
+            var groundX = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth - RushPlayfield.HIT_TARGET_OFFSET) % (ground.Width / 2f);
+
+
+            // This is to ensure that the ground is still visible before the start of the track
+            if (groundX > 0)
+                groundX = -(ground.Width / 2f) + groundX;
+
+            ground.X = groundX;
         }
     }
 }
