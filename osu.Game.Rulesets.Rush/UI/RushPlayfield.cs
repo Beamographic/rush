@@ -68,7 +68,8 @@ namespace osu.Game.Rulesets.Rush.UI
             RelativeSizeAxes = Axes.X;
             Size = new Vector2(1, DEFAULT_HEIGHT);
             Anchor = Origin = Anchor.Centre;
-            InternalChildren = new Drawable[]{
+            InternalChildren = new Drawable[]
+            {
                 airLane = new LanePlayfield(LanedHitLane.Air),
                 groundLane = new LanePlayfield(LanedHitLane.Ground),
                 // Contains miniboss and duals for now
@@ -92,9 +93,10 @@ namespace osu.Game.Rulesets.Rush.UI
                     Origin = Anchor.CentreLeft,
                     Anchor = Anchor.CentreLeft,
                     RelativeSizeAxes = Axes.Both,
-                    Padding = new MarginPadding{ Left = PLAYER_OFFSET }
+                    Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
             };
+
             AddNested(airLane);
             AddNested(groundLane);
             NewResult += onNewResult;

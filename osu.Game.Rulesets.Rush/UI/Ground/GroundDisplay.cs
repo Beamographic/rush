@@ -40,7 +40,6 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
 
             var groundX = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth - RushPlayfield.HIT_TARGET_OFFSET) % (ground.Width / 2f);
 
-
             // This is to ensure that the ground is still visible before the start of the track
             if (groundX > 0)
                 groundX = -(ground.Width / 2f) + groundX;
