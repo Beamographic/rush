@@ -35,7 +35,7 @@ namespace osu.Game.Rulesets.Rush.UI
         public RushPlayerSprite PlayerSprite { get; }
 
         private readonly Container halfPaddingOverEffectContainer;
-        private readonly Container overPlayerEffectsContainer;
+        internal readonly Container OverPlayerEffectsContainer;
 
         private readonly LanePlayfield airLane;
         private readonly LanePlayfield groundLane;
@@ -88,7 +88,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 },
                 new GroundDisplay(),
                 PlayerSprite = new RushPlayerSprite(),
-                overPlayerEffectsContainer = new Container
+                OverPlayerEffectsContainer = new Container
                 {
                     Origin = Anchor.CentreLeft,
                     Anchor = Anchor.CentreLeft,
@@ -181,7 +181,7 @@ namespace osu.Game.Rulesets.Rush.UI
             var pointDifference = rushResult.Judgement.HealthPointIncreaseFor(rushResult);
 
             if (pointDifference != 0)
-                overPlayerEffectsContainer.Add(healthTextPool.Get(h => h.Apply(pointDifference)));
+                OverPlayerEffectsContainer.Add(healthTextPool.Get(h => h.Apply(pointDifference)));
 
             // Display judgement results in a drawable for objects that allow it.
             if (rushJudgedObject.DisplayResult)
