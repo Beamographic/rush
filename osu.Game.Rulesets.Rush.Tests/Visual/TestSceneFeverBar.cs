@@ -14,7 +14,11 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
         {
             Children = new Drawable[]
             {
-                feverBar = new FeverBar()
+                feverBar = new FeverBar(){
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Y = 0,
+                }
             };
             AddSliderStep<float>("Progress", 0, 1, 0, v => feverBar.FeverProgress.Value = v);
         }

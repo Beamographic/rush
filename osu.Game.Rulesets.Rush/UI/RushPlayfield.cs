@@ -95,6 +95,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
+                new FeverBar()
             };
 
             AddNested(airLane);

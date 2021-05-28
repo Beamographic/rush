@@ -23,8 +23,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public FeverBar()
         {
-            Y = 20;
-            Anchor = Anchor.TopCentre;
+            Y = 150;
+            Anchor = Anchor.BottomCentre;
             Origin = Anchor.TopCentre;
             RelativeSizeAxes = Axes.X;
             Size = new Vector2(0.5f, 50);
