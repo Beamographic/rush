@@ -1,21 +1,25 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Input.Bindings;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Rush.Judgements;
 using osuTK;
 using osuTK.Graphics;
 
-namespace osu.Game.Rulesets.Rush.UI
+namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverBar : CircularContainer
+    public class FeverBar : CircularContainer, IKeyBindingHandler<RushAction>
     {
         public readonly BindableFloat FeverProgress = new BindableFloat(0);
 
@@ -79,12 +83,50 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void updateProgressBar(float progress)
         {
-            if (progress == 1)
-                FadeEdgeEffectTo(0.5f, 200);
-            else
-                FadeEdgeEffectTo(0, 200);
+            if (!FeverActivated.Value)
+            {
+                if (progress == 1)
+                    FadeEdgeEffectTo(0.5f, 200);
+                else
+                    FadeEdgeEffectTo(0, 200);
+            }
 
             progressBar.ResizeWidthTo(progress, 200);
+        }
+
+        public Bindable<bool> FeverActivated = new Bindable<bool>();
+
+        public void HandleResult(JudgementResult result)
+        {
+            if (FeverActivated.Value)
+                return;
+
+            FeverProgress.Value = Math.Min(FeverProgress.Value + feverIncreaseFor(result), 1);
+        }
+
+        public bool OnPressed(RushAction action)
+        {
+            if (action != RushAction.Fever)
+                return false;
+
+            if (FeverActivated.Value)
+                return false;
+
+            if (FeverProgress.Value < 1)
+                return false;
+
+            FeverActivated.Value = true;
+            FadeEdgeEffectTo(Color4.Red).TransformBindableTo(FeverProgress, 0, 10000).Finally(_ => FeverActivated.Value = false);
+            this.Delay(10000).FadeEdgeEffectTo(Color4.DeepPink.Opacity(0));
+            return true;
+        }
+
+        public void OnReleased(RushAction action) { }
+
+        private float feverIncreaseFor(JudgementResult result)
+        {
+            if (result.Judgement is RushIgnoreJudgement) return 0;
+            return result.Judgement.NumericResultFor(result) / result.Judgement.MaxNumericResult / 50f;
         }
 
         private class FeverRollingCounter : RollingCounter<float>

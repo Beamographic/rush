@@ -27,6 +27,8 @@ namespace osu.Game.Rulesets.Rush.Objects
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
 
+        protected override bool HasFeverBonus => false;
+
         protected override void CreateNestedHitObjects(CancellationToken cancellationToken)
         {
             base.CreateNestedHitObjects(cancellationToken);

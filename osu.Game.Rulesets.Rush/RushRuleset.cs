@@ -96,6 +96,8 @@ namespace osu.Game.Rulesets.Rush
 
             new KeyBinding(InputKey.MouseRight, RushAction.GroundPrimary),
             new KeyBinding(InputKey.MouseLeft, RushAction.AirPrimary),
+
+            new KeyBinding(InputKey.Space, RushAction.Fever),
         };
 
         public override IConvertibleReplayFrame CreateConvertibleReplayFrame() => new RushReplayFrame();
@@ -108,8 +110,17 @@ namespace osu.Game.Rulesets.Rush
             {
                 HitResult.Great,
                 HitResult.Good,
+                HitResult.SmallBonus,
+                HitResult.LargeBonus
             };
         }
+
+        public override string GetDisplayNameForHitResult(HitResult result) => result switch
+        {
+            HitResult.SmallBonus => "Heart bonus",
+            HitResult.LargeBonus => "Fever bonus",
+            _ => base.GetDisplayNameForHitResult(result)
+        };
 
         public class RushIcon : CompositeDrawable
         {

@@ -1,9 +1,11 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
@@ -14,6 +16,7 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
@@ -62,6 +65,11 @@ namespace osu.Game.Rulesets.Rush.UI
         [Cached]
         private readonly RushHitPolicy hitPolicy;
 
+        [Cached(type: typeof(IBindable<bool>), name: "feverActivated")]
+        private readonly Bindable<bool> feverActivated = new Bindable<bool>();
+
+        private readonly FeverBar feverBar;
+
         public RushPlayfield()
         {
             hitPolicy = new RushHitPolicy(this);
@@ -95,8 +103,10 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
-                new FeverBar()
+                feverBar = new FeverBar()
             };
+
+            feverActivated.BindTo(feverBar.FeverActivated);
 
             AddNested(airLane);
             AddNested(groundLane);
@@ -110,6 +120,7 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
             RegisterPool<DualHit, DrawableDualHit>(8);
             RegisterPool<DualHitPart, DrawableDualHitPart>(16);
+            RegisterPool<FeverBonus, DrawableFeverBonus>(8);
 
             AddRangeInternal(new Drawable[]
             {
@@ -128,7 +139,8 @@ namespace osu.Game.Rulesets.Rush.UI
             if (drawableHitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
 
-            ((DrawableRushHitObject)drawableHitObject).CheckHittable = hitPolicy.IsHittable;
+            if (drawableHitObject is DrawableRushHitObject drho)
+                drho.CheckHittable = hitPolicy.IsHittable;
         }
 
         public override void Add(HitObject hitObject)
@@ -158,6 +170,12 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
+            if (!judgedObject.AllJudged)
+                Console.Write("");
+            if (judgedObject is DrawableFeverBonus) return;
+
+            feverBar.HandleResult(result);
+
             DrawableRushHitObject rushJudgedObject = (DrawableRushHitObject)judgedObject;
             RushJudgementResult rushResult = (RushJudgementResult)result;
 

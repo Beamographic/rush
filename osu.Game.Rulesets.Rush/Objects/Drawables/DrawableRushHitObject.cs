@@ -2,10 +2,13 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Diagnostics;
+using System.Linq;
 using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
@@ -44,9 +47,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private DrawableRushRuleset drawableRuleset { get; set; }
 
+        [Resolved(name: "feverActivated")]
+        private IBindable<bool> feverActivated { get; set; }
+
+        private readonly Container<DrawableFeverBonus> feverBonusContainer;
+
         protected DrawableRushHitObject(RushHitObject hitObject)
             : base(hitObject)
         {
+            AddInternal(feverBonusContainer = new Container<DrawableFeverBonus>());
         }
 
         [BackgroundDependencyLoader(true)]
@@ -109,6 +118,38 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             };
 
             base.ApplyResult(rushApplication);
+
+            foreach (var bonus in feverBonusContainer)
+            {
+                bool eligible = IsHit && feverActivated.Value;
+                bonus.ApplyResult(result => result.Type = eligible ? result.Judgement.MaxResult : result.Judgement.MinResult);
+                if (!bonus.AllJudged)
+                    Console.WriteLine("fault!");
+            }
+        }
+
+        protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
+        {
+            if (hitObject is FeverBonus x)
+                return new DrawableFeverBonus(x);
+
+            return base.CreateNestedHitObject(hitObject);
+        }
+
+        protected override void AddNestedHitObject(DrawableHitObject hitObject)
+        {
+            if (hitObject is DrawableFeverBonus x)
+                feverBonusContainer.Add(x);
+
+            base.AddNestedHitObject(hitObject);
+        }
+
+        protected override void ClearNestedHitObjects()
+        {
+            if (feverBonusContainer.Any(x => !x.Judged))
+                Console.WriteLine(GetType());
+            feverBonusContainer.Clear(false);
+            base.ClearNestedHitObjects();
         }
     }
 

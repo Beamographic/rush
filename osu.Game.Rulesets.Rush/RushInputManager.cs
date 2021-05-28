@@ -46,7 +46,10 @@ namespace osu.Game.Rulesets.Rush
         AirTertiary = 6,
 
         [Description("Air (Quaternary)")]
-        AirQuaternary = 7
+        AirQuaternary = 7,
+
+        [Description("Activate fever")]
+        Fever = 8,
     }
 
     public static class RushActionExtensions

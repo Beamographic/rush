@@ -82,5 +82,7 @@ namespace osu.Game.Rulesets.Rush.Objects
         public override Judgement CreateJudgement() => new RushIgnoreJudgement();
 
         protected override HitWindows CreateHitWindows() => HitWindows.Empty;
+
+        protected override bool HasFeverBonus => false;
     }
 }
