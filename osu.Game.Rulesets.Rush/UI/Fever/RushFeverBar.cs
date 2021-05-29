@@ -1,38 +1,32 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Input.Bindings;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
-using osu.Game.Rulesets.Judgements;
-using osu.Game.Rulesets.Rush.Judgements;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverBar : CircularContainer, IKeyBindingHandler<RushAction>
+    public class FeverBar : CircularContainer
     {
-        public readonly BindableFloat FeverProgress = new BindableFloat(0);
+        public readonly IBindable<float> FeverProgress;
+        public readonly IBindable<bool> FeverActivated;
 
         private readonly Box progressBar;
 
-        private List<FeverEvent> eventsTimeline = new List<FeverEvent>{
-            new FeverEvent(double.MinValue, 0, FeverEvent.EventType.SessionBegin)
-        };
-
-        public FeverBar()
+        public FeverBar(FeverTracker tracker)
         {
+            FeverProgress = tracker.FeverProgress.GetBoundCopy();
+            FeverActivated = tracker.FeverActivated.GetBoundCopy();
+
             Y = 150;
             Anchor = Anchor.BottomCentre;
             Origin = Anchor.TopCentre;
@@ -71,20 +65,22 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                             Origin = Anchor.CentreLeft,
                             Text = "FEVER",
                             Colour = Color4.White,
-                            Font = OsuFont.Numeric.With(size: 20)
+                            Font = OsuFont.Numeric.With(size: 20),
+                            UseFullGlyphHeight = false
                         },
                         new FeverRollingCounter
                         {
                             Anchor = Anchor.CentreRight,
                             Origin = Anchor.CentreRight,
                             Colour = Color4.White,
-                            Current = FeverProgress.GetBoundCopy()
+                            Current = { BindTarget = FeverProgress }
                         }
                     }
                 }
             };
 
             FeverProgress.BindValueChanged(v => updateProgressBar(v.NewValue));
+            FeverActivated.ValueChanged += updateFeverState;
         }
 
         private void updateProgressBar(float progress)
@@ -92,100 +88,24 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (!FeverActivated.Value)
             {
                 if (progress == 1)
-                    FadeEdgeEffectTo(0.5f, 200);
+                    FadeEdgeEffectTo(0.5f, 100);
                 else
-                    FadeEdgeEffectTo(0, 200);
+                    FadeEdgeEffectTo(0, 100);
             }
-
-            progressBar.ResizeWidthTo(progress, 200);
+            progressBar.ResizeWidthTo(progress, 100);
         }
-
-        public Bindable<bool> FeverActivated = new Bindable<bool>();
-
-        protected override void Update()
+        private void updateFeverState(ValueChangedEvent<bool> valueChanged)
         {
-            base.Update();
-            if (Clock.Rate < 0)
+            FinishTransforms(true);
+            if (valueChanged.NewValue)
             {
-                // Reverse handling stuff
-                int removeStartIndex = 0;
-                for (int i = 0; i < eventsTimeline.Count; ++i)
-                {
-                    if (eventsTimeline[i].Time > Clock.CurrentTime)
-                    {
-                        removeStartIndex = i;
-                        break;
-                    }
-                }
-                if (removeStartIndex > 0)
-                    eventsTimeline.RemoveRange(removeStartIndex, eventsTimeline.Count - removeStartIndex);
-
-                rewindFeverState();
+                FadeEdgeEffectTo(1, 100);
+                progressBar.FadeColour(Color4.Red, 100);
             }
-        }
-
-        public void HandleResult(JudgementResult result)
-        {
-            if (FeverActivated.Value)
-                return;
-
-            FeverProgress.Value = Math.Min(FeverProgress.Value + feverIncreaseFor(result), 1);
-            eventsTimeline.Add(new FeverEvent(result.TimeAbsolute, FeverProgress.Value, FeverEvent.EventType.Hit));
-        }
-
-        public bool OnPressed(RushAction action)
-        {
-            if (action != RushAction.Fever)
-                return false;
-
-            if (FeverActivated.Value)
-                return false;
-
-            if (FeverProgress.Value < 1)
-                return false;
-
-            activateFever();
-            return true;
-        }
-
-        public void OnReleased(RushAction action) { }
-
-        private void rewindFeverState()
-        {
-            var currentState = eventsTimeline.Last();
-            ClearTransformsAfter(currentState.Time, true);
-            using (BeginAbsoluteSequence(currentState.Time, true))
-                FeverProgress.Value = currentState.FeverProgress;
-            if (currentState.Type == FeverEvent.EventType.FeverStart)
+            else
             {
-                deactivateFever(); // Force fever deactivation
-                using (BeginAbsoluteSequence(currentState.Time, true))
-                    activateFever();
+                progressBar.FadeColour(Color4.DeepPink, 200);
             }
-        }
-
-        private void activateFever()
-        {
-            eventsTimeline.Add(new FeverEvent(Time.Current, 1, FeverEvent.EventType.FeverStart));
-            FeverActivated.Value = true;
-            FadeEdgeEffectTo(Color4.Red).TransformBindableTo(FeverProgress, 0, 10000).Finally(_ => deactivateFever());
-            progressBar.FadeColour(Color4.Red, 50).Delay(10000).Then().FadeColour(Color4.DeepPink);
-            this.Delay(10000).FadeEdgeEffectTo(Color4.DeepPink.Opacity(0));
-        }
-
-        private void deactivateFever(bool byRewind = false)
-        {
-            if (!byRewind)
-                eventsTimeline.Add(new FeverEvent(Time.Current, 0, FeverEvent.EventType.FeverEnd));
-            FeverActivated.Value = false;
-            progressBar.FadeColour(Color4.DeepPink);
-            FadeEdgeEffectTo(Color4.DeepPink.Opacity(0));
-        }
-
-        private float feverIncreaseFor(JudgementResult result)
-        {
-            if (result.Judgement is RushIgnoreJudgement) return 0;
-            return result.Judgement.NumericResultFor(result) / result.Judgement.MaxNumericResult / 50f;
         }
 
         private class FeverRollingCounter : RollingCounter<float>
@@ -205,36 +125,13 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     Font = OsuFont.Numeric.With(size: 20),
+                    UseFullGlyphHeight = false,
                 };
             }
 
             protected override string FormatCount(float count)
             {
                 return (count * 100).ToString("0\\%");
-            }
-        }
-
-        private struct FeverEvent
-        {
-            public FeverEvent(double time, float feverProgress, EventType type)
-            {
-                Time = time;
-                FeverProgress = feverProgress;
-                Type = type;
-            }
-
-            public double Time;
-
-            public float FeverProgress;
-
-            public EventType Type;
-
-            public enum EventType
-            {
-                SessionBegin,
-                Hit,
-                FeverStart,
-                FeverEnd,
             }
         }
     }
