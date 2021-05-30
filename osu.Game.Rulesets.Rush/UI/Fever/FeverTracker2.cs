@@ -27,9 +27,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         protected override void Update()
         {
             base.Update();
+
+            // Reverse handling stuff
             if (Clock.Rate < 0)
             {
-                // Reverse handling stuff
                 int removeStartIndex = -1;
                 for (int i = 0; i < feverStartTimes.Count; ++i)
                 {
@@ -42,28 +43,23 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 // Our time is now before a fever, ensure a sensible progress value is in place
                 if (removeStartIndex != -1)
                 {
-                    // Revert fever transforms, and potentially end the current active fever
-                    FinishTransforms();
-                    FeverProgress.Value = progressAtFever[removeStartIndex];
-                    feverStartTimes.RemoveRange(removeStartIndex, feverStartTimes.Count - removeStartIndex);
-                }
-                // Correct current fever state if applicable
-                rewindFeverState();
-            }
-        }
+                    FinishTransforms(); // End the current fever if there's any
 
-        private void rewindFeverState()
-        {
-            if (!feverStartTimes.Any())
-                return;
-            var currentFeverStartTime = feverStartTimes.Last();
-            if (Time.Current < currentFeverStartTime + fever_duration)
-            {
-                // Revert fever transforms, and potentially end the current active fever
-                FinishTransforms(true);
-                // We are in fever mode
-                using (BeginAbsoluteSequence(currentFeverStartTime, true))
-                    activateFever(true);
+                    // We must reset to the exact progress value used at the time, else the DHO reverts will desync the fever state
+                    FeverProgress.Value = progressAtFever[removeStartIndex];
+
+                    feverStartTimes.RemoveRange(removeStartIndex, feverStartTimes.Count - removeStartIndex);
+                    progressAtFever.RemoveRange(removeStartIndex, progressAtFever.Count - removeStartIndex);
+                }
+
+                // Correct current fever state if applicable
+                if (!feverStartTimes.Any())
+                    return;
+
+                var currentFeverStartTime = feverStartTimes.Last();
+
+                if (Time.Current < currentFeverStartTime + fever_duration) // We are within a fever period
+                    activateFeverAtPeriod(currentFeverStartTime, currentFeverStartTime + fever_duration);
             }
         }
 
@@ -83,15 +79,21 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             FeverProgress.Value = Math.Max(FeverProgress.Value - feverIncreaseFor(result), 0);
         }
 
-        private void activateFever(bool byRewind = false)
+        private void activateFeverAtPeriod(double startTime, double endTime)
         {
-            if (!byRewind)
-            {
-                feverStartTimes.Add(Time.Current);
-                progressAtFever.Add(FeverProgress.Value);
-            }
-            FeverActivated.Value = true;
-            this.TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, fever_duration).Finally(_ => FeverActivated.Value = false);
+            // We ensure no fever state is running
+            FinishTransforms(true);
+
+            using (BeginAbsoluteSequence(startTime, true))
+                this.TransformBindableTo(FeverActivated, true).TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, endTime - startTime).Then().TransformBindableTo(FeverActivated, false);
+        }
+
+        private void activateNewFeverAt(double startTime)
+        {
+            feverStartTimes.Add(Time.Current);
+            progressAtFever.Add(FeverProgress.Value);
+
+            activateFeverAtPeriod(startTime, startTime + fever_duration);
         }
 
         private float feverIncreaseFor(JudgementResult result)
@@ -111,7 +113,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverProgress.Value < 1)
                 return false;
 
-            activateFever();
+            activateNewFeverAt(Time.Current);
             return true;
         }
 
