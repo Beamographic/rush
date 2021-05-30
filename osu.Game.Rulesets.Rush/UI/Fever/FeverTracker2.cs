@@ -9,20 +9,18 @@ using osu.Framework.Graphics;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Rush.Judgements;
-using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
     public class FeverTracker2 : JudgementProcessor, IKeyBindingHandler<RushAction>
     {
-        public override bool RemoveCompletedTransforms => false;
-
         private const float fever_duration = 10000;
         public Bindable<bool> FeverActivated = new Bindable<bool>();
         public Bindable<float> FeverProgress = new Bindable<float>();
 
         private List<double> feverStartTimes = new List<double>();
+        private List<float> progressAtFever = new List<float>();
 
         private const int perfect_hits_to_fill = 50;
 
@@ -31,8 +29,6 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             base.Update();
             if (Clock.Rate < 0)
             {
-                ApplyTransformsAt(Time.Current, true);
-                ClearTransformsAfter(Time.Current, true);
                 // Reverse handling stuff
                 int removeStartIndex = -1;
                 for (int i = 0; i < feverStartTimes.Count; ++i)
@@ -43,10 +39,12 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                         break;
                     }
                 }
+                // Our time is now before a fever, ensure a sensible progress value is in place
                 if (removeStartIndex != -1)
                 {
                     // Revert fever transforms, and potentially end the current active fever
-                    FeverActivated.Value = false;
+                    FinishTransforms();
+                    FeverProgress.Value = progressAtFever[removeStartIndex];
                     feverStartTimes.RemoveRange(removeStartIndex, feverStartTimes.Count - removeStartIndex);
                 }
                 // Correct current fever state if applicable
@@ -62,8 +60,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (Time.Current < currentFeverStartTime + fever_duration)
             {
                 // Revert fever transforms, and potentially end the current active fever
-                ApplyTransformsAt(currentFeverStartTime, true);
-                ClearTransformsAfter(currentFeverStartTime);
+                FinishTransforms(true);
                 // We are in fever mode
                 using (BeginAbsoluteSequence(currentFeverStartTime, true))
                     activateFever(true);
@@ -89,7 +86,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         private void activateFever(bool byRewind = false)
         {
             if (!byRewind)
+            {
                 feverStartTimes.Add(Time.Current);
+                progressAtFever.Add(FeverProgress.Value);
+            }
             FeverActivated.Value = true;
             this.TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, fever_duration).Finally(_ => FeverActivated.Value = false);
         }
