@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -22,7 +23,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         private readonly Box progressBar;
 
-        public FeverBar(FeverTracker tracker)
+        public FeverBar(FeverTracker2 tracker)
         {
             FeverProgress = tracker.FeverProgress.GetBoundCopy();
             FeverActivated = tracker.FeverActivated.GetBoundCopy();
@@ -87,12 +88,12 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         {
             if (!FeverActivated.Value)
             {
-                if (progress == 1)
+                if (progress >= 1)
                     FadeEdgeEffectTo(0.5f, 100);
                 else
                     FadeEdgeEffectTo(0, 100);
             }
-            progressBar.ResizeWidthTo(progress, 100);
+            progressBar.ResizeWidthTo(Math.Min(1, progress), 100);
         }
         private void updateFeverState(ValueChangedEvent<bool> valueChanged)
         {
@@ -131,7 +132,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
             protected override string FormatCount(float count)
             {
-                return (count * 100).ToString("0\\%");
+                return Math.Floor(Math.Min(count, 1) * 100).ToString("0\\%");
             }
         }
     }

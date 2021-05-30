@@ -69,7 +69,7 @@ namespace osu.Game.Rulesets.Rush.UI
         [Cached(type: typeof(IBindable<bool>), name: "feverActivated")]
         private readonly Bindable<bool> feverActivated = new Bindable<bool>();
 
-        private readonly FeverTracker feverTracker;
+        private readonly FeverTracker2 feverTracker;
 
         public RushPlayfield()
         {
@@ -104,7 +104,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
-                feverTracker = new FeverTracker(),
+                feverTracker = new FeverTracker2(),
                 new FeverBar(feverTracker)
             };
 
@@ -113,6 +113,8 @@ namespace osu.Game.Rulesets.Rush.UI
             AddNested(airLane);
             AddNested(groundLane);
             NewResult += onNewResult;
+            NewResult += (d, j) => feverTracker.ApplyResult(j);
+            RevertResult += (d, j) => feverTracker.RevertResult(j);
         }
 
         [BackgroundDependencyLoader]
@@ -173,8 +175,6 @@ namespace osu.Game.Rulesets.Rush.UI
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
             if (judgedObject is DrawableFeverBonus) return;
-
-            feverTracker.HandleResult(result);
 
             DrawableRushHitObject rushJudgedObject = (DrawableRushHitObject)judgedObject;
             RushJudgementResult rushResult = (RushJudgementResult)result;
