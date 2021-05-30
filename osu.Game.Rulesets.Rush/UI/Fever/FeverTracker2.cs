@@ -10,6 +10,7 @@ using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Utils;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
@@ -19,8 +20,9 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         public Bindable<bool> FeverActivated = new Bindable<bool>();
         public Bindable<float> FeverProgress = new Bindable<float>();
 
-        private List<double> feverStartTimes = new List<double>();
-        private List<float> progressAtFever = new List<float>();
+        private readonly List<double> feverStartTimes = new List<double>();
+
+        private readonly Dictionary<JudgementResult, float> feverAtJudgement = new Dictionary<JudgementResult, float>();
 
         private const int perfect_hits_to_fill = 50;
 
@@ -46,10 +48,9 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                     FinishTransforms(); // End the current fever if there's any
 
                     // We must reset to the exact progress value used at the time, else the DHO reverts will desync the fever state
-                    FeverProgress.Value = progressAtFever[removeStartIndex];
+                    FeverProgress.Value = 1;
 
                     feverStartTimes.RemoveRange(removeStartIndex, feverStartTimes.Count - removeStartIndex);
-                    progressAtFever.RemoveRange(removeStartIndex, progressAtFever.Count - removeStartIndex);
                 }
 
                 // Correct current fever state if applicable
@@ -59,7 +60,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 var currentFeverStartTime = feverStartTimes.Last();
 
                 if (Time.Current < currentFeverStartTime + fever_duration) // We are within a fever period
-                    activateFeverAtPeriod(currentFeverStartTime, currentFeverStartTime + fever_duration);
+                    activateFeverAtPeriod(new Period(currentFeverStartTime, currentFeverStartTime + fever_duration));
             }
         }
 
@@ -68,7 +69,8 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverActivated.Value)
                 return;
 
-            FeverProgress.Value += feverIncreaseFor(result);
+            feverAtJudgement[result] = FeverProgress.Value;
+            FeverProgress.Value = Math.Min(FeverProgress.Value + feverIncreaseFor(result), 1);
         }
 
         protected override void RevertResultInternal(JudgementResult result)
@@ -76,24 +78,24 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverActivated.Value)
                 return;
 
-            FeverProgress.Value = Math.Max(FeverProgress.Value - feverIncreaseFor(result), 0);
+            FeverProgress.Value = feverAtJudgement[result];
+            feverAtJudgement.Remove(result);
         }
 
-        private void activateFeverAtPeriod(double startTime, double endTime)
+        private void activateFeverAtPeriod(Period period)
         {
             // We ensure no fever state is running
             FinishTransforms(true);
 
-            using (BeginAbsoluteSequence(startTime, true))
-                this.TransformBindableTo(FeverActivated, true).TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, endTime - startTime).Then().TransformBindableTo(FeverActivated, false);
+            using (BeginAbsoluteSequence(period.Start, true))
+                this.TransformBindableTo(FeverActivated, true).TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then().TransformBindableTo(FeverActivated, false);
         }
 
-        private void activateNewFeverAt(double startTime)
+        private void activateNewFever()
         {
             feverStartTimes.Add(Time.Current);
-            progressAtFever.Add(FeverProgress.Value);
 
-            activateFeverAtPeriod(startTime, startTime + fever_duration);
+            activateFeverAtPeriod(new Period(Time.Current, Time.Current + fever_duration));
         }
 
         private float feverIncreaseFor(JudgementResult result)
@@ -113,7 +115,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverProgress.Value < 1)
                 return false;
 
-            activateNewFeverAt(Time.Current);
+            activateNewFever();
             return true;
         }
 
