@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 {
     public class FeverTracker : JudgementProcessor, IKeyBindingHandler<RushAction>
     {
-        private const float fever_duration = 10000;
+        private const float fever_duration = 5000;
         public Bindable<bool> FeverActivated = new Bindable<bool>();
         public Bindable<float> FeverProgress = new Bindable<float>();
 
