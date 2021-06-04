@@ -23,6 +23,8 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         private readonly Box progressBar;
 
+        public override bool RemoveCompletedTransforms => true;
+
         public FeverBar(FeverTracker2 tracker)
         {
             FeverProgress = tracker.FeverProgress.GetBoundCopy();
@@ -80,38 +82,46 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 }
             };
 
-            FeverProgress.BindValueChanged(v => updateProgressBar(v.NewValue));
+            FeverProgress.ValueChanged += updateProgressBar;
             FeverActivated.ValueChanged += updateFeverState;
         }
 
-        private void updateProgressBar(float progress)
+        private void updateProgressBar(ValueChangedEvent<float> valueChanged)
         {
             if (!FeverActivated.Value)
             {
-                if (progress >= 1)
+                if (valueChanged.NewValue >= 1 && valueChanged.OldValue < 1)
                     FadeEdgeEffectTo(0.5f, 100);
-                else
-                    FadeEdgeEffectTo(0, 100);
+                else if (valueChanged.NewValue < 1 && valueChanged.OldValue >= 1)
+                    FadeEdgeEffectTo(0f); // Just to support rewinds
+
             }
-            progressBar.ResizeWidthTo(Math.Min(1, progress), 100);
+            progressBar.ResizeWidthTo(Math.Min(1, valueChanged.NewValue), 100);
+
+            if (Clock.Rate < 0)
+                FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
         private void updateFeverState(ValueChangedEvent<bool> valueChanged)
         {
-            FinishTransforms(true);
             if (valueChanged.NewValue)
             {
-                FadeEdgeEffectTo(1, 100);
+                FadeEdgeEffectTo(Color4.Red, 100);
                 progressBar.FadeColour(Color4.Red, 100);
             }
             else
             {
+                FadeEdgeEffectTo(Color4.DeepPink.Opacity(0), 200);
                 progressBar.FadeColour(Color4.DeepPink, 200);
             }
+
+            if (Clock.Rate < 0)
+                FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
+
 
         private class FeverRollingCounter : RollingCounter<float>
         {
-            protected override double RollingDuration => 200;
+            protected override double RollingDuration => 100;
 
             public FeverRollingCounter()
             {
