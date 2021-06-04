@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         private readonly List<double> feverStartTimes = new List<double>();
 
-        private readonly Dictionary<JudgementResult, float> feverAtJudgement = new Dictionary<JudgementResult, float>();
+        private readonly Stack<float> feverStack = new Stack<float>();
 
         private const int perfect_hits_to_fill = 50;
 
@@ -48,7 +48,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                     FinishTransforms(); // End the current fever if there's any
 
                     // We must reset to the exact progress value used at the time, else the DHO reverts will desync the fever state
-                    FeverProgress.Value = 1;
+                    FeverProgress.Value = feverStack.Peek();
 
                     feverStartTimes.RemoveRange(removeStartIndex, feverStartTimes.Count - removeStartIndex);
                 }
@@ -69,7 +69,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverActivated.Value)
                 return;
 
-            feverAtJudgement[result] = FeverProgress.Value;
+            feverStack.Push(FeverProgress.Value);
             FeverProgress.Value = Math.Min(FeverProgress.Value + feverIncreaseFor(result), 1);
         }
 
@@ -78,14 +78,13 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverActivated.Value)
                 return;
 
-            FeverProgress.Value = feverAtJudgement[result];
-            feverAtJudgement.Remove(result);
+            FeverProgress.Value = feverStack.Pop();
         }
 
         private void activateFeverAtPeriod(Period period)
         {
             // We ensure no fever state is running
-            FinishTransforms(true);
+            ClearTransforms(true);
 
             using (BeginAbsoluteSequence(period.Start, true))
                 this.TransformBindableTo(FeverActivated, true).TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then().TransformBindableTo(FeverActivated, false);
