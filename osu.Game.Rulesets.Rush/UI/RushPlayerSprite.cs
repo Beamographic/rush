@@ -201,6 +201,9 @@ namespace osu.Game.Rulesets.Rush.UI
         /// </summary>
         public bool HandleAction(RushAction action)
         {
+            if (!action.IsLaneAction())
+                return false;
+
             if (Target != PlayerTargetLane.None)
                 return false;
 

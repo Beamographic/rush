@@ -55,6 +55,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool OnPressed(RushAction action)
         {
+            if (!action.IsLaneAction())
+                return false;
+
             if (!LaneMatchesAction(action) || AllJudged)
                 return false;
 
