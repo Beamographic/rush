@@ -122,8 +122,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             {
                 bool eligible = IsHit && feverActivated.Value;
                 bonus.ApplyResult(result => result.Type = eligible ? result.Judgement.MaxResult : result.Judgement.MinResult);
-                if (!bonus.AllJudged)
-                    Console.WriteLine("fault!");
             }
         }
 
@@ -145,8 +143,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void ClearNestedHitObjects()
         {
-            if (feverBonusContainer.Any(x => !x.Judged))
-                Console.WriteLine(GetType());
             feverBonusContainer.Clear(false);
             base.ClearNestedHitObjects();
         }

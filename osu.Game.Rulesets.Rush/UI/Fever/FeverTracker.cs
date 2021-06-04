@@ -119,6 +119,5 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         }
 
         public void OnReleased(RushAction action) { }
-
     }
 }
