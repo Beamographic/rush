@@ -9,12 +9,12 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
     public class TestSceneFeverBar : OsuTestScene
     {
-        private readonly FeverTracker2 feverTracker;
+        private readonly FeverTracker feverTracker;
         public TestSceneFeverBar()
         {
             Children = new Drawable[]
             {
-                feverTracker = new FeverTracker2(),
+                feverTracker = new FeverTracker(),
                 new FeverBar(feverTracker){
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,

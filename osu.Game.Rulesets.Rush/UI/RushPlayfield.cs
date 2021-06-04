@@ -69,7 +69,7 @@ namespace osu.Game.Rulesets.Rush.UI
         [Cached(type: typeof(IBindable<bool>), name: "feverActivated")]
         private readonly Bindable<bool> feverActivated = new Bindable<bool>();
 
-        private readonly FeverTracker2 feverTracker;
+        private readonly FeverTracker feverTracker;
 
         public RushPlayfield()
         {
@@ -104,7 +104,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
-                feverTracker = new FeverTracker2(),
+                feverTracker = new FeverTracker(),
                 new FeverBar(feverTracker)
             };
 
