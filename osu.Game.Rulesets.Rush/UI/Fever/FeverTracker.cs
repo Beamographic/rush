@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         private readonly Stack<float> feverStack = new Stack<float>();
 
-        private const int perfect_hits_to_fill = 50;
+        private const int perfect_hits_to_fill = 100;
 
         protected override void Update()
         {
