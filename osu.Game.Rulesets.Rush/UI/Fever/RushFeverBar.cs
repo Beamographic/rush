@@ -56,12 +56,14 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = Color4.DeepPink,
-                    Size = new Vector2(0,1),
+                    Size = new Vector2(0, 1),
                 },
-                new Container{
+                new Container
+                {
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding(15),
-                    Children = new Drawable[]{
+                    Children = new Drawable[]
+                    {
                         new OsuSpriteText
                         {
                             Anchor = Anchor.CentreLeft,
@@ -94,13 +96,14 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                     FadeEdgeEffectTo(0.5f, 100);
                 else if (valueChanged.NewValue < 1 && valueChanged.OldValue >= 1)
                     FadeEdgeEffectTo(0f); // Just to support rewinds
-
             }
+
             progressBar.ResizeWidthTo(Math.Min(1, valueChanged.NewValue), 100);
 
             if (Clock.Rate < 0)
                 FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
+
         private void updateFeverState(ValueChangedEvent<bool> valueChanged)
         {
             if (valueChanged.NewValue)
@@ -117,7 +120,6 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (Clock.Rate < 0)
                 FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
-
 
         private class FeverRollingCounter : RollingCounter<float>
         {

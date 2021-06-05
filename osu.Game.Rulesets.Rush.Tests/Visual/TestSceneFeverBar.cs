@@ -10,17 +10,20 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
     public class TestSceneFeverBar : OsuTestScene
     {
         private readonly FeverTracker feverTracker;
+
         public TestSceneFeverBar()
         {
             Children = new Drawable[]
             {
                 feverTracker = new FeverTracker(),
-                new FeverBar(feverTracker){
+                new FeverBar(feverTracker)
+                {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     Y = 0,
                 }
             };
+
             AddSliderStep<float>("Progress", 0, 1, 0, v => feverTracker.FeverProgress.Value = v);
         }
     }

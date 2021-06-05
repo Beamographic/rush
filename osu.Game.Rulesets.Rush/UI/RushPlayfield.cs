@@ -1,7 +1,6 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
@@ -16,7 +15,6 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
-using osu.Game.Rulesets.Rush.Scoring;
 using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -52,7 +50,9 @@ namespace osu.Game.Rulesets.Rush.UI
                     return Enumerable.Empty<DrawableHitObject>();
 
                 // Intentionally counting on the fact that we don't have nested playfields in our nested playfields
-                IEnumerable<DrawableHitObject> enumerable = HitObjectContainer.AliveObjects.Concat(NestedPlayfields.SelectMany(p => p.HitObjectContainer.AliveObjects)).OrderBy(d => d.HitObject.StartTime);
+                var enumerable = HitObjectContainer.AliveObjects
+                                                   .Concat(NestedPlayfields.SelectMany(p => p.HitObjectContainer.AliveObjects))
+                                                   .OrderBy(d => d.HitObject.StartTime);
                 return enumerable;
             }
         }

@@ -8,10 +8,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     public class DrawableFeverBonus : DrawableRushHitObject<FeverBonus>
     {
-        public DrawableFeverBonus() : this(null) { }
+        public DrawableFeverBonus()
+            : this(null)
+        {
+        }
 
         public DrawableFeverBonus(FeverBonus hitObject)
-            : base(hitObject) { }
+            : base(hitObject)
+        {
+        }
 
         public new void ApplyResult(Action<JudgementResult> application)
         {

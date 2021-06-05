@@ -17,14 +17,13 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
     public class FeverTracker : JudgementProcessor, IKeyBindingHandler<RushAction>
     {
         private const float fever_duration = 5000;
+        private const int perfect_hits_to_fill = 100;
+
         public Bindable<bool> FeverActivated = new Bindable<bool>();
         public Bindable<float> FeverProgress = new Bindable<float>();
 
         private readonly List<double> feverStartTimes = new List<double>();
-
         private readonly Stack<float> feverStack = new Stack<float>();
-
-        private const int perfect_hits_to_fill = 100;
 
         protected override void Update()
         {
@@ -34,6 +33,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (Clock.Rate < 0)
             {
                 int removeStartIndex = -1;
+
                 for (int i = 0; i < feverStartTimes.Count; ++i)
                 {
                     if (feverStartTimes[i] > Clock.CurrentTime)
@@ -42,6 +42,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                         break;
                     }
                 }
+
                 // Our time is now before a fever, ensure a sensible progress value is in place
                 if (removeStartIndex != -1)
                 {
@@ -87,7 +88,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             ClearTransforms(true);
 
             using (BeginAbsoluteSequence(period.Start, true))
-                this.TransformBindableTo(FeverActivated, true).TransformBindableTo(FeverProgress, 1).TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then().TransformBindableTo(FeverActivated, false);
+                this.TransformBindableTo(FeverActivated, true)
+                    .TransformBindableTo(FeverProgress, 1)
+                    .TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then()
+                    .TransformBindableTo(FeverActivated, false);
         }
 
         private void activateNewFever()
@@ -99,7 +103,9 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         private float feverIncreaseFor(JudgementResult result)
         {
-            if (result.Judgement is RushIgnoreJudgement || result.Judgement is RushFeverJudgement) return 0;
+            if (result.Judgement is RushIgnoreJudgement || result.Judgement is RushFeverJudgement)
+                return 0;
+
             return (float)result.Judgement.NumericResultFor(result) / result.Judgement.MaxNumericResult / perfect_hits_to_fill;
         }
 
