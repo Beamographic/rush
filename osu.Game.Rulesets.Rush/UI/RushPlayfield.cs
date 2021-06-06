@@ -174,8 +174,6 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {
-            if (judgedObject is DrawableFeverBonus) return;
-
             DrawableRushHitObject rushJudgedObject = (DrawableRushHitObject)judgedObject;
             RushJudgementResult rushResult = (RushJudgementResult)result;
 
