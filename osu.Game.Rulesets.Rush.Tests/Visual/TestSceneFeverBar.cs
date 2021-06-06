@@ -9,10 +9,10 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
     public class TestSceneFeverBar : OsuTestScene
     {
-        private readonly FeverTracker feverTracker;
-
         public TestSceneFeverBar()
         {
+            FeverTracker feverTracker;
+
             Children = new Drawable[]
             {
                 feverTracker = new FeverTracker(),
