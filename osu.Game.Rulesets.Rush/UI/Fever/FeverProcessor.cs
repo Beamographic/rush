@@ -3,10 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Statistics;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Scoring;
@@ -19,21 +20,33 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         private const float fever_duration = 5000;
         private const int perfect_hits_to_fill = 100;
 
+        private static readonly GlobalStatistic<int> fever_periods_count = GlobalStatistics.Get<int>("rush!", "Fever Periods");
+
+        private readonly List<Period> feverPeriods = new List<Period>();
+
+        /// <summary>
+        /// Whether the player is currently in fever mode.
+        /// </summary>
         public Bindable<bool> InFeverMode = new Bindable<bool>();
 
+        /// <summary>
+        /// The amount of fever gathered by the player in percentage.
+        /// </summary>
         public Bindable<float> FeverProgress = new BindableFloat
         {
             MinValue = 0.0f,
             MaxValue = 1.0f,
         };
 
-        private readonly List<Period> feverPeriods = new List<Period>();
+        public override bool RemoveCompletedTransforms => false;
 
         protected override void Update()
         {
             base.Update();
 
-            // Reverse handling stuff
+            // Reverse handling stuff:
+            // This logic removes transforms of fever periods that are now in the future,
+            // to be rewritten again by either the replay or the player themselves if that gets supported.
             if (Clock.Rate < 0)
             {
                 int removeStartIndex = -1;
@@ -47,24 +60,14 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                     }
                 }
 
-                // Our time is now before a fever, ensure a sensible progress value is in place
                 if (removeStartIndex != -1)
                 {
-                    FinishTransforms(); // End the current fever if there's any
-
-                    // We must reset to the exact progress value used at the time, else the DHO reverts will desync the fever state
-                    FeverProgress.Value = feverStack.Peek();
-
+                    ClearTransformsAfter(feverPeriods[removeStartIndex].Start);
                     feverPeriods.RemoveRange(removeStartIndex, feverPeriods.Count - removeStartIndex);
                 }
-
-                if (!feverPeriods.Any())
-                    return;
-
-                var currentFeverPeriod = feverPeriods.Last();
-                if (Time.Current < currentFeverPeriod.End) // We are within a fever period
-                    activateFeverAtPeriod(currentFeverPeriod);
             }
+
+            fever_periods_count.Value = feverPeriods.Count;
         }
 
         protected override void ApplyResultInternal(JudgementResult result)
@@ -90,24 +93,21 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             FeverProgress.Value = rushResult.FeverProgressAtJudgement;
         }
 
-        private void activateFeverAtPeriod(Period period)
+        private void activateFever()
         {
-            // We ensure no fever state is running
-            ClearTransforms(true);
+            Debug.Assert(Time.Current > feverPeriods[^1].End);
 
-            using (BeginAbsoluteSequence(period.Start, true))
-                this.TransformBindableTo(InFeverMode, true)
-                    .TransformBindableTo(FeverProgress, 1)
-                    .TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then()
-                    .TransformBindableTo(InFeverMode, false);
-        }
-
-        private void activateNewFever()
-        {
             var feverPeriod = new Period(Time.Current, Time.Current + fever_duration);
 
+            using (BeginAbsoluteSequence(feverPeriod.Start, true))
+            {
+                this.TransformBindableTo(InFeverMode, true)
+                    .TransformBindableTo(FeverProgress, 1)
+                    .TransformBindableTo(FeverProgress, 0, feverPeriod.End - feverPeriod.Start).Then()
+                    .TransformBindableTo(InFeverMode, false);
+            }
+
             feverPeriods.Add(feverPeriod);
-            activateFeverAtPeriod(feverPeriod);
         }
 
         private static float feverIncreaseFor(JudgementResult result)
@@ -129,7 +129,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (FeverProgress.Value < 1)
                 return false;
 
-            activateNewFever();
+            activateFever();
             return true;
         }
 
