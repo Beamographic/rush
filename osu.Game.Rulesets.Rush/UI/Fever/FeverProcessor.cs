@@ -19,7 +19,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         private const float fever_duration = 5000;
         private const int perfect_hits_to_fill = 100;
 
-        public Bindable<bool> FeverActivated = new Bindable<bool>();
+        public Bindable<bool> InFeverMode = new Bindable<bool>();
         public Bindable<float> FeverProgress = new Bindable<float>();
 
         private readonly List<double> feverStartTimes = new List<double>();
@@ -67,7 +67,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         protected override void ApplyResultInternal(JudgementResult result)
         {
-            if (FeverActivated.Value)
+            if (InFeverMode.Value)
                 return;
 
             feverStack.Push(FeverProgress.Value);
@@ -76,7 +76,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         protected override void RevertResultInternal(JudgementResult result)
         {
-            if (FeverActivated.Value)
+            if (InFeverMode.Value)
                 return;
 
             FeverProgress.Value = feverStack.Pop();
@@ -88,10 +88,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             ClearTransforms(true);
 
             using (BeginAbsoluteSequence(period.Start, true))
-                this.TransformBindableTo(FeverActivated, true)
+                this.TransformBindableTo(InFeverMode, true)
                     .TransformBindableTo(FeverProgress, 1)
                     .TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then()
-                    .TransformBindableTo(FeverActivated, false);
+                    .TransformBindableTo(InFeverMode, false);
         }
 
         private void activateNewFever()
@@ -114,7 +114,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (action != RushAction.Fever)
                 return false;
 
-            if (FeverActivated.Value)
+            if (InFeverMode.Value)
                 return false;
 
             if (FeverProgress.Value < 1)

@@ -108,7 +108,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 new FeverBar(feverProcessor)
             };
 
-            feverActivated.BindTo(feverProcessor.FeverActivated);
+            feverActivated.BindTo(feverProcessor.InFeverMode);
 
             AddNested(airLane);
             AddNested(groundLane);
