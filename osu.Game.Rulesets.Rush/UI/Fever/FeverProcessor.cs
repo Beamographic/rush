@@ -14,7 +14,7 @@ using osu.Game.Utils;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverTracker : JudgementProcessor, IKeyBindingHandler<RushAction>
+    public class FeverProcessor : JudgementProcessor, IKeyBindingHandler<RushAction>
     {
         private const float fever_duration = 5000;
         private const int perfect_hits_to_fill = 100;

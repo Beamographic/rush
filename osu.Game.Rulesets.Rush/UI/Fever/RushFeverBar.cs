@@ -25,10 +25,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         public override bool RemoveCompletedTransforms => true;
 
-        public FeverBar(FeverTracker tracker)
+        public FeverBar(FeverProcessor processor)
         {
-            FeverProgress = tracker.FeverProgress.GetBoundCopy();
-            FeverActivated = tracker.FeverActivated.GetBoundCopy();
+            FeverProgress = processor.FeverProgress.GetBoundCopy();
+            FeverActivated = processor.FeverActivated.GetBoundCopy();
 
             Y = 150;
             Anchor = Anchor.BottomCentre;

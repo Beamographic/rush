@@ -11,12 +11,12 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
     {
         public TestSceneFeverBar()
         {
-            FeverTracker feverTracker;
+            FeverProcessor feverProcessor;
 
             Children = new Drawable[]
             {
-                feverTracker = new FeverTracker(),
-                new FeverBar(feverTracker)
+                feverProcessor = new FeverProcessor(),
+                new FeverBar(feverProcessor)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
                 }
             };
 
-            AddSliderStep<float>("Progress", 0, 1, 0, v => feverTracker.FeverProgress.Value = v);
+            AddSliderStep<float>("Progress", 0, 1, 0, v => feverProcessor.FeverProgress.Value = v);
         }
     }
 }
