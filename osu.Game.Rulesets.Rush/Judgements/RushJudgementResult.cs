@@ -19,6 +19,11 @@ namespace osu.Game.Rulesets.Rush.Judgements
         public new RushJudgement Judgement => (RushJudgement)base.Judgement;
 
         /// <summary>
+        /// The gathered amount of fever prior to this <see cref="RushJudgementResult"/> occurring.
+        /// </summary>
+        public float FeverProgressAtJudgement { get; set; }
+
+        /// <summary>
         /// Whether the player has collided with the corresponding hit object at the point of judgement.
         /// </summary>
         public bool PlayerCollided;
