@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -18,18 +19,12 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 {
     public class FeverBar : CircularContainer
     {
-        public readonly IBindable<float> FeverProgress;
-        public readonly IBindable<bool> InFeverMode;
-
-        private readonly Box progressBar;
+        private Box progressBar;
 
         public override bool RemoveCompletedTransforms => true;
 
-        public FeverBar(FeverProcessor processor)
+        public FeverBar()
         {
-            FeverProgress = processor.FeverProgress.GetBoundCopy();
-            InFeverMode = processor.InFeverMode.GetBoundCopy();
-
             Y = 150;
             Anchor = Anchor.BottomCentre;
             Origin = Anchor.TopCentre;
@@ -44,6 +39,16 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 Type = EdgeEffectType.Glow,
                 Radius = 20,
             };
+        }
+
+        private IBindable<bool> inFeverMode;
+        private IBindable<float> feverProgress;
+
+        [BackgroundDependencyLoader]
+        private void load(FeverProcessor processor)
+        {
+            feverProgress = processor.FeverProgress.GetBoundCopy();
+            inFeverMode = processor.InFeverMode.GetBoundCopy();
 
             Children = new Drawable[]
             {
@@ -78,19 +83,19 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                             Anchor = Anchor.CentreRight,
                             Origin = Anchor.CentreRight,
                             Colour = Color4.White,
-                            Current = { BindTarget = FeverProgress }
+                            Current = { BindTarget = feverProgress }
                         }
                     }
                 }
             };
 
-            FeverProgress.ValueChanged += updateBar;
-            InFeverMode.ValueChanged += updateInFeverState;
+            feverProgress.ValueChanged += updateProgressBar;
+            inFeverMode.ValueChanged += updateFeverState;
         }
 
-        private void updateBar(ValueChangedEvent<float> valueChanged)
+        private void updateProgressBar(ValueChangedEvent<float> valueChanged)
         {
-            if (!InFeverMode.Value)
+            if (!inFeverMode.Value)
             {
                 if (valueChanged.NewValue >= 1 && valueChanged.OldValue < 1)
                     FadeEdgeEffectTo(0.5f, 100);
@@ -104,7 +109,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
 
-        private void updateInFeverState(ValueChangedEvent<bool> valueChanged)
+        private void updateFeverState(ValueChangedEvent<bool> valueChanged)
         {
             if (valueChanged.NewValue)
             {
