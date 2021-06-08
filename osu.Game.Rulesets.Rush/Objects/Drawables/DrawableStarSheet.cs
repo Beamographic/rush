@@ -3,7 +3,6 @@
 
 using System;
 using System.Linq;
-using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -173,6 +172,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override bool OnPressed(RushAction action)
         {
+            if (!action.IsLaneAction())
+                return false;
+
             if (!LaneMatchesAction(action) || Head.Judged)
                 return false;
 

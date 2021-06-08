@@ -3,16 +3,15 @@
 
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Rush.Judgements;
-using osu.Game.Rulesets.Rush.Scoring;
 using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects
 {
-    public class Heart : LanedHit
+    public class FeverBonus : RushHitObject
     {
-        public override Judgement CreateJudgement() => new HeartJudgement();
+        public override Judgement CreateJudgement() => new RushFeverJudgement();
 
-        protected override HitWindows CreateHitWindows() => new HeartHitWindows();
+        protected override HitWindows CreateHitWindows() => HitWindows.Empty;
 
         protected override bool HasFeverBonus => false;
     }

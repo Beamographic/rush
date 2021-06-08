@@ -14,6 +14,7 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
+using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.Rush.UI.Ground;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
@@ -48,7 +49,9 @@ namespace osu.Game.Rulesets.Rush.UI
                     return Enumerable.Empty<DrawableHitObject>();
 
                 // Intentionally counting on the fact that we don't have nested playfields in our nested playfields
-                IEnumerable<DrawableHitObject> enumerable = HitObjectContainer.AliveObjects.Concat(NestedPlayfields.SelectMany(p => p.HitObjectContainer.AliveObjects)).OrderBy(d => d.HitObject.StartTime);
+                var enumerable = HitObjectContainer.AliveObjects
+                                                   .Concat(NestedPlayfields.SelectMany(p => p.HitObjectContainer.AliveObjects))
+                                                   .OrderBy(d => d.HitObject.StartTime);
                 return enumerable;
             }
         }
@@ -58,6 +61,9 @@ namespace osu.Game.Rulesets.Rush.UI
         private DrawablePool<StarSheetHitExplosion> sheetExplosionPool;
         private DrawablePool<HeartHitExplosion> heartExplosionPool;
         private DrawablePool<HealthText> healthTextPool;
+
+        [Resolved]
+        private FeverProcessor feverProcessor { get; set; }
 
         [Cached]
         private readonly RushHitPolicy hitPolicy;
@@ -95,6 +101,7 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
+                new FeverBar()
             };
 
             AddNested(airLane);
@@ -109,6 +116,7 @@ namespace osu.Game.Rulesets.Rush.UI
             RegisterPool<MiniBossTick, DrawableMiniBossTick>(10);
             RegisterPool<DualHit, DrawableDualHit>(8);
             RegisterPool<DualHitPart, DrawableDualHitPart>(16);
+            RegisterPool<FeverBonus, DrawableFeverBonus>(8);
 
             AddRangeInternal(new Drawable[]
             {
@@ -127,7 +135,8 @@ namespace osu.Game.Rulesets.Rush.UI
             if (drawableHitObject is DrawableMiniBoss drawableMiniBoss)
                 drawableMiniBoss.Attacked += onMiniBossAttacked;
 
-            ((DrawableRushHitObject)drawableHitObject).CheckHittable = hitPolicy.IsHittable;
+            if (drawableHitObject is DrawableRushHitObject drho)
+                drho.CheckHittable = hitPolicy.IsHittable;
         }
 
         public override void Add(HitObject hitObject)
@@ -209,7 +218,13 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
-        public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
+        public bool OnPressed(RushAction action)
+        {
+            if (action == RushAction.Fever)
+                return feverProcessor.TryActivateFever();
+
+            return PlayerSprite.HandleAction(action);
+        }
 
         public void OnReleased(RushAction action)
         {

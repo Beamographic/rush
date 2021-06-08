@@ -46,11 +46,16 @@ namespace osu.Game.Rulesets.Rush
         AirTertiary = 6,
 
         [Description("Air (Quaternary)")]
-        AirQuaternary = 7
+        AirQuaternary = 7,
+
+        [Description("Activate fever")]
+        Fever = 8,
     }
 
     public static class RushActionExtensions
     {
+        public static bool IsLaneAction(this RushAction action) => action < RushAction.Fever;
+
         public static LanedHitLane Lane(this RushAction action) => action switch
         {
             RushAction.GroundPrimary => LanedHitLane.Ground,

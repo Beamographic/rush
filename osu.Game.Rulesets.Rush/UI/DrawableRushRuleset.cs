@@ -13,6 +13,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Replays;
+using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Scoring;
@@ -22,6 +23,8 @@ namespace osu.Game.Rulesets.Rush.UI
     [Cached]
     public class DrawableRushRuleset : DrawableScrollingRuleset<RushHitObject>
     {
+        private FeverProcessor feverProcessor;
+
         protected override bool UserScrollSpeedAdjustment => true;
 
         protected override ScrollVisualisationMethod VisualisationMethod => ScrollVisualisationMethod.Constant;
@@ -31,6 +34,24 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             Direction.Value = ScrollingDirection.Left;
             TimeRange.Value = 800;
+        }
+
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
+        {
+            var dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+            dependencies.CacheAs(feverProcessor = new FeverProcessor());
+
+            NewResult += feverProcessor.ApplyResult;
+            RevertResult += feverProcessor.RevertResult;
+
+            return dependencies;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            FrameStableComponents.Add(feverProcessor);
         }
 
         public bool PlayerCollidesWith(HitObject hitObject) => Playfield.PlayerSprite.CollidesWith(hitObject);

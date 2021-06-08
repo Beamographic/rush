@@ -65,13 +65,15 @@ namespace osu.Game.Rulesets.Rush.UI
             registerLanedPool<StarSheetHead, DrawableStarSheetHead>(8);
             registerLanedPool<StarSheetTail, DrawableStarSheetTail>(8);
             registerLanedPool<Minion, DrawableMinion>(8);
+            RegisterPool<FeverBonus, DrawableFeverBonus>(8);
         }
 
         protected override void OnNewDrawableHitObject(DrawableHitObject drawableHitObject)
         {
             base.OnNewDrawableHitObject(drawableHitObject);
 
-            ((DrawableRushHitObject)drawableHitObject).CheckHittable = hitPolicy.IsHittable;
+            if (drawableHitObject is DrawableRushHitObject drho)
+                drho.CheckHittable = hitPolicy.IsHittable;
         }
 
         private void registerLanedPool<TObject, TDrawable>(int initialSize, int? maximumSize = null) where TObject : LanedHit where TDrawable : DrawableLanedHit<TObject>, new()

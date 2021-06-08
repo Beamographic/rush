@@ -90,7 +90,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             mainPiece.Scale = new Vector2(base_sprite_scale);
         }
 
-        public override bool OnPressed(RushAction action) => UpdateResult(true);
+        public override bool OnPressed(RushAction action) => action.IsLaneAction() && UpdateResult(true);
 
         public override void OnReleased(RushAction action)
         {

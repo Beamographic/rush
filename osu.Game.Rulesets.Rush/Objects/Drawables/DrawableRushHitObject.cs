@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Judgements;
@@ -13,6 +14,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.UI;
+using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK.Graphics;
 
@@ -44,9 +46,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private DrawableRushRuleset drawableRuleset { get; set; }
 
+        [Resolved]
+        private FeverProcessor feverProcessor { get; set; }
+
+        private readonly Container<DrawableFeverBonus> feverBonusContainer;
+
         protected DrawableRushHitObject(RushHitObject hitObject)
             : base(hitObject)
         {
+            AddInternal(feverBonusContainer = new Container<DrawableFeverBonus>());
         }
 
         [BackgroundDependencyLoader(true)]
@@ -109,6 +117,34 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             };
 
             base.ApplyResult(rushApplication);
+
+            foreach (var bonus in feverBonusContainer)
+            {
+                bool eligible = IsHit && feverProcessor.InFeverMode.Value;
+                bonus.ApplyResult(result => result.Type = eligible ? result.Judgement.MaxResult : result.Judgement.MinResult);
+            }
+        }
+
+        protected override DrawableHitObject CreateNestedHitObject(HitObject hitObject)
+        {
+            if (hitObject is FeverBonus x)
+                return new DrawableFeverBonus(x);
+
+            return base.CreateNestedHitObject(hitObject);
+        }
+
+        protected override void AddNestedHitObject(DrawableHitObject hitObject)
+        {
+            if (hitObject is DrawableFeverBonus x)
+                feverBonusContainer.Add(x);
+
+            base.AddNestedHitObject(hitObject);
+        }
+
+        protected override void ClearNestedHitObjects()
+        {
+            feverBonusContainer.Clear(false);
+            base.ClearNestedHitObjects();
         }
     }
 
