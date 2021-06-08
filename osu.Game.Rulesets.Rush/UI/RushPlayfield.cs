@@ -71,8 +71,6 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public RushPlayfield()
         {
-            FeverProcessor feverProcessor;
-
             hitPolicy = new RushHitPolicy(this);
             RelativeSizeAxes = Axes.X;
             Size = new Vector2(1, DEFAULT_HEIGHT);
@@ -104,18 +102,12 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = PLAYER_OFFSET }
                 },
-                feverProcessor = new FeverProcessor(),
-                new FeverBar(feverProcessor)
+                new FeverBar()
             };
-
-            feverActivated.BindTo(feverProcessor.InFeverMode);
 
             AddNested(airLane);
             AddNested(groundLane);
             NewResult += onNewResult;
-
-            NewResult += (d, j) => feverProcessor.ApplyResult(j);
-            RevertResult += (d, j) => feverProcessor.RevertResult(j);
         }
 
         [BackgroundDependencyLoader]
