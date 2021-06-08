@@ -59,10 +59,17 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
                 if (removeStartIndex != -1)
                 {
+                    // This clears everything, and the current state is left as it is
                     ClearTransformsAfter(feverPeriods[removeStartIndex].Start);
+
+                    // Reset to sane pre-fever state
+                    InFeverMode.Value = false;
+                    FeverProgress.Value = 1;
+
                     feverPeriods.RemoveRange(removeStartIndex, feverPeriods.Count - removeStartIndex);
                 }
 
+                // This only corrects the fever state if we are in one
                 if (feverPeriods.Count > 0)
                 {
                     var currentFeverPeriod = feverPeriods[^1];
