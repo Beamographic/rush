@@ -37,8 +37,6 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             MaxValue = 1.0f,
         };
 
-        public override bool RemoveCompletedTransforms => false;
-
         protected override void Update()
         {
             base.Update();
@@ -64,6 +62,17 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                     ClearTransformsAfter(feverPeriods[removeStartIndex].Start);
                     feverPeriods.RemoveRange(removeStartIndex, feverPeriods.Count - removeStartIndex);
                 }
+
+                if (feverPeriods.Count > 0)
+                {
+                    var currentFeverPeriod = feverPeriods[^1];
+
+                    if (Time.Current >= currentFeverPeriod.Start && Time.Current <= currentFeverPeriod.End)
+                    {
+                        ClearTransformsAfter(currentFeverPeriod.Start);
+                        addFeverPeriodTransforms(currentFeverPeriod);
+                    }
+                }
             }
 
             fever_periods_count.Value = feverPeriods.Count;
@@ -74,11 +83,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (!(result is RushJudgementResult rushResult))
                 throw new InvalidOperationException();
 
-            if (InFeverMode.Value)
-                return;
-
             rushResult.FeverProgressAtJudgement = FeverProgress.Value;
-            FeverProgress.Value += feverIncreaseFor(result);
+
+            if (!InFeverMode.Value)
+                FeverProgress.Value += feverIncreaseFor(result);
         }
 
         protected override void RevertResultInternal(JudgementResult result)
@@ -111,15 +119,19 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
             var feverPeriod = new Period(Time.Current, Time.Current + fever_duration);
 
-            using (BeginAbsoluteSequence(feverPeriod.Start, true))
+            addFeverPeriodTransforms(feverPeriod);
+            feverPeriods.Add(feverPeriod);
+        }
+
+        private void addFeverPeriodTransforms(Period period)
+        {
+            using (BeginAbsoluteSequence(period.Start, true))
             {
                 this.TransformBindableTo(InFeverMode, true)
                     .TransformBindableTo(FeverProgress, 1)
-                    .TransformBindableTo(FeverProgress, 0, feverPeriod.End - feverPeriod.Start).Then()
+                    .TransformBindableTo(FeverProgress, 0, period.End - period.Start).Then()
                     .TransformBindableTo(InFeverMode, false);
             }
-
-            feverPeriods.Add(feverPeriod);
         }
 
         private static float feverIncreaseFor(JudgementResult result)
