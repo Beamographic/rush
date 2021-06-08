@@ -27,6 +27,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
             };
 
             AddSliderStep<float>("Progress", 0, 1, 0, v => feverProcessor.FeverProgress.Value = v);
+            AddToggleStep("Activated", v => feverProcessor.InFeverMode.Value = v);
         }
     }
 }
