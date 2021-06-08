@@ -107,7 +107,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         private void activateFever()
         {
-            Debug.Assert(Time.Current > feverPeriods[^1].End);
+            Debug.Assert(feverPeriods.Count == 0 || Time.Current > feverPeriods[^1].End);
 
             var feverPeriod = new Period(Time.Current, Time.Current + fever_duration);
 
