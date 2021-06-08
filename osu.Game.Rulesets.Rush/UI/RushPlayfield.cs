@@ -62,6 +62,9 @@ namespace osu.Game.Rulesets.Rush.UI
         private DrawablePool<HeartHitExplosion> heartExplosionPool;
         private DrawablePool<HealthText> healthTextPool;
 
+        [Resolved]
+        private FeverProcessor feverProcessor { get; set; }
+
         [Cached]
         private readonly RushHitPolicy hitPolicy;
 
@@ -215,7 +218,13 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
-        public bool OnPressed(RushAction action) => PlayerSprite.HandleAction(action);
+        public bool OnPressed(RushAction action)
+        {
+            if (action == RushAction.Fever)
+                return feverProcessor.TryActivateFever();
+
+            return PlayerSprite.HandleAction(action);
+        }
 
         public void OnReleased(RushAction action)
         {

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Input.Bindings;
 using osu.Framework.Statistics;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Rush.Judgements;
@@ -15,7 +14,7 @@ using osu.Game.Utils;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverProcessor : JudgementProcessor, IKeyBindingHandler<RushAction>
+    public class FeverProcessor : JudgementProcessor
     {
         private const float fever_duration = 5000;
         private const int perfect_hits_to_fill = 100;
@@ -87,10 +86,23 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (!(result is RushJudgementResult rushResult))
                 throw new InvalidOperationException();
 
-            if (InFeverMode.Value)
-                return;
-
             FeverProgress.Value = rushResult.FeverProgressAtJudgement;
+        }
+
+        /// <summary>
+        /// Attempts to activate fever mode, and returns the attempt result.
+        /// </summary>
+        /// <returns>Whether fever has been activated or not.</returns>
+        public bool TryActivateFever()
+        {
+            if (InFeverMode.Value)
+                return false;
+
+            if (FeverProgress.Value < 1)
+                return false;
+
+            activateFever();
+            return true;
         }
 
         private void activateFever()
@@ -116,25 +128,6 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 return 0;
 
             return (float)result.Judgement.NumericResultFor(result) / result.Judgement.MaxNumericResult / perfect_hits_to_fill;
-        }
-
-        public bool OnPressed(RushAction action)
-        {
-            if (action != RushAction.Fever)
-                return false;
-
-            if (InFeverMode.Value)
-                return false;
-
-            if (FeverProgress.Value < 1)
-                return false;
-
-            activateFever();
-            return true;
-        }
-
-        public void OnReleased(RushAction action)
-        {
         }
     }
 }
