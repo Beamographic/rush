@@ -36,20 +36,22 @@ namespace osu.Game.Rulesets.Rush.UI
             TimeRange.Value = 800;
         }
 
-        private DependencyContainer dependencies;
-
-        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
-            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
-
-        [BackgroundDependencyLoader]
-        private void load()
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
         {
-            FrameStableComponents.Add(feverProcessor = new FeverProcessor());
+            var dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+            dependencies.CacheAs(feverProcessor = new FeverProcessor());
 
             NewResult += feverProcessor.ApplyResult;
             RevertResult += feverProcessor.RevertResult;
 
-            dependencies.CacheAs(feverProcessor);
+            return dependencies;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            FrameStableComponents.Add(feverProcessor);
         }
 
         public bool PlayerCollidesWith(HitObject hitObject) => Playfield.PlayerSprite.CollidesWith(hitObject);
