@@ -14,6 +14,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.UI;
+using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK.Graphics;
 
@@ -45,8 +46,8 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         [Resolved]
         private DrawableRushRuleset drawableRuleset { get; set; }
 
-        [Resolved(name: "feverActivated")]
-        private IBindable<bool> feverActivated { get; set; }
+        [Resolved]
+        private FeverProcessor feverProcessor { get; set; }
 
         private readonly Container<DrawableFeverBonus> feverBonusContainer;
 
@@ -119,7 +120,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             foreach (var bonus in feverBonusContainer)
             {
-                bool eligible = IsHit && feverActivated.Value;
+                bool eligible = IsHit && feverProcessor.InFeverMode.Value;
                 bonus.ApplyResult(result => result.Type = eligible ? result.Judgement.MaxResult : result.Judgement.MinResult);
             }
         }

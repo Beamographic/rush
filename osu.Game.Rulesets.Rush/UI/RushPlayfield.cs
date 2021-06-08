@@ -66,9 +66,6 @@ namespace osu.Game.Rulesets.Rush.UI
         [Cached]
         private readonly RushHitPolicy hitPolicy;
 
-        [Cached(type: typeof(IBindable<bool>), name: "feverActivated")]
-        private readonly Bindable<bool> feverActivated = new Bindable<bool>();
-
         public RushPlayfield()
         {
             hitPolicy = new RushHitPolicy(this);
