@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using osu.Framework.Extensions.EnumExtensions;
 using osu.Game.Beatmaps;
 using osu.Game.Replays.Legacy;
 using osu.Game.Rulesets.Replays;
@@ -12,22 +13,28 @@ namespace osu.Game.Rulesets.Rush.Replays
 {
     public class RushReplayFrame : ReplayFrame, IConvertibleReplayFrame
     {
+        public bool UsingAutoFever { get; private set; }
+
         public List<RushAction> Actions = new List<RushAction>();
 
         public RushReplayFrame()
         {
         }
 
-        public RushReplayFrame(double time, RushAction? button = null)
+        public RushReplayFrame(double time, RushAction? button = null, bool usingAutoFever = true)
             : base(time)
         {
+            UsingAutoFever = usingAutoFever;
+
             if (button.HasValue)
                 Actions.Add(button.Value);
         }
 
-        public RushReplayFrame(double time, IEnumerable<RushAction> buttons)
+        public RushReplayFrame(double time, IEnumerable<RushAction> buttons, bool usingAutoFever = true)
             : base(time)
         {
+            UsingAutoFever = usingAutoFever;
+
             Actions.AddRange(buttons);
         }
 
@@ -47,6 +54,8 @@ namespace osu.Game.Rulesets.Rush.Replays
                 ++currentBit;
                 flags >>= 1;
             }
+
+            UsingAutoFever = currentFrame.ButtonState.HasFlagFast(ReplayButtonState.Smoke);
         }
 
         public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
@@ -55,7 +64,7 @@ namespace osu.Game.Rulesets.Rush.Replays
             foreach (var action in Actions)
                 flags |= 1u << (int)action;
 
-            return new LegacyReplayFrame(Time, flags, 0f, ReplayButtonState.None);
+            return new LegacyReplayFrame(Time, flags, 0f, UsingAutoFever ? ReplayButtonState.Smoke : ReplayButtonState.None);
         }
     }
 }

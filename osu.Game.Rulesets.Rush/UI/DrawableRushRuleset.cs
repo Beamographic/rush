@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Input;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
@@ -11,6 +12,7 @@ using osu.Game.Replays;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Configuration;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.Rush.UI.Fever;
@@ -53,6 +55,18 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             FrameStableComponents.Add(feverProcessor);
         }
+
+        protected override void LoadComplete()
+        {
+            (Config as RushRulesetConfigManager)?.BindWith(RushRulsetSettings.AutomaticFever, autoFeverSetting);
+        }
+
+        // Auto fever related stuff
+        private readonly Bindable<bool> autoFeverSetting = new Bindable<bool>(true);
+
+        private RushFramedReplayInputHandler replayInputHandler => ((RushInputManager)KeyBindingInputManager).ReplayInputHandler as RushFramedReplayInputHandler;
+
+        public bool UsingAutoFever => replayInputHandler?.UsingAutoFever ?? autoFeverSetting.Value;
 
         public bool PlayerCollidesWith(HitObject hitObject) => Playfield.PlayerSprite.CollidesWith(hitObject);
 

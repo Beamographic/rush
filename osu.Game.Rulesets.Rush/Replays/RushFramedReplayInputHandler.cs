@@ -18,6 +18,8 @@ namespace osu.Game.Rulesets.Rush.Replays
 
         protected override bool IsImportant(RushReplayFrame frame) => frame.Actions.Any();
 
+        public bool UsingAutoFever => CurrentFrame.UsingAutoFever;
+
         public override void CollectPendingInputs(List<IInput> inputs) =>
             inputs.Add(new ReplayState<RushAction> { PressedActions = CurrentFrame?.Actions ?? new List<RushAction>() });
     }

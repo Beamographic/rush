@@ -39,13 +39,10 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             MaxValue = 1.0f,
         };
 
-        private readonly Bindable<bool> autoFever = new Bindable<bool>(true);
+        [Resolved(canBeNull: true)]
+        private DrawableRushRuleset drawableRuleset { get; set; }
 
-        [BackgroundDependencyLoader(true)]
-        private void load(RushRulesetConfigManager rushConfigs)
-        {
-            rushConfigs?.BindWith(RushRulsetSettings.AutomaticFever, autoFever);
-        }
+        private bool usingAutoFever => drawableRuleset?.UsingAutoFever ?? true;
 
         protected override void Update()
         {
@@ -105,7 +102,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (!InFeverMode.Value)
                 FeverProgress.Value += feverIncreaseFor(result);
 
-            if (autoFever.Value && FeverProgress.Value >= 1)
+            if (usingAutoFever && FeverProgress.Value >= 1)
                 TryActivateFever();
         }
 
