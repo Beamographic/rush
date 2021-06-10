@@ -8,10 +8,14 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
 using osu.Game.Beatmaps;
+using osu.Game.Configuration;
+using osu.Game.Overlays.Settings;
+using osu.Game.Rulesets.Configuration;
 using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Replays.Types;
 using osu.Game.Rulesets.Rush.Beatmaps;
+using osu.Game.Rulesets.Rush.Configuration;
 using osu.Game.Rulesets.Rush.Mods;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.Rush.Scoring;
@@ -35,6 +39,10 @@ namespace osu.Game.Rulesets.Rush
         public override string Description => !IsDevelopmentBuild ? "Rush!" : "Rush! (dev build)";
 
         public override string PlayingVerb => "Punching doods";
+
+        public override RulesetSettingsSubsection CreateSettings() => new RushSettingsSubsection(this);
+
+        public override IRulesetConfigManager CreateConfig(SettingsStore settings) => new RushRulesetConfigManager(settings, RulesetInfo);
 
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new DrawableRushRuleset(this, beatmap, mods);
 
