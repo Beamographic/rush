@@ -31,7 +31,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 new SettingsCheckbox
                 {
                     LabelText = "Automatic Fever activation",
-                    Current = config.GetBindable<bool>(RushRulsetSettings.AutomaticFever)
+                    Current = config.GetBindable<bool>(RushRulesetSettings.AutomaticFever)
                 },
             };
         }

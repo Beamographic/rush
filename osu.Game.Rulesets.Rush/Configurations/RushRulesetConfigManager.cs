@@ -6,7 +6,7 @@ using osu.Game.Rulesets.Configuration;
 
 namespace osu.Game.Rulesets.Rush.Configuration
 {
-    public class RushRulesetConfigManager : RulesetConfigManager<RushRulsetSettings>
+    public class RushRulesetConfigManager : RulesetConfigManager<RushRulesetSettings>
     {
         public RushRulesetConfigManager(SettingsStore settings, RulesetInfo ruleset, int? variant = null)
             : base(settings, ruleset, variant)
@@ -17,11 +17,11 @@ namespace osu.Game.Rulesets.Rush.Configuration
         {
             base.InitialiseDefaults();
 
-            SetDefault(RushRulsetSettings.AutomaticFever, true);
+            SetDefault(RushRulesetSettings.AutomaticFever, true);
         }
     }
 
-    public enum RushRulsetSettings
+    public enum RushRulesetSettings
     {
         AutomaticFever
     }

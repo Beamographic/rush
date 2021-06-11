@@ -58,7 +58,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         protected override void LoadComplete()
         {
-            (Config as RushRulesetConfigManager)?.BindWith(RushRulsetSettings.AutomaticFever, autoFeverSetting);
+            (Config as RushRulesetConfigManager)?.BindWith(RushRulesetSettings.AutomaticFever, autoFeverSetting);
         }
 
         // Auto fever related stuff

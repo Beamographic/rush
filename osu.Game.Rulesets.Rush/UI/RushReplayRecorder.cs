@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader(true)]
         private void load(RushRulesetConfigManager rushConfigs)
         {
-            rushConfigs?.BindWith(RushRulsetSettings.AutomaticFever, automaticFever);
+            rushConfigs?.BindWith(RushRulesetSettings.AutomaticFever, automaticFever);
         }
 
         protected override ReplayFrame HandleFrame(Vector2 mousePosition, List<RushAction> actions, ReplayFrame previousFrame)
