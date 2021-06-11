@@ -55,6 +55,8 @@ namespace osu.Game.Rulesets.Rush.Replays
                 flags >>= 1;
             }
 
+            // We are repurposing ReplayButtonState.Smoke in order to store the AutoFever setting used at the time of recording.
+            // This will serve as an interim solution until non-legacy replays are supported in osu.
             UsingAutoFever = currentFrame.ButtonState.HasFlagFast(ReplayButtonState.Smoke);
         }
 
