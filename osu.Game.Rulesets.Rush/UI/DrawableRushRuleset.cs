@@ -27,6 +27,12 @@ namespace osu.Game.Rulesets.Rush.UI
     {
         private FeverProcessor feverProcessor;
 
+        protected new RushRulesetConfigManager Config => (RushRulesetConfigManager)base.Config;
+
+        public new RushPlayfield Playfield => (RushPlayfield)base.Playfield;
+
+        public new RushInputManager KeyBindingInputManager => (RushInputManager)base.KeyBindingInputManager;
+
         protected override bool UserScrollSpeedAdjustment => true;
 
         protected override ScrollVisualisationMethod VisualisationMethod => ScrollVisualisationMethod.Constant;
@@ -75,8 +81,6 @@ namespace osu.Game.Rulesets.Rush.UI
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new RushFramedReplayInputHandler(replay);
 
         protected override ReplayRecorder CreateReplayRecorder(Score score) => new RushReplayRecorder(score);
-
-        public new RushPlayfield Playfield => (RushPlayfield)base.Playfield;
 
         public override DrawableHitObject<RushHitObject> CreateDrawableRepresentation(RushHitObject h) => null;
 
