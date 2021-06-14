@@ -10,11 +10,14 @@ namespace osu.Game.Rulesets.Rush.UI
 {
     public class RushSettingsSubsection : RulesetSettingsSubsection
     {
-        protected override string Header => RushRuleset.IsDevelopmentBuild ? "rush (Dev build)" : "rush";
+        private readonly Ruleset ruleset;
+
+        protected override string Header => ruleset.Description;
 
         public RushSettingsSubsection(Ruleset ruleset)
             : base(ruleset)
         {
+            this.ruleset = ruleset;
         }
 
         [BackgroundDependencyLoader]
