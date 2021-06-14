@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
+using osu.Framework.Allocation;
 using osu.Game.Rulesets.Replays;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.UI;
@@ -12,12 +13,22 @@ namespace osu.Game.Rulesets.Rush.UI
 {
     public class RushReplayRecorder : ReplayRecorder<RushAction>
     {
+        [Resolved(canBeNull: true)]
+        private DrawableRushRuleset drawableRuleset { get; set; }
+
         public RushReplayRecorder(Score target)
             : base(target)
         {
         }
 
         protected override ReplayFrame HandleFrame(Vector2 mousePosition, List<RushAction> actions, ReplayFrame previousFrame)
-            => new RushReplayFrame(Time.Current, actions);
+        {
+            var frame = new RushReplayFrame(Time.Current, actions);
+
+            if (drawableRuleset != null)
+                frame.FeverActivationMode = drawableRuleset.FeverActivationMode;
+
+            return frame;
+        }
     }
 }

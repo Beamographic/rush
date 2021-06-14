@@ -26,5 +26,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!Result.HasResult)
                 base.ApplyResult(application);
         }
+
+        protected override void CheckForResult(bool userTriggered, double timeOffset)
+        {
+        }
     }
 }

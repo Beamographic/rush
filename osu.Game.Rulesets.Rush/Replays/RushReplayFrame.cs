@@ -3,16 +3,23 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using osu.Framework.Extensions.EnumExtensions;
 using osu.Game.Beatmaps;
 using osu.Game.Replays.Legacy;
 using osu.Game.Rulesets.Replays;
 using osu.Game.Rulesets.Replays.Types;
+using osu.Game.Rulesets.Rush.Configuration;
 
 namespace osu.Game.Rulesets.Rush.Replays
 {
     public class RushReplayFrame : ReplayFrame, IConvertibleReplayFrame
     {
         public List<RushAction> Actions = new List<RushAction>();
+
+        /// <summary>
+        /// The fever activation mode at this frame.
+        /// </summary>
+        public FeverActivationMode FeverActivationMode;
 
         public RushReplayFrame()
         {
@@ -47,6 +54,10 @@ namespace osu.Game.Rulesets.Rush.Replays
                 ++currentBit;
                 flags >>= 1;
             }
+
+            // We are repurposing ReplayButtonState.Smoke in order to store the AutoFever setting used at the time of recording.
+            // This will serve as an interim solution until non-legacy replays are supported in osu.
+            FeverActivationMode = getFeverActivationMode(currentFrame.ButtonState);
         }
 
         public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
@@ -55,7 +66,19 @@ namespace osu.Game.Rulesets.Rush.Replays
             foreach (var action in Actions)
                 flags |= 1u << (int)action;
 
-            return new LegacyReplayFrame(Time, flags, 0f, ReplayButtonState.None);
+            return new LegacyReplayFrame(Time, flags, 0f, getFeverActivationButtonState(FeverActivationMode));
         }
+
+        private static FeverActivationMode getFeverActivationMode(ReplayButtonState buttonState) => buttonState.HasFlagFast(ReplayButtonState.Smoke) switch
+        {
+            true => FeverActivationMode.Automatic,
+            false => FeverActivationMode.Manual
+        };
+
+        private static ReplayButtonState getFeverActivationButtonState(FeverActivationMode mode) => mode switch
+        {
+            FeverActivationMode.Automatic => ReplayButtonState.Smoke,
+            _ => ReplayButtonState.None,
+        };
     }
 }

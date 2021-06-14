@@ -7,6 +7,7 @@ using osu.Game.Beatmaps;
 using osu.Game.Replays;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Rush.Configuration;
 using osu.Game.Rulesets.Rush.Objects;
 
 namespace osu.Game.Rulesets.Rush.Replays
@@ -83,7 +84,10 @@ namespace osu.Game.Rulesets.Rush.Replays
                     }
                 }
 
-                Replay.Frames.Add(new RushReplayFrame(group.First().Time, actions.ToArray()));
+                Replay.Frames.Add(new RushReplayFrame(group.First().Time, actions.ToArray())
+                {
+                    FeverActivationMode = FeverActivationMode.Automatic,
+                });
             }
 
             return Replay;

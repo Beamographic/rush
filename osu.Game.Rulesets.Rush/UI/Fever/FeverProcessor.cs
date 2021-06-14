@@ -4,10 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Statistics;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Rush.Configuration;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Utils;
@@ -36,6 +38,11 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             MinValue = 0.0f,
             MaxValue = 1.0f,
         };
+
+        [Resolved(canBeNull: true)]
+        private DrawableRushRuleset drawableRuleset { get; set; }
+
+        private FeverActivationMode feverActivationMode => drawableRuleset?.FeverActivationMode ?? default;
 
         protected override void Update()
         {
@@ -94,6 +101,9 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
             if (!InFeverMode.Value)
                 FeverProgress.Value += feverIncreaseFor(result);
+
+            if (feverActivationMode == FeverActivationMode.Automatic && FeverProgress.Value >= 1)
+                TryActivateFever();
         }
 
         protected override void RevertResultInternal(JudgementResult result)

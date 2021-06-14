@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using osu.Framework.Input.Bindings;
 using osu.Game.Rulesets.Rush.Objects;
+using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.UI;
 
 namespace osu.Game.Rulesets.Rush
 {
     public class RushInputManager : RulesetInputManager<RushAction>
     {
+        public new RushFramedReplayInputHandler ReplayInputHandler => (RushFramedReplayInputHandler)base.ReplayInputHandler;
+
         /// <summary>
         /// Retrieves all actions in a currenty pressed states.
         /// </summary>
