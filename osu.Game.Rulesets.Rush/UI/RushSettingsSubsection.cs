@@ -12,6 +12,8 @@ namespace osu.Game.Rulesets.Rush.UI
     {
         private readonly Ruleset ruleset;
 
+        protected new RushRulesetConfigManager Config => (RushRulesetConfigManager)base.Config;
+
         protected override string Header => ruleset.Description;
 
         public RushSettingsSubsection(Ruleset ruleset)
@@ -23,14 +25,12 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load()
         {
-            var config = (RushRulesetConfigManager)Config;
-
             Children = new Drawable[]
             {
-                new SettingsCheckbox
+                new SettingsEnumDropdown<FeverActivationMode>
                 {
-                    LabelText = "Automatic Fever activation",
-                    Current = config.GetBindable<bool>(RushRulesetSettings.AutomaticFever)
+                    LabelText = "Fever activation mode",
+                    Current = Config.GetBindable<FeverActivationMode>(RushRulesetSettings.FeverActivationMode)
                 },
             };
         }

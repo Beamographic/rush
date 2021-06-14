@@ -8,33 +8,33 @@ using osu.Game.Beatmaps;
 using osu.Game.Replays.Legacy;
 using osu.Game.Rulesets.Replays;
 using osu.Game.Rulesets.Replays.Types;
+using osu.Game.Rulesets.Rush.Configuration;
 
 namespace osu.Game.Rulesets.Rush.Replays
 {
     public class RushReplayFrame : ReplayFrame, IConvertibleReplayFrame
     {
-        public bool UsingAutoFever { get; private set; }
-
         public List<RushAction> Actions = new List<RushAction>();
+
+        /// <summary>
+        /// The fever activation mode at this frame.
+        /// </summary>
+        public FeverActivationMode FeverActivationMode;
 
         public RushReplayFrame()
         {
         }
 
-        public RushReplayFrame(double time, RushAction? button = null, bool usingAutoFever = true)
+        public RushReplayFrame(double time, RushAction? button = null)
             : base(time)
         {
-            UsingAutoFever = usingAutoFever;
-
             if (button.HasValue)
                 Actions.Add(button.Value);
         }
 
-        public RushReplayFrame(double time, IEnumerable<RushAction> buttons, bool usingAutoFever = true)
+        public RushReplayFrame(double time, IEnumerable<RushAction> buttons)
             : base(time)
         {
-            UsingAutoFever = usingAutoFever;
-
             Actions.AddRange(buttons);
         }
 
@@ -57,7 +57,7 @@ namespace osu.Game.Rulesets.Rush.Replays
 
             // We are repurposing ReplayButtonState.Smoke in order to store the AutoFever setting used at the time of recording.
             // This will serve as an interim solution until non-legacy replays are supported in osu.
-            UsingAutoFever = currentFrame.ButtonState.HasFlagFast(ReplayButtonState.Smoke);
+            FeverActivationMode = getFeverActivationMode(currentFrame.ButtonState);
         }
 
         public LegacyReplayFrame ToLegacy(IBeatmap beatmap)
@@ -66,7 +66,19 @@ namespace osu.Game.Rulesets.Rush.Replays
             foreach (var action in Actions)
                 flags |= 1u << (int)action;
 
-            return new LegacyReplayFrame(Time, flags, 0f, UsingAutoFever ? ReplayButtonState.Smoke : ReplayButtonState.None);
+            return new LegacyReplayFrame(Time, flags, 0f, getFeverActivationButtonState(FeverActivationMode));
         }
+
+        private static FeverActivationMode getFeverActivationMode(ReplayButtonState buttonState) => buttonState.HasFlagFast(ReplayButtonState.Smoke) switch
+        {
+            true => FeverActivationMode.Automatic,
+            false => FeverActivationMode.Manual
+        };
+
+        private static ReplayButtonState getFeverActivationButtonState(FeverActivationMode mode) => mode switch
+        {
+            FeverActivationMode.Automatic => ReplayButtonState.Smoke,
+            _ => ReplayButtonState.None,
+        };
     }
 }

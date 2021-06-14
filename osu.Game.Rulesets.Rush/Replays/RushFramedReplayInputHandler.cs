@@ -6,6 +6,7 @@ using System.Linq;
 using osu.Framework.Input.StateChanges;
 using osu.Game.Replays;
 using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Rush.Configuration;
 
 namespace osu.Game.Rulesets.Rush.Replays
 {
@@ -18,7 +19,10 @@ namespace osu.Game.Rulesets.Rush.Replays
 
         protected override bool IsImportant(RushReplayFrame frame) => frame.Actions.Any();
 
-        public bool UsingAutoFever => CurrentFrame.UsingAutoFever;
+        /// <summary>
+        /// The current fever activation mode determined by the replay's current frame.
+        /// </summary>
+        public FeverActivationMode? FeverActivationMode => CurrentFrame?.FeverActivationMode;
 
         public override void CollectPendingInputs(List<IInput> inputs) =>
             inputs.Add(new ReplayState<RushAction> { PressedActions = CurrentFrame?.Actions ?? new List<RushAction>() });

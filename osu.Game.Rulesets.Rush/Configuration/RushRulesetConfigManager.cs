@@ -17,12 +17,12 @@ namespace osu.Game.Rulesets.Rush.Configuration
         {
             base.InitialiseDefaults();
 
-            SetDefault(RushRulesetSettings.AutomaticFever, true);
+            SetDefault(RushRulesetSettings.FeverActivationMode, FeverActivationMode.Automatic);
         }
     }
 
     public enum RushRulesetSettings
     {
-        AutomaticFever
+        FeverActivationMode
     }
 }

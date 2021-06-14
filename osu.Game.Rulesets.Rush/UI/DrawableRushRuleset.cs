@@ -33,6 +33,8 @@ namespace osu.Game.Rulesets.Rush.UI
 
         public new RushInputManager KeyBindingInputManager => (RushInputManager)base.KeyBindingInputManager;
 
+        public FeverActivationMode FeverActivationMode => KeyBindingInputManager.ReplayInputHandler?.FeverActivationMode ?? feverActivationModeSetting.Value;
+
         protected override bool UserScrollSpeedAdjustment => true;
 
         protected override ScrollVisualisationMethod VisualisationMethod => ScrollVisualisationMethod.Constant;
@@ -56,23 +58,15 @@ namespace osu.Game.Rulesets.Rush.UI
             return dependencies;
         }
 
+        private readonly Bindable<FeverActivationMode> feverActivationModeSetting = new Bindable<FeverActivationMode>();
+
         [BackgroundDependencyLoader]
         private void load()
         {
+            Config.BindWith(RushRulesetSettings.FeverActivationMode, feverActivationModeSetting);
+
             FrameStableComponents.Add(feverProcessor);
         }
-
-        protected override void LoadComplete()
-        {
-            (Config as RushRulesetConfigManager)?.BindWith(RushRulesetSettings.AutomaticFever, autoFeverSetting);
-        }
-
-        // Auto fever related stuff
-        private readonly Bindable<bool> autoFeverSetting = new Bindable<bool>(true);
-
-        private RushFramedReplayInputHandler replayInputHandler => ((RushInputManager)KeyBindingInputManager).ReplayInputHandler as RushFramedReplayInputHandler;
-
-        public bool UsingAutoFever => replayInputHandler?.UsingAutoFever ?? autoFeverSetting.Value;
 
         public bool PlayerCollidesWith(HitObject hitObject) => Playfield.PlayerSprite.CollidesWith(hitObject);
 

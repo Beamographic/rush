@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         [Resolved(canBeNull: true)]
         private DrawableRushRuleset drawableRuleset { get; set; }
 
-        private bool usingAutoFever => drawableRuleset?.UsingAutoFever ?? true;
+        private FeverActivationMode feverActivationMode => drawableRuleset?.FeverActivationMode ?? default;
 
         protected override void Update()
         {
@@ -102,7 +102,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (!InFeverMode.Value)
                 FeverProgress.Value += feverIncreaseFor(result);
 
-            if (usingAutoFever && FeverProgress.Value >= 1)
+            if (feverActivationMode == FeverActivationMode.Automatic && FeverProgress.Value >= 1)
                 TryActivateFever();
         }
 
