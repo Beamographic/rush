@@ -63,7 +63,7 @@ namespace osu.Game.Rulesets.Rush.UI
         [BackgroundDependencyLoader]
         private void load()
         {
-            Config.BindWith(RushRulesetSettings.FeverActivationMode, feverActivationModeSetting);
+            Config?.BindWith(RushRulesetSettings.FeverActivationMode, feverActivationModeSetting);
 
             FrameStableComponents.Add(feverProcessor);
         }
