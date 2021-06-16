@@ -33,7 +33,6 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
 
         private readonly DrawablePool<GroundLine> linePool;
 
-
         public DefaultGround()
         {
             RelativeSizeAxes = Axes.Both;
