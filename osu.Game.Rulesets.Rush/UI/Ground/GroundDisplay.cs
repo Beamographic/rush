@@ -1,10 +1,8 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Game.Rulesets.UI.Scrolling;
 
 namespace osu.Game.Rulesets.Rush.UI.Ground
 {
@@ -13,8 +11,6 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
     /// </summary>
     public class GroundDisplay : CompositeDrawable
     {
-        private readonly CompositeDrawable ground;
-
         public GroundDisplay()
         {
             Anchor = Anchor.BottomCentre;
@@ -24,7 +20,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
 
             InternalChildren = new Drawable[]
             {
-                ground = new DefaultGround(),
+                new DefaultGround(),
             };
         }
     }
