@@ -112,7 +112,8 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             if (invalidation.HasFlagFast(Invalidation.DrawSize))
             {
                 slats.Clear(false);
-                for (float i = 0; i < DrawWidth; i += slats_spacing)
+
+                for (float i = 0; i < DrawWidth + slats_spacing; i += slats_spacing)
                     slats.Add(linePool.Get(l => l.X = i));
             }
 
