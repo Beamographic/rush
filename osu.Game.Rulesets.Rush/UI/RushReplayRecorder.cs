@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.UI;
 using osu.Game.Scoring;

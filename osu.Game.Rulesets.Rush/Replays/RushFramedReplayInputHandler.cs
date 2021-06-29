@@ -7,6 +7,7 @@ using osu.Framework.Input.StateChanges;
 using osu.Game.Replays;
 using osu.Game.Rulesets.Replays;
 using osu.Game.Rulesets.Rush.Configuration;
+using osu.Game.Rulesets.Rush.Input;
 
 namespace osu.Game.Rulesets.Rush.Replays
 {

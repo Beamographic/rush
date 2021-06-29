@@ -9,16 +9,20 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Input.Events;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
+using osu.Game.Rulesets.Rush.Input;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverBar : CircularContainer
+    public class FeverBar : CircularContainer, IKeyBindingTouchHandler
     {
+        public override bool HandlePositionalInput => true;
+
         private Box progressBar;
 
         public override bool RemoveCompletedTransforms => true;
@@ -125,6 +129,14 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (Clock.Rate < 0)
                 FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
+
+        private RushInputManager rushActionInputManager;
+        internal RushInputManager RushActionInputManager => rushActionInputManager ??= GetContainingInputManager() as RushInputManager;
+
+        protected override bool OnTouchDown(TouchDownEvent e) => true;
+        protected override bool OnMouseDown(MouseDownEvent e) => true;
+        public TargetAction GetTargetActionFor(Vector2 screenSpaceInputPosition) => TargetAction.Fever;
+
 
         private class FeverRollingCounter : RollingCounter<float>
         {

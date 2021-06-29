@@ -16,6 +16,7 @@ using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Replays.Types;
 using osu.Game.Rulesets.Rush.Beatmaps;
 using osu.Game.Rulesets.Rush.Configuration;
+using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Mods;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.Rush.Scoring;
