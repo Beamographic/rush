@@ -13,6 +13,7 @@ namespace osu.Game.Rulesets.Rush.Input
     public class RushTouchEventManager : TouchEventManager
     {
         private readonly RushInputManager rushInputManager;
+
         public RushTouchEventManager(TouchSource source, RushInputManager inputManager)
             : base(source)
         {
@@ -23,12 +24,15 @@ namespace osu.Game.Rulesets.Rush.Input
 
         protected override Drawable HandleButtonDown(InputState state, List<Drawable> targets)
         {
+            // This must be done first to ensure TouchDownPosition is set
+            var result = base.HandleButtonDown(state, targets);
+
             touchHandler = targets.FirstOrDefault(d => d is IKeyBindingTouchHandler) as IKeyBindingTouchHandler;
 
             if (touchHandler != null)
                 rushInputManager.TryPressTouchAction(Button, touchHandler.GetTargetActionFor(TouchDownPosition.Value));
 
-            return base.HandleButtonDown(state, targets);
+            return result;
         }
 
         protected override void HandleButtonUp(InputState state, List<Drawable> targets)

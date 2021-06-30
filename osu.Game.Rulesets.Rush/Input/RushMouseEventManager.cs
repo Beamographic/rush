@@ -17,6 +17,7 @@ namespace osu.Game.Rulesets.Rush.Input
         public override bool ChangeFocusOnClick => false;
 
         private readonly RushInputManager rushInputManager;
+
         public RushMouseEventManager(MouseButton source, RushInputManager inputManager)
             : base(source)
         {
@@ -27,12 +28,13 @@ namespace osu.Game.Rulesets.Rush.Input
 
         protected override Drawable HandleButtonDown(InputState state, List<Drawable> targets)
         {
+            var result = base.HandleButtonDown(state, targets);
             touchHandler = targets.FirstOrDefault(d => d is IKeyBindingTouchHandler) as IKeyBindingTouchHandler;
 
             if (touchHandler != null)
                 rushInputManager.TryPressTouchAction((TouchSource)Button, touchHandler.GetTargetActionFor(MouseDownPosition.Value));
 
-            return base.HandleButtonDown(state, targets);
+            return result;
         }
 
         protected override void HandleButtonUp(InputState state, List<Drawable> targets)
