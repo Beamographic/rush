@@ -2,6 +2,8 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 using osu.Framework.Graphics;
 using osu.Framework.Input;
 using osu.Framework.Input.States;
@@ -17,22 +19,24 @@ namespace osu.Game.Rulesets.Rush.Input
             rushInputManager = inputManager;
         }
 
+        private IKeyBindingTouchHandler touchHandler;
+
         protected override Drawable HandleButtonDown(InputState state, List<Drawable> targets)
         {
-            base.HandleButtonDown(state, targets);
+            touchHandler = targets.FirstOrDefault(d => d is IKeyBindingTouchHandler) as IKeyBindingTouchHandler;
 
-            if (HeldDrawable is IKeyBindingTouchHandler touchHandler)
+            if (touchHandler != null)
                 rushInputManager.TryPressTouchAction(Button, touchHandler.GetTargetActionFor(TouchDownPosition.Value));
 
-            return HeldDrawable;
+            return base.HandleButtonDown(state, targets);
         }
 
         protected override void HandleButtonUp(InputState state, List<Drawable> targets)
         {
-
-            if (HeldDrawable is IKeyBindingTouchHandler)
+            if (touchHandler != null)
                 rushInputManager.ReleaseTouchAction(Button);
 
+            touchHandler = null;
             base.HandleButtonUp(state, targets);
         }
     }

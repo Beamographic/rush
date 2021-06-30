@@ -26,6 +26,8 @@ namespace osu.Game.Rulesets.Rush.UI
     [Cached]
     public class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>, IKeyBindingTouchHandler
     {
+        public override bool HandlePositionalInput => true;
+
         public const float DEFAULT_HEIGHT = 178;
         public const float HIT_TARGET_OFFSET = 240;
         public const float HIT_TARGET_SIZE = 100;
@@ -233,10 +235,6 @@ namespace osu.Game.Rulesets.Rush.UI
         public void OnReleased(RushAction action)
         {
         }
-
-        protected override bool OnTouchDown(TouchDownEvent e) => true;
-        protected override bool OnMouseDown(MouseDownEvent e) => true;
-
 
         public TargetAction GetTargetActionFor(Vector2 inputScreenSpacePosition)
         {
