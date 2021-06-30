@@ -16,13 +16,13 @@ namespace osu.Game.Rulesets.Rush.Input
 {
     public class RushInputManager : RulesetInputManager<RushAction>
     {
+        protected override bool MapMouseToLatestTouch => false;
         public new RushFramedReplayInputHandler ReplayInputHandler => (RushFramedReplayInputHandler)base.ReplayInputHandler;
 
         /// <summary>
         /// Retrieves all actions in a currenty pressed states.
         /// </summary>
         public SlimReadOnlyListWrapper<RushAction> PressedActions => ((List<RushAction>)KeyBindingContainer.PressedActions).AsSlimReadOnly();
-
 
         public RushInputManager(RulesetInfo ruleset)
             : base(ruleset, 0, SimultaneousBindingMode.Unique)
@@ -42,8 +42,8 @@ namespace osu.Game.Rulesets.Rush.Input
 
         private void updateActionsCache()
         {
-            foreach (var kvp in actionsInUse)
-                actionsInUse[kvp.Key] = false;
+            for (RushAction action = RushAction.GroundPrimary; action <= RushAction.Fever; ++action)
+                actionsInUse[action] = false;
 
             foreach (var pressedAction in PressedActions)
                 actionsInUse[pressedAction] = true;
