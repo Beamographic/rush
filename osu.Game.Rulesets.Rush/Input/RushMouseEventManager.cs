@@ -6,10 +6,12 @@ using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Input;
 using osu.Framework.Input.States;
+using osuTK;
 using osuTK.Input;
 
 namespace osu.Game.Rulesets.Rush.Input
 {
+    // Temporarily exists to be as a testing convenience, will remove be PR merge
     public class RushMouseEventManager : MouseButtonEventManager
     {
         public override bool EnableClick => true;
@@ -32,7 +34,7 @@ namespace osu.Game.Rulesets.Rush.Input
             touchHandler = targets.FirstOrDefault(d => d is IKeyBindingTouchHandler) as IKeyBindingTouchHandler;
 
             if (touchHandler != null)
-                rushInputManager.TryPressTouchAction((TouchSource)Button, touchHandler.ActionTargetForTouchPosition(MouseDownPosition.Value));
+                rushInputManager.TryPressTouchAction((TouchSource)Button, touchHandler.ActionTargetForTouchPosition(MouseDownPosition ?? Vector2.Zero));
 
             return result;
         }
