@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using NUnit.Framework.Interfaces;
 using osu.Framework.Extensions.ListExtensions;
 using osu.Framework.Input;
 using osu.Framework.Input.Bindings;
