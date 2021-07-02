@@ -7,10 +7,10 @@ namespace osu.Game.Rulesets.Rush.Input
 {
     public interface IKeyBindingTouchHandler
     {
-        TargetAction GetTargetActionFor(Vector2 screenSpaceTouchPosition) => TargetAction.None;
+        RushActionTarget ActionTargetForTouchPosition(Vector2 screenSpaceTouchPos) => RushActionTarget.None;
     }
 
-    public enum TargetAction
+    public enum RushActionTarget
     {
         None,
         Ground,

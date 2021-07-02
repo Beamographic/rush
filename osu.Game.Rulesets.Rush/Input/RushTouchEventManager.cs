@@ -30,7 +30,7 @@ namespace osu.Game.Rulesets.Rush.Input
             touchHandler = targets.FirstOrDefault(d => d is IKeyBindingTouchHandler) as IKeyBindingTouchHandler;
 
             if (touchHandler != null)
-                rushInputManager.TryPressTouchAction(Button, touchHandler.GetTargetActionFor(TouchDownPosition.Value));
+                rushInputManager.TryPressTouchAction(Button, touchHandler.ActionTargetForTouchPosition(TouchDownPosition.Value));
 
             return result;
         }

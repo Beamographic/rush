@@ -132,7 +132,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
         private RushInputManager rushActionInputManager;
         internal RushInputManager RushActionInputManager => rushActionInputManager ??= GetContainingInputManager() as RushInputManager;
 
-        public TargetAction GetTargetActionFor(Vector2 screenSpaceInputPosition) => TargetAction.Fever;
+        public RushActionTarget ActionTargetForTouchPosition(Vector2 screenSpaceTouchPos) => RushActionTarget.Fever;
 
         private class FeverRollingCounter : RollingCounter<float>
         {

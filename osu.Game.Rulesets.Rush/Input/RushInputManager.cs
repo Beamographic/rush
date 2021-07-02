@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using NUnit.Framework.Interfaces;
 using osu.Framework.Extensions.ListExtensions;
 using osu.Framework.Input;
 using osu.Framework.Input.Bindings;
@@ -71,21 +72,23 @@ namespace osu.Game.Rulesets.Rush.Input
             return null;
         }
 
-        public void TryPressTouchAction(TouchSource source, TargetAction action)
+        public bool TryPressTouchAction(TouchSource source, RushActionTarget action)
         {
             updateActionsCache();
             RushAction? convertedAction = action switch
             {
-                TargetAction.Ground => tryGetGroundAction(),
-                TargetAction.Air => tryGetAirAction(),
-                TargetAction.Fever => tryGetFeverAction(),
+                RushActionTarget.Ground => tryGetGroundAction(),
+                RushActionTarget.Air => tryGetAirAction(),
+                RushActionTarget.Fever => tryGetFeverAction(),
                 _ => null
             };
 
-            if (convertedAction is null) return;
+            if (convertedAction is null) return false;
 
             touchActionMap[source] = convertedAction.Value;
             KeyBindingContainer.TriggerPressed(convertedAction.Value);
+
+            return true;
         }
 
         public void ReleaseTouchAction(TouchSource source)

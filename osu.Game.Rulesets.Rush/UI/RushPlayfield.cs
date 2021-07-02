@@ -236,12 +236,12 @@ namespace osu.Game.Rulesets.Rush.UI
         {
         }
 
-        public TargetAction GetTargetActionFor(Vector2 inputScreenSpacePosition)
+        public RushActionTarget ActionTargetForTouchPosition(Vector2 screenSpaceTouchPosition)
         {
-            if (inputScreenSpacePosition.Y < ScreenSpaceDrawQuad.Centre.Y)
-                return TargetAction.Air;
+            if (screenSpaceTouchPosition.Y < ScreenSpaceDrawQuad.Centre.Y)
+                return RushActionTarget.Air;
 
-            return TargetAction.Ground;
+            return RushActionTarget.Ground;
         }
     }
 }
