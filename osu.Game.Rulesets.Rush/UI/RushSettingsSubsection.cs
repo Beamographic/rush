@@ -3,6 +3,7 @@
 
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Localisation;
 using osu.Game.Overlays.Settings;
 using osu.Game.Rulesets.Rush.Configuration;
 
@@ -14,7 +15,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         protected new RushRulesetConfigManager Config => (RushRulesetConfigManager)base.Config;
 
-        protected override string Header => ruleset.Description;
+        protected override LocalisableString Header => ruleset.Description;
 
         public RushSettingsSubsection(Ruleset ruleset)
             : base(ruleset)
