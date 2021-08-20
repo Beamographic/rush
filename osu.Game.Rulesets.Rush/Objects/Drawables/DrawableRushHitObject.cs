@@ -109,7 +109,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             // This is the only point to correctly apply values to the judgement
             // result in correct time, check whether the player collided now.
-            Action<JudgementResult> rushApplication = br =>
+            void rushApplication(JudgementResult br)
             {
                 var r = (RushJudgementResult)br;
 
