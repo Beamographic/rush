@@ -25,8 +25,8 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
                     RelativeSizeAxes = Axes.Both,
                     Colour = Color4.Black,
                 },
-                game
             };
+            AddGame(game);
         }
     }
 }
