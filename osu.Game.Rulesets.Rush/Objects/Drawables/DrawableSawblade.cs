@@ -4,6 +4,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
@@ -64,7 +65,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         // Sawblade doesn't handle user presses at all.
-        public override bool OnPressed(RushAction action) => false;
+        public override bool OnPressed(KeyBindingPressEvent<RushAction> e) => false;
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {

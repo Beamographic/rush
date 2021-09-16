@@ -5,6 +5,7 @@ using System.Diagnostics;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
@@ -53,12 +54,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 Anchor = LaneAnchor;
         }
 
-        public override bool OnPressed(RushAction action)
+        public override bool OnPressed(KeyBindingPressEvent<RushAction> e)
         {
-            if (!action.IsLaneAction())
+            if (!e.Action.IsLaneAction())
                 return false;
 
-            if (!LaneMatchesAction(action) || AllJudged)
+            if (!LaneMatchesAction(e.Action) || AllJudged)
                 return false;
 
             if (!CheckHittable(this))
