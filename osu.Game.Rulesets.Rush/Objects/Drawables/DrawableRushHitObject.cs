@@ -9,6 +9,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
@@ -76,9 +77,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 ApplyResult(r => r.Type = r.Judgement.MaxResult);
         }
 
-        public virtual bool OnPressed(RushAction action) => false;
+        public virtual bool OnPressed(KeyBindingPressEvent<RushAction> e) => false;
 
-        public virtual void OnReleased(RushAction action)
+        public virtual void OnReleased(KeyBindingReleaseEvent<RushAction> e)
         {
         }
 

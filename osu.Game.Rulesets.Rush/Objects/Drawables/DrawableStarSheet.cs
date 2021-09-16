@@ -6,6 +6,7 @@ using System.Linq;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
@@ -170,12 +171,12 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             ApplyResult(r => r.Type = r.Judgement.MaxResult);
         }
 
-        public override bool OnPressed(RushAction action)
+        public override bool OnPressed(KeyBindingPressEvent<RushAction> e)
         {
-            if (!action.IsLaneAction())
+            if (!e.Action.IsLaneAction())
                 return false;
 
-            if (!LaneMatchesAction(action) || Head.Judged)
+            if (!LaneMatchesAction(e.Action) || Head.Judged)
                 return false;
 
             if (!CheckHittable(this))
@@ -185,13 +186,13 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             return Head.Judged;
         }
 
-        public override void OnReleased(RushAction action)
+        public override void OnReleased(KeyBindingReleaseEvent<RushAction> e)
         {
             // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
             if (Judged || !Head.IsHit)
                 return;
 
-            if (!LaneMatchesAction(action))
+            if (!LaneMatchesAction(e.Action))
                 return;
 
             // Check if there was also another action holding the same star sheet,

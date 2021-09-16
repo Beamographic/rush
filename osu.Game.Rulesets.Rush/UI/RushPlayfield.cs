@@ -8,6 +8,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
@@ -218,15 +219,15 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
-        public bool OnPressed(RushAction action)
+        public bool OnPressed(KeyBindingPressEvent<RushAction> e)
         {
-            if (action == RushAction.Fever)
+            if (e.Action == RushAction.Fever)
                 return feverProcessor.TryActivateFever();
 
-            return PlayerSprite.HandleAction(action);
+            return PlayerSprite.HandleAction(e.Action);
         }
 
-        public void OnReleased(RushAction action)
+        public void OnReleased(KeyBindingReleaseEvent<RushAction> e)
         {
         }
     }

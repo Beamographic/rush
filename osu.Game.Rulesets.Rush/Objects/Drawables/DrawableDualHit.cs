@@ -3,6 +3,7 @@
 
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
@@ -78,7 +79,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
 
         // Input are handled by the DualHit parts, since they still act like normal minions
-        public override bool OnPressed(RushAction action) => false;
+        public override bool OnPressed(KeyBindingPressEvent<RushAction> e) => false;
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
