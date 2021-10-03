@@ -30,12 +30,14 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
+        public const string SHORT_NAME = "rush";
+
         private static readonly Lazy<bool> is_development_build
             = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetCustomAttributes(false).OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled));
 
         public static bool IsDevelopmentBuild => is_development_build.Value;
 
-        public override string ShortName => "rush";
+        public override string ShortName => SHORT_NAME;
 
         public override string Description => !IsDevelopmentBuild ? "Rush!" : "Rush! (dev build)";
 
