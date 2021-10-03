@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -28,13 +30,12 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
-        public const string SHORT_NAME = "rush";
-
-        private static readonly Lazy<bool> is_development_build = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetName().Name.EndsWith("-dev"));
+        private static readonly Lazy<bool> is_development_build
+            = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetCustomAttributes(false).OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled));
 
         public static bool IsDevelopmentBuild => is_development_build.Value;
 
-        public override string ShortName => !IsDevelopmentBuild ? SHORT_NAME : $"{SHORT_NAME}-dev";
+        public override string ShortName => "rush";
 
         public override string Description => !IsDevelopmentBuild ? "Rush!" : "Rush! (dev build)";
 
