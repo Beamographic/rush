@@ -17,11 +17,11 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Development --no-restore
+      run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: Rush (dev build)
-        path: osu.Game.Rulesets.Rush/bin/Development/netstandard2.1/osu.Game.Rulesets.Rush-dev.dll
+        path: osu.Game.Rulesets.Rush/bin/Debug/netstandard2.1/osu.Game.Rulesets.Rush.dll

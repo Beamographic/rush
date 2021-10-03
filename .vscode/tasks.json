@@ -30,21 +30,6 @@
             "group": "build",
             "problemMatcher": "$msCompile"
         },
-        {
-            "label": "Build tests (Development)",
-            "type": "shell",
-            "command": "dotnet",
-            "args": [
-                "build",
-                "osu.Game.Rulesets.Rush.Tests",
-                "/p:Configuration=Development",
-                "/p:GenerateFullPaths=true",
-                "/m",
-                "/verbosity:m"
-            ],
-            "group": "build",
-            "problemMatcher": "$msCompile"
-        },
         // Test Tasks
         {
             "label": "Run tests (Debug)",
