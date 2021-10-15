@@ -42,6 +42,8 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly LanePlayfield airLane;
         private readonly LanePlayfield groundLane;
 
+        public readonly Container HitObjectArea;
+
         public IEnumerable<DrawableHitObject> AllAliveHitObjects
         {
             get
@@ -77,15 +79,26 @@ namespace osu.Game.Rulesets.Rush.UI
             Anchor = Origin = Anchor.Centre;
             InternalChildren = new Drawable[]
             {
-                airLane = new LanePlayfield(LanedHitLane.Air),
-                groundLane = new LanePlayfield(LanedHitLane.Ground),
-                // Contains miniboss and duals for now
                 new Container
                 {
-                    Name = "Hit Objects",
                     RelativeSizeAxes = Axes.Both,
-                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                    Child = HitObjectContainer
+                    Child = HitObjectArea = new Container
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Children = new Drawable[]
+                        {
+                            airLane = new LanePlayfield(LanedHitLane.Air),
+                            groundLane = new LanePlayfield(LanedHitLane.Ground),
+                            // Contains miniboss and duals for now
+                            new Container
+                            {
+                                Name = "Hit Objects",
+                                RelativeSizeAxes = Axes.Both,
+                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                                Child = HitObjectContainer
+                            },
+                        }
+                    }
                 },
                 halfPaddingOverEffectContainer = new Container
                 {
