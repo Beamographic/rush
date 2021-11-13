@@ -21,7 +21,7 @@ namespace osu.Game.Rulesets.Rush
 
         protected override DifficultyAttributes CreateDifficultyAttributes(IBeatmap beatmap, Mod[] mods, Skill[] skills, double clockRate)
         {
-            return new DifficultyAttributes(mods, skills, 0) { StarRating = beatmap.BeatmapInfo.StarDifficulty };
+            return new DifficultyAttributes(mods, skills, 0) { StarRating = beatmap.BeatmapInfo.StarRating };
         }
 
         protected override IEnumerable<DifficultyHitObject> CreateDifficultyHitObjects(IBeatmap beatmap, double clockRate) => Enumerable.Empty<DifficultyHitObject>();
