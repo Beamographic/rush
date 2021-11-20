@@ -14,7 +14,7 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushDifficultyCalculator : DifficultyCalculator
     {
-        public RushDifficultyCalculator(Ruleset ruleset, WorkingBeatmap beatmap)
+        public RushDifficultyCalculator(IRulesetInfo ruleset, IWorkingBeatmap beatmap)
             : base(ruleset, beatmap)
         {
         }
