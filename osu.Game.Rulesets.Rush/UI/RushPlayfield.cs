@@ -39,12 +39,16 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container halfPaddingOverEffectContainer;
         internal readonly Container OverPlayerEffectsContainer;
 
+        // The container housing all HitObjectAreas
         public readonly Container HitObjectArea;
 
-        public readonly LanePlayfield AirLane;
-        public readonly Container AirLaneEffectContainer;
-        public readonly LanePlayfield GroundLane;
-        public readonly Container GroundLaneEffectContainer;
+        // playfield for each lanes
+        private readonly LanePlayfield airLane;
+        private readonly LanePlayfield groundLane;
+
+        // These are used to hold onto judgement and effect drawables
+        private readonly Container airLaneEffectContainer;
+        private readonly Container groundLaneEffectContainer;
 
         public IEnumerable<DrawableHitObject> AllAliveHitObjects
         {
@@ -89,8 +93,8 @@ namespace osu.Game.Rulesets.Rush.UI
                         RelativeSizeAxes = Axes.Both,
                         Children = new Drawable[]
                         {
-                            AirLane = new LanePlayfield(LanedHitLane.Air),
-                            GroundLane = new LanePlayfield(LanedHitLane.Ground),
+                            airLane = new LanePlayfield(LanedHitLane.Air),
+                            groundLane = new LanePlayfield(LanedHitLane.Ground),
                             // Contains miniboss and duals for now
                             new Container
                             {
@@ -112,13 +116,13 @@ namespace osu.Game.Rulesets.Rush.UI
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
                     Children = new Drawable[]{
-                        AirLaneEffectContainer = new Container()
+                        airLaneEffectContainer = new Container()
                         {
                             Name = "Top Container",
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.CentreLeft
                         },
-                        GroundLaneEffectContainer = new Container()
+                        groundLaneEffectContainer = new Container()
                         {
                             Name = "Bottom Container",
                             Anchor = Anchor.BottomLeft,
@@ -144,8 +148,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 new FeverBar()
             };
 
-            AddNested(AirLane);
-            AddNested(GroundLane);
+            AddNested(airLane);
+            AddNested(groundLane);
             NewResult += onNewResult;
         }
 
@@ -196,7 +200,7 @@ namespace osu.Game.Rulesets.Rush.UI
             base.Add(hitObject);
         }
 
-        private LanePlayfield playfieldForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? AirLane : GroundLane;
+        private LanePlayfield playfieldForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? airLane : groundLane;
 
         private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset)
         {
@@ -224,7 +228,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
                 if (rushJudgedObject is IDrawableLanedHit laned)
                 {
-                    var effectsContainer = laned.Lane == LanedHitLane.Air ? AirLaneEffectContainer : GroundLaneEffectContainer;
+                    var effectsContainer = laned.Lane == LanedHitLane.Air ? airLaneEffectContainer : groundLaneEffectContainer;
                     effectsContainer.Add(explosion);
                 }
             }
@@ -257,7 +261,7 @@ namespace osu.Game.Rulesets.Rush.UI
                         break;
                 }
 
-                var judgementContainer = judgementLane == LanedHitLane.Air ? AirLaneEffectContainer : GroundLaneEffectContainer;
+                var judgementContainer = judgementLane == LanedHitLane.Air ? airLaneEffectContainer : groundLaneEffectContainer;
 
                 judgementContainer.Add(judgementDrawable);
             }
