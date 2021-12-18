@@ -39,10 +39,8 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container halfPaddingOverEffectContainer;
         internal readonly Container OverPlayerEffectsContainer;
 
-        private readonly LanePlayfield airLane;
-        private readonly LanePlayfield groundLane;
-
-        public readonly Container HitObjectArea;
+        public readonly LanePlayfield AirLane;
+        public readonly LanePlayfield GroundLane;
 
         public IEnumerable<DrawableHitObject> AllAliveHitObjects
         {
@@ -82,20 +80,25 @@ namespace osu.Game.Rulesets.Rush.UI
                 new Container
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Child = HitObjectArea = new Container
+                    Child = new Container
                     {
                         RelativeSizeAxes = Axes.Both,
                         Children = new Drawable[]
                         {
-                            airLane = new LanePlayfield(LanedHitLane.Air),
-                            groundLane = new LanePlayfield(LanedHitLane.Ground),
+                            AirLane = new LanePlayfield(LanedHitLane.Air),
+                            GroundLane = new LanePlayfield(LanedHitLane.Ground),
                             // Contains miniboss and duals for now
                             new Container
                             {
                                 Name = "Hit Objects",
                                 RelativeSizeAxes = Axes.Both,
-                                Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
-                                Child = HitObjectContainer
+                                Child = new Container
+                                {
+                                    Name = "Hit Objects",
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                                    Child = HitObjectContainer
+                                },
                             },
                         }
                     }
@@ -118,8 +121,8 @@ namespace osu.Game.Rulesets.Rush.UI
                 new FeverBar()
             };
 
-            AddNested(airLane);
-            AddNested(groundLane);
+            AddNested(AirLane);
+            AddNested(GroundLane);
             NewResult += onNewResult;
         }
 
@@ -170,7 +173,7 @@ namespace osu.Game.Rulesets.Rush.UI
             base.Add(hitObject);
         }
 
-        private LanePlayfield playfieldForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? airLane : groundLane;
+        private LanePlayfield playfieldForLane(LanedHitLane lane) => lane == LanedHitLane.Air ? AirLane : GroundLane;
 
         private void onMiniBossAttacked(DrawableMiniBoss drawableMiniBoss, double timeOffset)
         {

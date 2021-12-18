@@ -30,9 +30,10 @@ namespace osu.Game.Rulesets.Rush.UI
 
             Name = $"{(isAirLane ? "Air" : "Ground")} Playfield";
             Padding = new MarginPadding { Left = RushPlayfield.HIT_TARGET_OFFSET };
-            Anchor = Origin = isAirLane ? Anchor.TopCentre : Anchor.BottomCentre;
+            Anchor = isAirLane ? Anchor.TopLeft : Anchor.BottomLeft;
+            Origin = Anchor.CentreLeft;
             RelativeSizeAxes = Axes.Both;
-            Size = new Vector2(1, 0);
+            Size = new Vector2(1, 0.5f);
 
             AddRangeInternal(new Drawable[]
             {
@@ -47,10 +48,30 @@ namespace osu.Game.Rulesets.Rush.UI
                         RelativeSizeAxes = Axes.Both,
                     }, confineMode: ConfineMode.ScaleToFit),
                 },
-                effectsContainer = new Container(),
-                judgementContainer = new JudgementContainer<DrawableJudgement>(),
-                HitObjectContainer,
-            });
+                effectsContainer = new Container()
+                {
+                    Anchor = Anchor.CentreLeft,
+                    Origin = Anchor.CentreLeft
+                },
+                judgementContainer = new JudgementContainer<DrawableJudgement>()
+                {
+                    Anchor = Anchor.CentreLeft,
+                    Origin = Anchor.CentreLeft
+                },
+                new Container{
+                    Padding = new MarginPadding { Left = -RushPlayfield.HIT_TARGET_OFFSET },
+                    Anchor = Anchor.CentreLeft,
+                    Origin = Anchor.CentreLeft,
+                    RelativeSizeAxes = Axes.Both,
+                    Child = new Container{
+                        Padding = new MarginPadding { Left = +RushPlayfield.HIT_TARGET_OFFSET },
+                        Anchor = Anchor.CentreLeft,
+                        Origin = Anchor.CentreLeft,
+                        RelativeSizeAxes = Axes.Both,
+                        Child = HitObjectContainer,
+                    }
+                }
+    });
         }
 
         [Resolved]
