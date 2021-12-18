@@ -14,7 +14,7 @@ namespace osu.Game.Rulesets.Rush.Objects
 {
     public class StarSheet : LanedHit, IHasDuration
     {
-        public List<IList<HitSampleInfo>> NodeSamples;
+        public IList<IList<HitSampleInfo>> NodeSamples;
 
         public double EndTime
         {
