@@ -70,7 +70,7 @@ namespace osu.Game.Rulesets.Rush
                     {
                         new MultiMod(new RushModSuddenDeath(), new RushModPerfect()),
                         new MultiMod(new RushModDoubleTime(), new RushModNightcore()),
-                        new RushModHidden(),
+                        new MultiMod(new RushModHidden(), new RushModFadeIn()),
                         new RushModFlashlight()
                     };
 
