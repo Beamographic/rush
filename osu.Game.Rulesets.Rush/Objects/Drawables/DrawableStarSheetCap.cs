@@ -3,6 +3,7 @@
 
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
@@ -69,10 +70,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override void OnDirectionChanged(ValueChangedEvent<ScrollingDirection> e) => Anchor = CapAnchor;
 
-        public override bool OnPressed(RushAction action) => false; // Handled by the star sheet object itself.
-
-        public override void OnReleased(RushAction action)
-        {
-        }
+        public override bool OnPressed(KeyBindingPressEvent<RushAction> e) => false; // Handled by the star sheet object itself.
     }
 }

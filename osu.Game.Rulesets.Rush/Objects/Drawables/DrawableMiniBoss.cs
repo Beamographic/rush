@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Input;
@@ -91,11 +92,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             mainPiece.Scale = new Vector2(base_sprite_scale);
         }
 
-        public override bool OnPressed(RushAction action) => action.IsLaneAction() && UpdateResult(true);
-
-        public override void OnReleased(RushAction action)
-        {
-        }
+        public override bool OnPressed(KeyBindingPressEvent<RushAction> e) => e.Action.IsLaneAction() && UpdateResult(true);
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {

@@ -49,7 +49,7 @@ namespace osu.Game.Rulesets.Rush
 
         public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new RushBeatmapConverter(beatmap, this);
 
-        public override DifficultyCalculator CreateDifficultyCalculator(WorkingBeatmap beatmap) => new RushDifficultyCalculator(this, beatmap);
+        public override DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap) => new RushDifficultyCalculator(RulesetInfo, beatmap);
 
         public override HealthProcessor CreateHealthProcessor(double drainStartTime) => new RushHealthProcessor();
 
