@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections.Generic;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Rulesets.Mods;
@@ -26,27 +25,18 @@ namespace osu.Game.Rulesets.Rush.Mods
         {
             RushPlayfield rushPlayfield = (RushPlayfield)drawableRuleset.Playfield;
 
-            List<Container> hitObjectAreas = new List<Container>{
-                (Container)rushPlayfield.AirLane.HitObjectContainer.Parent,
-                (Container)rushPlayfield.GroundLane.HitObjectContainer.Parent,
-                (Container)rushPlayfield.HitObjectContainer.Parent,
+            Container hitObjectArea = rushPlayfield.HitObjectArea;
+            Container hocParent = (Container)hitObjectArea.Parent;
+            hocParent.Remove(hitObjectArea);
+
+            PlayfieldCoveringWrapper wrapper = new PlayfieldCoveringWrapper(hitObjectArea)
+            {
+                RelativeSizeAxes = Axes.Both,
+                Direction = ExpandDirection,
+                Coverage = 0.5f,
             };
 
-
-            foreach (var area in hitObjectAreas)
-            {
-                Container hitObjectAreaParent = (Container)area.Parent;
-                hitObjectAreaParent.Remove(area);
-
-                PlayfieldCoveringWrapper wrapper = new PlayfieldCoveringWrapper(area)
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Direction = ExpandDirection,
-                    Coverage = 0.5f,
-                };
-
-                hitObjectAreaParent.Add(wrapper);
-            }
+            hocParent.Add(wrapper);
         }
 
         protected override void ApplyIncreasedVisibilityState(DrawableHitObject hitObject, ArmedState state)

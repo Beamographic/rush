@@ -5,11 +5,9 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
-using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
-using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osu.Game.Skinning;
 using osuTK;
@@ -18,9 +16,6 @@ namespace osu.Game.Rulesets.Rush.UI
 {
     public class LanePlayfield : ScrollingPlayfield
     {
-        private readonly JudgementContainer<DrawableJudgement> judgementContainer;
-        private readonly Container effectsContainer;
-
         private readonly LanedHitLane lane;
 
         public LanePlayfield(LanedHitLane type)
@@ -48,30 +43,8 @@ namespace osu.Game.Rulesets.Rush.UI
                         RelativeSizeAxes = Axes.Both,
                     }, confineMode: ConfineMode.ScaleToFit),
                 },
-                effectsContainer = new Container()
-                {
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft
-                },
-                judgementContainer = new JudgementContainer<DrawableJudgement>()
-                {
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft
-                },
-                new Container{
-                    Padding = new MarginPadding { Left = -RushPlayfield.HIT_TARGET_OFFSET },
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft,
-                    RelativeSizeAxes = Axes.Both,
-                    Child = new Container{
-                        Padding = new MarginPadding { Left = +RushPlayfield.HIT_TARGET_OFFSET },
-                        Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft,
-                        RelativeSizeAxes = Axes.Both,
-                        Child = HitObjectContainer,
-                    }
-                }
-    });
+                HitObjectContainer,
+            });
         }
 
         [Resolved]
@@ -101,9 +74,6 @@ namespace osu.Game.Rulesets.Rush.UI
         {
             RegisterPool<TObject, TDrawable>(new DrawableLanedObjectPool<TDrawable>(lane, initialSize, maximumSize));
         }
-
-        public void AddExplosion(Drawable drawable) => effectsContainer.Add(drawable);
-        public void AddJudgement(DrawableRushJudgement judgement) => judgementContainer.Add(judgement);
 
         // This pool pre-initializes created DrawableLanedObjects with a predefined lane value
         // The lane value needs to be set beforehand so that the pieces (Minion, etc) can load using the correct information

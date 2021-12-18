@@ -39,8 +39,12 @@ namespace osu.Game.Rulesets.Rush.UI
         private readonly Container halfPaddingOverEffectContainer;
         internal readonly Container OverPlayerEffectsContainer;
 
+        public readonly Container HitObjectArea;
+
         public readonly LanePlayfield AirLane;
+        public readonly Container AirLaneEffectContainer;
         public readonly LanePlayfield GroundLane;
+        public readonly Container GroundLaneEffectContainer;
 
         public IEnumerable<DrawableHitObject> AllAliveHitObjects
         {
@@ -80,7 +84,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 new Container
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Child = new Container
+                    Child = HitObjectArea = new Container
                     {
                         RelativeSizeAxes = Axes.Both,
                         Children = new Drawable[]
@@ -100,6 +104,25 @@ namespace osu.Game.Rulesets.Rush.UI
                                     Child = HitObjectContainer
                                 },
                             },
+                        }
+                    }
+                },
+                new Container{
+                    Name = "Judgement and Effects container",
+                    RelativeSizeAxes = Axes.Both,
+                    Padding = new MarginPadding { Left = HIT_TARGET_OFFSET },
+                    Children = new Drawable[]{
+                        AirLaneEffectContainer = new Container()
+                        {
+                            Name = "Top Container",
+                            Anchor = Anchor.TopLeft,
+                            Origin = Anchor.CentreLeft
+                        },
+                        GroundLaneEffectContainer = new Container()
+                        {
+                            Name = "Bottom Container",
+                            Anchor = Anchor.BottomLeft,
+                            Origin = Anchor.CentreLeft
                         }
                     }
                 },
@@ -200,7 +223,10 @@ namespace osu.Game.Rulesets.Rush.UI
                 };
 
                 if (rushJudgedObject is IDrawableLanedHit laned)
-                    playfieldForLane(laned.Lane).AddExplosion(explosion);
+                {
+                    var effectsContainer = laned.Lane == LanedHitLane.Air ? AirLaneEffectContainer : GroundLaneEffectContainer;
+                    effectsContainer.Add(explosion);
+                }
             }
 
             // Display health point difference if the judgement result implies it.
@@ -231,7 +257,9 @@ namespace osu.Game.Rulesets.Rush.UI
                         break;
                 }
 
-                playfieldForLane(judgementLane).AddJudgement(judgementDrawable);
+                var judgementContainer = judgementLane == LanedHitLane.Air ? AirLaneEffectContainer : GroundLaneEffectContainer;
+
+                judgementContainer.Add(judgementDrawable);
             }
         }
 
