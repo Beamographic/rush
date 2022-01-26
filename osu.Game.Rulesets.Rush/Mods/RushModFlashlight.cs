@@ -49,31 +49,20 @@ namespace osu.Game.Rulesets.Rush.Mods
         private class RushFlashlight : Flashlight
         {
             private readonly LayoutValue flashlightProperties = new LayoutValue(Invalidation.DrawSize);
+
             private readonly RushPlayfield rushPlayfield;
-            private float default_flashlight_size;
 
             public RushFlashlight(ModFlashlight modFlashlight, RushPlayfield rushPlayfield) : base(modFlashlight)
             {
-                default_flashlight_size = modFlashlight.DefaultFlashlightSize;
                 this.rushPlayfield = rushPlayfield;
-                FlashlightSize = new Vector2(0, getSizeFor(0));
+                FlashlightSize = new Vector2(0, GetSizeFor(0));
 
                 AddLayout(flashlightProperties);
             }
 
-            private float getSizeFor(int combo)
-            {
-                if (combo > 200)
-                    return default_flashlight_size * 0.8f;
-                else if (combo > 100)
-                    return default_flashlight_size * 0.9f;
-                else
-                    return default_flashlight_size;
-            }
-
             protected override void OnComboChange(ValueChangedEvent<int> e)
             {
-                this.TransformTo(nameof(FlashlightSize), new Vector2(0, getSizeFor(e.NewValue)), FLASHLIGHT_FADE_DURATION);
+                this.TransformTo(nameof(FlashlightSize), new Vector2(0, GetSizeFor(e.NewValue)), FLASHLIGHT_FADE_DURATION);
             }
 
             protected override string FragmentShader => "CircularFlashlight";
