@@ -4,6 +4,7 @@
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Layout;
+using osu.Game.Configuration;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.UI;
@@ -16,9 +17,26 @@ namespace osu.Game.Rulesets.Rush.Mods
     {
         public override double ScoreMultiplier => 1.12;
 
-        private const float default_flashlight_size = 330;
+        public override float DefaultFlashlightSize => 330;
 
-        public override Flashlight CreateFlashlight() => new RushFlashlight(playfield);
+        [SettingSource("Flashlight size", "Multiplier applied to the default flashlight size.")]
+        public override BindableNumber<float> SizeMultiplier { get; } = new BindableNumber<float>
+        {
+            MinValue = 0.5f,
+            MaxValue = 1.5f,
+            Default = 1f,
+            Value = 1f,
+            Precision = 0.1f
+        };
+
+        [SettingSource("Change size based on combo", "Decrease the flashlight size as combo increases.")]
+        public override BindableBool ComboBasedSize { get; } = new BindableBool
+        {
+            Default = true,
+            Value = true
+        };
+
+        protected override Flashlight CreateFlashlight() => new RushFlashlight(this, playfield);
 
         private RushPlayfield playfield;
 
@@ -31,29 +49,20 @@ namespace osu.Game.Rulesets.Rush.Mods
         private class RushFlashlight : Flashlight
         {
             private readonly LayoutValue flashlightProperties = new LayoutValue(Invalidation.DrawSize);
+
             private readonly RushPlayfield rushPlayfield;
 
-            public RushFlashlight(RushPlayfield rushPlayfield)
+            public RushFlashlight(ModFlashlight modFlashlight, RushPlayfield rushPlayfield) : base(modFlashlight)
             {
                 this.rushPlayfield = rushPlayfield;
-                FlashlightSize = new Vector2(0, getSizeFor(0));
+                FlashlightSize = new Vector2(0, GetSizeFor(0));
 
                 AddLayout(flashlightProperties);
             }
 
-            private float getSizeFor(int combo)
-            {
-                if (combo > 200)
-                    return default_flashlight_size * 0.8f;
-                else if (combo > 100)
-                    return default_flashlight_size * 0.9f;
-                else
-                    return default_flashlight_size;
-            }
-
             protected override void OnComboChange(ValueChangedEvent<int> e)
             {
-                this.TransformTo(nameof(FlashlightSize), new Vector2(0, getSizeFor(e.NewValue)), FLASHLIGHT_FADE_DURATION);
+                this.TransformTo(nameof(FlashlightSize), new Vector2(0, GetSizeFor(e.NewValue)), FLASHLIGHT_FADE_DURATION);
             }
 
             protected override string FragmentShader => "CircularFlashlight";
