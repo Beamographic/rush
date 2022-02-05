@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Rush.Replays
         /// </summary>
         public FeverActivationMode? FeverActivationMode => CurrentFrame?.FeverActivationMode;
 
-        public override void CollectPendingInputs(List<IInput> inputs) =>
+        protected override void CollectReplayInputs(List<IInput> inputs) =>
             inputs.Add(new ReplayState<RushAction> { PressedActions = CurrentFrame?.Actions ?? new List<RushAction>() });
     }
 }
