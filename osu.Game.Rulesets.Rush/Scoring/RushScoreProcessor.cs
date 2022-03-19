@@ -11,6 +11,8 @@ namespace osu.Game.Rulesets.Rush.Scoring
 {
     public class RushScoreProcessor : ScoreProcessor
     {
+        public RushScoreProcessor(RushRuleset ruleset) : base(ruleset) { }
+
         protected override JudgementResult CreateResult(HitObject hitObject, Judgement judgement) =>
             new RushJudgementResult((RushHitObject)hitObject, (RushJudgement)judgement);
     }
