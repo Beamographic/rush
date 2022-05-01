@@ -27,9 +27,9 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private readonly Container<DrawableStarSheetHead> headContainer;
         private readonly Container<DrawableStarSheetTail> tailContainer;
 
-        public Drawable BodyDrawable => bodyContainer.Child.Drawable;
+        public Drawable BodyDrawable => bodyContainer.Child;
 
-        private readonly Container<SkinnableDrawable> bodyContainer;
+        private readonly Container bodyContainer;
 
         private readonly Drawable holdCap;
 
@@ -61,17 +61,18 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             AddRangeInternal(new[]
             {
-                bodyContainer = new Container<SkinnableDrawable>
+                bodyContainer = new Container
                 {
                     Masking = true,
                     RelativeSizeAxes = Axes.Both,
-                    Child = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.StarSheetBody), _ => new StarSheetBodyPiece())
+                    Child = new StarSheetBodyPiece()
                 },
                 headContainer = new Container<DrawableStarSheetHead> { RelativeSizeAxes = Axes.Both },
                 tailContainer = new Container<DrawableStarSheetTail> { RelativeSizeAxes = Axes.Both },
-                holdCap = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.StarSheetHold), _ => new StarSheetCapStarPiece())
+                holdCap = new StarSheetCapStarPiece()
                 {
                     Origin = Anchor.Centre,
+                    Anchor = Anchor.CentreLeft,
                 }
             });
         }
@@ -210,7 +211,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (Head.IsHit && !Tail.IsHit)
             {
                 holdCap.X = DrawWidth * (float)Progress;
-                holdCap.Y = DrawHeight / 2f;
                 holdCap.Show();
             }
             else

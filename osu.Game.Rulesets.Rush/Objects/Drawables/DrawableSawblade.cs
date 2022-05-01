@@ -46,7 +46,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                     Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     Size = new Vector2(0.8f),
-                    Child = sawblade = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Sawblade), _ => new SawbladePiece())
+                    Child = sawblade = new SawbladePiece()
                     {
                         Origin = Anchor.Centre,
                         RelativeSizeAxes = Axes.Both,
