@@ -29,6 +29,8 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
+        public override string RulesetAPIVersionSupported => CURRENT_RULESET_API_VERSION;
+
         public const string SHORT_NAME = "rush";
 
         private static readonly Lazy<bool> is_development_build = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetName().Name.EndsWith("-dev"));
