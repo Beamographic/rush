@@ -47,7 +47,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
 
             AddAssert("not in fight state", () => targetLane != PlayerTargetLane.MiniBoss);
             AddUntilStep("wait for fight state", () => targetLane == PlayerTargetLane.MiniBoss);
-            AddAssert("time has reached mini-boss time", () => Player.GameplayClockContainer.GameplayClock.CurrentTime >= mini_boss_time);
+            AddAssert("time has reached mini-boss time", () => Player.GameplayClockContainer.CurrentTime >= mini_boss_time);
 
             AddStep("stop mashing", () => Scheduler.CancelDelayedTasks());
         }

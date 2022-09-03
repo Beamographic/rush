@@ -7,6 +7,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
 using osu.Game.Overlays.Settings;
@@ -29,6 +30,8 @@ namespace osu.Game.Rulesets.Rush
 {
     public class RushRuleset : Ruleset
     {
+        public override string RulesetAPIVersionSupported => CURRENT_RULESET_API_VERSION;
+
         public const string SHORT_NAME = "rush";
 
         private static readonly Lazy<bool> is_development_build = new Lazy<bool>(() => typeof(RushRuleset).Assembly.GetName().Name.EndsWith("-dev"));
@@ -124,7 +127,7 @@ namespace osu.Game.Rulesets.Rush
             };
         }
 
-        public override string GetDisplayNameForHitResult(HitResult result) => result switch
+        public override LocalisableString GetDisplayNameForHitResult(HitResult result) => result switch
         {
             HitResult.SmallBonus => "Heart bonus",
             HitResult.LargeBonus => "Fever bonus",

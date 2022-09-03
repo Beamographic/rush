@@ -42,10 +42,10 @@ namespace osu.Game.Rulesets.Rush.UI
                     Anchor = Anchor.CentreLeft,
                     Origin = Anchor.Centre,
                     Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE),
-                    Child = new SkinnableDrawable(new RushSkinComponent(isAirLane ? RushSkinComponents.AirHitTarget : RushSkinComponents.GroundHitTarget), _ => new HitTarget
+                    Child = new HitTarget
                     {
                         RelativeSizeAxes = Axes.Both,
-                    }, confineMode: ConfineMode.ScaleToFit),
+                    },
                 },
                 effectsContainer = new Container(),
                 judgementContainer = new JudgementContainer<DrawableJudgement>(),

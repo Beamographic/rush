@@ -26,7 +26,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
             Size = new Vector2(RushPlayfield.HIT_TARGET_SIZE);
 
-            AddInternal(new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitPart), _ => new DualHitPartPiece()));
+            AddInternal(new DualHitPartPiece());
         }
 
         public new bool UpdateResult(bool userTriggered) => base.UpdateResult(userTriggered);

@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
     {
         private readonly Container<DrawableDualHitPart> airHitContainer;
         private readonly Container<DrawableDualHitPart> groundHitContainer;
-        private readonly SkinnableDrawable skinnedJoin;
+        private readonly DualHitJoinPiece skinnedJoin;
 
         public DrawableDualHitPart Air => airHitContainer.Child;
         public DrawableDualHitPart Ground => groundHitContainer.Child;
@@ -36,7 +36,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             AddRangeInternal(new Drawable[]
             {
-                skinnedJoin = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.DualHitJoin), _ => new DualHitJoinPiece()),
+                skinnedJoin = new DualHitJoinPiece(),
                 airHitContainer = new Container<DrawableDualHitPart> { Anchor = Anchor.TopCentre },
                 groundHitContainer = new Container<DrawableDualHitPart> { Anchor = Anchor.BottomCentre },
             });

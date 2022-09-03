@@ -21,7 +21,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private const float base_sprite_scale = 1f;
         private const float target_sprite_scale = 1.1f;
 
-        private readonly SkinnableDrawable mainPiece;
+        private readonly MiniBossPiece mainPiece;
 
         private readonly Container<DrawableMiniBossTick> ticks;
 
@@ -39,7 +39,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             AddRangeInternal(new Drawable[]
             {
-                mainPiece = new SkinnableDrawable(new RushSkinComponent(RushSkinComponents.Miniboss), _ => new MiniBossPiece())
+                mainPiece = new MiniBossPiece()
                 {
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre
