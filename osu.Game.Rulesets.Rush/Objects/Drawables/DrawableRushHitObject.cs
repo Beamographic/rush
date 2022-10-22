@@ -13,6 +13,7 @@ using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Rush.UI.Fever;

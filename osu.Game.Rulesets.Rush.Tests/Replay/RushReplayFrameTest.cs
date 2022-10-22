@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using osu.Game.Beatmaps;
+using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Replays;
 
 namespace osu.Game.Rulesets.Rush.Tests.Replay

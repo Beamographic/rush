@@ -13,6 +13,7 @@ using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Configuration;
+using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Replays;
 using osu.Game.Rulesets.Rush.UI.Fever;

@@ -8,6 +8,7 @@ using osu.Game.Replays;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Replays;
 using osu.Game.Rulesets.Rush.Configuration;
+using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects;
 
 namespace osu.Game.Rulesets.Rush.Replays
