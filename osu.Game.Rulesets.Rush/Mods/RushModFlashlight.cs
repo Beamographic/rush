@@ -55,14 +55,14 @@ namespace osu.Game.Rulesets.Rush.Mods
             public RushFlashlight(ModFlashlight modFlashlight, RushPlayfield rushPlayfield) : base(modFlashlight)
             {
                 this.rushPlayfield = rushPlayfield;
-                FlashlightSize = new Vector2(0, GetSizeFor(0));
+                FlashlightSize = new Vector2(0, GetSize());
 
                 AddLayout(flashlightProperties);
             }
 
-            protected override void OnComboChange(ValueChangedEvent<int> e)
+            protected override void UpdateFlashlightSize(float size)
             {
-                this.TransformTo(nameof(FlashlightSize), new Vector2(0, GetSizeFor(e.NewValue)), FLASHLIGHT_FADE_DURATION);
+                this.TransformTo(nameof(FlashlightSize), new Vector2(0, size), FLASHLIGHT_FADE_DURATION);
             }
 
             protected override string FragmentShader => "CircularFlashlight";
