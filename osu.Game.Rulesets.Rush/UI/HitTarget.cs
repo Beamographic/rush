@@ -15,6 +15,8 @@ namespace osu.Game.Rulesets.Rush.UI
     {
         public HitTarget()
         {
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
             Children = new Drawable[]
             {
                 new CircularContainer
