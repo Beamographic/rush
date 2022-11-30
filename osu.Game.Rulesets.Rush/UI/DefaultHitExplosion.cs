@@ -19,7 +19,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class DefaultHitExplosion : PoolableDrawable
+    public partial class DefaultHitExplosion : PoolableDrawable
     {
         private readonly Sprite colouredExplosion;
         private readonly Sprite whiteExplosion;
@@ -115,7 +115,7 @@ namespace osu.Game.Rulesets.Rush.UI
             sparks.Animate();
         }
 
-        protected class Sparks : CompositeDrawable
+        protected partial class Sparks : CompositeDrawable
         {
             public override bool RemoveCompletedTransforms => false;
 

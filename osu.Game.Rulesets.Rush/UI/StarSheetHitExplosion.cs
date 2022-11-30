@@ -12,7 +12,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class StarSheetHitExplosion : PoolableDrawable
+    public partial class StarSheetHitExplosion : PoolableDrawable
     {
         private readonly StarSheetCapStarPiece explosionStar;
         private readonly Circle flashCircle;

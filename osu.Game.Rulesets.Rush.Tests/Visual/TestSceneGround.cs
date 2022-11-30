@@ -7,7 +7,7 @@ using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
-    public class TestSceneGround : OsuTestScene
+    public partial class TestSceneGround : OsuTestScene
     {
         public TestSceneGround()
         {

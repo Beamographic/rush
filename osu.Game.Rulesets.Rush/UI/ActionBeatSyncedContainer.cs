@@ -8,7 +8,7 @@ using osu.Game.Graphics.Containers;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class ActionBeatSyncedContainer : BeatSyncedContainer
+    public partial class ActionBeatSyncedContainer : BeatSyncedContainer
     {
         public Action<int, TimingControlPoint, EffectControlPoint, ChannelAmplitudes> NewBeat;
 

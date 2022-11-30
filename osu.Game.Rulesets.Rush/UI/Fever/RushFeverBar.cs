@@ -19,7 +19,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverBar : CircularContainer, IKeyBindingTouchHandler
+    public partial class FeverBar : CircularContainer, IKeyBindingTouchHandler
     {
         public override bool HandlePositionalInput => true;
 
@@ -135,7 +135,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
 
         public RushActionTarget ActionTargetForTouchPosition(Vector2 screenSpaceTouchPos) => RushActionTarget.Fever;
 
-        private class FeverRollingCounter : RollingCounter<float>
+        private partial class FeverRollingCounter : RollingCounter<float>
         {
             protected override double RollingDuration => 100;
 

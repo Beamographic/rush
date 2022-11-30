@@ -17,7 +17,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
-    public class TestSceneTouchInputHandling : OsuManualInputManagerTestScene
+    public partial class TestSceneTouchInputHandling : OsuManualInputManagerTestScene
     {
         protected override Ruleset CreateRuleset() => new RushRuleset();
 
@@ -153,7 +153,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
         private void moveTouchToDrawable(TouchSource source, Drawable drawable) => InputManager.MoveTouchTo(new Touch(source, drawable.ScreenSpaceDrawQuad.Centre));
         private void endTouch(TouchSource source) => InputManager.EndTouch(new Touch(source, Vector2.Zero));
 
-        private class TouchRegion : Box, IKeyBindingTouchHandler
+        private partial class TouchRegion : Box, IKeyBindingTouchHandler
         {
             public override bool HandlePositionalInput => true;
 

@@ -7,7 +7,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableRushJudgement : DrawableJudgement
+    public partial class DrawableRushJudgement : DrawableJudgement
     {
         private const float judgement_time = 250f;
         private const float judgement_movement = 300;

@@ -8,13 +8,12 @@ using osu.Framework.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
-using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableMinion : DrawableLanedHit<Minion>
+    public partial class DrawableMinion : DrawableLanedHit<Minion>
     {
         protected virtual RushSkinComponents Component => RushSkinComponents.Minion;
 

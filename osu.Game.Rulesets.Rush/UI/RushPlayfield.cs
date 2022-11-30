@@ -24,7 +24,7 @@ using osuTK;
 namespace osu.Game.Rulesets.Rush.UI
 {
     [Cached]
-    public class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>, IKeyBindingTouchHandler
+    public partial class RushPlayfield : ScrollingPlayfield, IKeyBindingHandler<RushAction>, IKeyBindingTouchHandler
     {
         public override bool HandlePositionalInput => true;
 

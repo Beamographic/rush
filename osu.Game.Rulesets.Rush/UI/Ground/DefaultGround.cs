@@ -16,7 +16,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI.Ground
 {
-    public class DefaultGround : CompositeDrawable
+    public partial class DefaultGround : CompositeDrawable
     {
         private static readonly Color4 platform_colour = Color4.Gray.Opacity(0.2f);
 
@@ -120,7 +120,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             return base.OnInvalidate(invalidation, source);
         }
 
-        private class GroundLine : PoolableDrawable
+        private partial class GroundLine : PoolableDrawable
         {
             public override bool RemoveWhenNotAlive => false;
 

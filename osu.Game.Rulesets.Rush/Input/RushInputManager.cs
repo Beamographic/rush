@@ -14,7 +14,7 @@ using osuTK.Input;
 
 namespace osu.Game.Rulesets.Rush.Input
 {
-    public class RushInputManager : RulesetInputManager<RushAction>
+    public partial class RushInputManager : RulesetInputManager<RushAction>
     {
         protected override bool MapMouseToLatestTouch => false;
         public new RushFramedReplayInputHandler ReplayInputHandler => (RushFramedReplayInputHandler)base.ReplayInputHandler;

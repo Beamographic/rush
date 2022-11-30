@@ -8,7 +8,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class DualHitJoinPiece : Box
+    public partial class DualHitJoinPiece : Box
     {
         public DualHitJoinPiece()
         {

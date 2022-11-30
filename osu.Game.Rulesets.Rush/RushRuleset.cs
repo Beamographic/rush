@@ -134,7 +134,7 @@ namespace osu.Game.Rulesets.Rush
             _ => base.GetDisplayNameForHitResult(result)
         };
 
-        public class RushIcon : CompositeDrawable
+        public partial class RushIcon : CompositeDrawable
         {
             public RushIcon()
             {

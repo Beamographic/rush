@@ -10,7 +10,7 @@ using osuTK.Input;
 
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
-    public class TestSceneMiniBoss : TestSceneRushPlayer
+    public partial class TestSceneMiniBoss : TestSceneRushPlayer
     {
         private const float mini_boss_time = 600f;
 

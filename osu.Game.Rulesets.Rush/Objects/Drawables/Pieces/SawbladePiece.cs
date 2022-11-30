@@ -16,7 +16,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class SawbladePiece : CompositeDrawable
+    public partial class SawbladePiece : CompositeDrawable
     {
         private const double rotation_time = 1000;
 

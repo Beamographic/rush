@@ -9,7 +9,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
     /// <summary>
     /// Represents a component displaying the ground the player will be standing on.
     /// </summary>
-    public class GroundDisplay : CompositeDrawable
+    public partial class GroundDisplay : CompositeDrawable
     {
         public GroundDisplay()
         {
