@@ -8,7 +8,7 @@ using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableMiniBossTick : DrawableRushHitObject<MiniBossTick>
+    public partial class DrawableMiniBossTick : DrawableRushHitObject<MiniBossTick>
     {
         public override bool DisplayResult => false;
 

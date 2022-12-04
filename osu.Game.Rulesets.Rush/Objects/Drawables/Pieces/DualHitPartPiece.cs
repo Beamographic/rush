@@ -17,7 +17,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class DualHitPartPiece : CompositeDrawable
+    public partial class DualHitPartPiece : CompositeDrawable
     {
         private const double rotation_time = 1000;
 

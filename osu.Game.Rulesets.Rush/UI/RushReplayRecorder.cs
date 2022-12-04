@@ -12,7 +12,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class RushReplayRecorder : ReplayRecorder<RushAction>
+    public partial class RushReplayRecorder : ReplayRecorder<RushAction>
     {
         [Resolved(canBeNull: true)]
         private DrawableRushRuleset drawableRuleset { get; set; }

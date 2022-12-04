@@ -16,7 +16,7 @@ using osu.Game.Utils;
 
 namespace osu.Game.Rulesets.Rush.UI.Fever
 {
-    public class FeverProcessor : JudgementProcessor
+    public partial class FeverProcessor : JudgementProcessor
     {
         private const float fever_duration = 5000;
         private const int perfect_hits_to_fill = 100;

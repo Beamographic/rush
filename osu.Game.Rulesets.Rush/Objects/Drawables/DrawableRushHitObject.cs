@@ -22,7 +22,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public abstract class DrawableRushHitObject : DrawableHitObject<RushHitObject>, IKeyBindingHandler<RushAction>
+    public abstract partial class DrawableRushHitObject : DrawableHitObject<RushHitObject>, IKeyBindingHandler<RushAction>
     {
         public static readonly Color4 AIR_ACCENT_COLOUR = new Color4(0.35f, 0.75f, 1f, 1f);
         public static readonly Color4 GROUND_ACCENT_COLOUR = new Color4(1f, 0.4f, 1f, 1f);
@@ -150,7 +150,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         }
     }
 
-    public abstract class DrawableRushHitObject<TObject> : DrawableRushHitObject
+    public abstract partial class DrawableRushHitObject<TObject> : DrawableRushHitObject
         where TObject : RushHitObject
     {
         public new TObject HitObject => (TObject)base.HitObject;

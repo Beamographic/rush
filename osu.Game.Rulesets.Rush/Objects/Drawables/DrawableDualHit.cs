@@ -8,11 +8,10 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
-using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableDualHit : DrawableRushHitObject<DualHit>
+    public partial class DrawableDualHit : DrawableRushHitObject<DualHit>
     {
         private readonly Container<DrawableDualHitPart> airHitContainer;
         private readonly Container<DrawableDualHitPart> groundHitContainer;

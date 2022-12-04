@@ -8,7 +8,7 @@ using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
-    public class TestSceneFeverBar : OsuTestScene
+    public partial class TestSceneFeverBar : OsuTestScene
     {
         [Cached]
         private readonly FeverProcessor feverProcessor = new FeverProcessor();

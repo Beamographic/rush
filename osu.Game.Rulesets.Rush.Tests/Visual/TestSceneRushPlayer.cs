@@ -11,7 +11,7 @@ using osu.Game.Tests.Visual;
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
     [TestFixture]
-    public class TestSceneRushPlayer : PlayerTestScene
+    public partial class TestSceneRushPlayer : PlayerTestScene
     {
         private readonly BindableBool pausedBindable = new BindableBool();
 
@@ -40,7 +40,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
             pausedBindable.ValueChanged += e => Player?.SetGameplayClockPaused(e.NewValue);
         }
 
-        protected class RushPlayer : TestPlayer
+        protected partial class RushPlayer : TestPlayer
         {
             public void SetGameplayClockPaused(bool value)
             {

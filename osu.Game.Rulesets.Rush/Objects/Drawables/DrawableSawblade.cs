@@ -9,13 +9,12 @@ using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
-using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableSawblade : DrawableLanedHit<Sawblade>
+    public partial class DrawableSawblade : DrawableLanedHit<Sawblade>
     {
         [Resolved]
         private RushPlayfield playfield { get; set; }

@@ -24,7 +24,7 @@ using osu.Game.Scoring;
 namespace osu.Game.Rulesets.Rush.UI
 {
     [Cached]
-    public class DrawableRushRuleset : DrawableScrollingRuleset<RushHitObject>
+    public partial class DrawableRushRuleset : DrawableScrollingRuleset<RushHitObject>
     {
         private FeverProcessor feverProcessor;
 

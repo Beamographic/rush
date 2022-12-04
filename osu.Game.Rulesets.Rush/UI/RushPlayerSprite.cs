@@ -20,7 +20,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class RushPlayerSprite : CompositeDrawable
+    public partial class RushPlayerSprite : CompositeDrawable
     {
         /// <summary>
         /// The time in milliseconds for a jump to reach maximum height

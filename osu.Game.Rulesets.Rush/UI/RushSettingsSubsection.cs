@@ -9,7 +9,7 @@ using osu.Game.Rulesets.Rush.Configuration;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class RushSettingsSubsection : RulesetSettingsSubsection
+    public partial class RushSettingsSubsection : RulesetSettingsSubsection
     {
         private readonly Ruleset ruleset;
 

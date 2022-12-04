@@ -6,7 +6,7 @@ using osu.Game.Rulesets.Judgements;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableFeverBonus : DrawableRushHitObject<FeverBonus>
+    public partial class DrawableFeverBonus : DrawableRushHitObject<FeverBonus>
     {
         public override bool DisplayExplosion => false;
         public override bool DisplayResult => false;

@@ -17,7 +17,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class StarSheetCapStarPiece : CompositeDrawable, IHasAccentColour
+    public partial class StarSheetCapStarPiece : CompositeDrawable, IHasAccentColour
     {
         private const double rotation_time = 1000;
 

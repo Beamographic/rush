@@ -9,7 +9,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class HealthText : PoolableDrawable
+    public partial class HealthText : PoolableDrawable
     {
         private readonly SpriteText text;
 

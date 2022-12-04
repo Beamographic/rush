@@ -11,12 +11,11 @@ using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
-using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class LanePlayfield : ScrollingPlayfield
+    public partial class LanePlayfield : ScrollingPlayfield
     {
         private readonly JudgementContainer<DrawableJudgement> judgementContainer;
         private readonly Container effectsContainer;
@@ -86,7 +85,7 @@ namespace osu.Game.Rulesets.Rush.UI
 
         // This pool pre-initializes created DrawableLanedObjects with a predefined lane value
         // The lane value needs to be set beforehand so that the pieces (Minion, etc) can load using the correct information
-        private class DrawableLanedObjectPool<T> : DrawablePool<T> where T : PoolableDrawable, IDrawableLanedHit, new()
+        private partial class DrawableLanedObjectPool<T> : DrawablePool<T> where T : PoolableDrawable, IDrawableLanedHit, new()
         {
             private readonly LanedHitLane lane;
 

@@ -6,7 +6,7 @@ using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableStarSheetHead : DrawableStarSheetCap<StarSheetHead>
+    public partial class DrawableStarSheetHead : DrawableStarSheetCap<StarSheetHead>
     {
         protected override RushSkinComponents Component => RushSkinComponents.StarSheetHead;
 

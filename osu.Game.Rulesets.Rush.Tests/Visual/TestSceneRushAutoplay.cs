@@ -3,7 +3,7 @@
 
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
-    public class TestSceneRushAutoplay : TestSceneRushPlayer
+    public partial class TestSceneRushAutoplay : TestSceneRushPlayer
     {
         protected override bool Autoplay => true;
     }
