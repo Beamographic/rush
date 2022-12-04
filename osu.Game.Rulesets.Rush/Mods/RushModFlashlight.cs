@@ -46,7 +46,7 @@ namespace osu.Game.Rulesets.Rush.Mods
             base.ApplyToDrawableRuleset(drawableRuleset);
         }
 
-        private class RushFlashlight : Flashlight
+        private partial class RushFlashlight : Flashlight
         {
             private readonly LayoutValue flashlightProperties = new LayoutValue(Invalidation.DrawSize);
 

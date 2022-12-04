@@ -6,12 +6,11 @@ using osu.Framework.Graphics;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Scoring;
-using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableHeart : DrawableLanedHit<Heart>
+    public partial class DrawableHeart : DrawableLanedHit<Heart>
     {
         [Resolved]
         private RushPlayfield playfield { get; set; }

@@ -8,7 +8,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class HeartHitExplosion : HeartPiece
+    public partial class HeartHitExplosion : HeartPiece
     {
         public override bool RemoveCompletedTransforms => false;
 

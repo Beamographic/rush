@@ -9,7 +9,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class HeartPiece : PoolableDrawable
+    public partial class HeartPiece : PoolableDrawable
     {
         public HeartPiece()
         {

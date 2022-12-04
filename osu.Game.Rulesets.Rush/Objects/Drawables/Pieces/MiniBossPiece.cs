@@ -9,7 +9,7 @@ using osu.Framework.Graphics.Textures;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class MiniBossPiece : CompositeDrawable
+    public partial class MiniBossPiece : CompositeDrawable
     {
         private readonly TextureAnimation normalAnimation;
         private readonly TextureAnimation hitAnimation;

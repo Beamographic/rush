@@ -13,11 +13,10 @@ using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.UI.Scrolling;
-using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableStarSheet : DrawableLanedHit<StarSheet>
+    public partial class DrawableStarSheet : DrawableLanedHit<StarSheet>
     {
         public const float NOTE_SHEET_SIZE = RushPlayfield.HIT_TARGET_SIZE * 0.75f;
         public const float REQUIRED_COMPLETION = 0.75f;

@@ -14,7 +14,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables.Pieces
 {
-    public class StarSheetBodyPiece : CompositeDrawable
+    public partial class StarSheetBodyPiece : CompositeDrawable
     {
         private const float border_size = 1f / 8f;
 

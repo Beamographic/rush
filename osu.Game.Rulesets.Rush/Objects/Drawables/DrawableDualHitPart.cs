@@ -6,13 +6,12 @@ using osu.Framework.Graphics;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Rush.UI;
-using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableDualHitPart : DrawableLanedHit<DualHitPart>
+    public partial class DrawableDualHitPart : DrawableLanedHit<DualHitPart>
     {
         public override bool DisplayExplosion => true;
 

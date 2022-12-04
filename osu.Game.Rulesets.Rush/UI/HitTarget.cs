@@ -11,7 +11,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.UI
 {
-    public class HitTarget : BeatSyncedContainer
+    public partial class HitTarget : BeatSyncedContainer
     {
         public HitTarget()
         {

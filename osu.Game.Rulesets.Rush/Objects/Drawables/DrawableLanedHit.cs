@@ -15,7 +15,7 @@ using osuTK.Graphics;
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
     [Cached(typeof(IDrawableLanedHit))]
-    public class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
+    public partial class DrawableLanedHit<TLanedHit> : DrawableRushHitObject<TLanedHit>, IDrawableLanedHit
         where TLanedHit : LanedHit
     {
         public virtual Color4 LaneAccentColour => HitObject.Lane == LanedHitLane.Air ? AIR_ACCENT_COLOUR : GROUND_ACCENT_COLOUR;

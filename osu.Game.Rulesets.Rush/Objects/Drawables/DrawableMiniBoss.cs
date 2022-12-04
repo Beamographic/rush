@@ -11,12 +11,11 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Objects.Drawables.Pieces;
 using osu.Game.Rulesets.Scoring;
-using osu.Game.Skinning;
 using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
-    public class DrawableMiniBoss : DrawableRushHitObject<MiniBoss>
+    public partial class DrawableMiniBoss : DrawableRushHitObject<MiniBoss>
     {
         private const float base_sprite_scale = 1f;
         private const float target_sprite_scale = 1.1f;
