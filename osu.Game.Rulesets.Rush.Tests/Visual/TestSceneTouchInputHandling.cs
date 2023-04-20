@@ -10,7 +10,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input;
 using osu.Game.Rulesets.Rush.Input;
-using osu.Game.Screens.Play;
+using osu.Game.Screens.Play.HUD;
 using osu.Game.Tests.Visual;
 using osuTK;
 using osuTK.Graphics;
@@ -68,7 +68,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
                     Colour = Color4.Purple,
                     Alpha = 0.8f,
                 },
-                keyCounters = new KeyCounterDisplay
+                keyCounters = new DefaultKeyCounterDisplay()
                 {
                     Origin = Anchor.BottomRight,
                     Anchor = Anchor.BottomRight,
