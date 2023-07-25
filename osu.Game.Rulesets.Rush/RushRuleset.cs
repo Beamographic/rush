@@ -28,7 +28,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush
 {
-    public class RushRuleset : Ruleset
+    public partial class RushRuleset : Ruleset
     {
         public override string RulesetAPIVersionSupported => CURRENT_RULESET_API_VERSION;
 

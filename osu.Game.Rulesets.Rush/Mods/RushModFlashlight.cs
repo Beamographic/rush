@@ -13,7 +13,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Rush.Mods
 {
-    public class RushModFlashlight : ModFlashlight<RushHitObject>
+    public partial class RushModFlashlight : ModFlashlight<RushHitObject>
     {
         public override double ScoreMultiplier => 1.12;
 
