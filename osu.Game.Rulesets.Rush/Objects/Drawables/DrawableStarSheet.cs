@@ -189,8 +189,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         public override void OnReleased(KeyBindingReleaseEvent<RushAction> e)
         {
+            // TODO: HACK FIX FOR HOTFIX, NEEDS FURTHER INVESTIGATION
+            if (!IsInUse)
+                return;
+
+            if (AllJudged)
+                return;
+
             // Note sheet not held yet (i.e. not our time yet) or already broken / finished.
-            if (Judged || !Head.IsHit)
+            if (Judged)
                 return;
 
             if (!LaneMatchesAction(e.Action))
