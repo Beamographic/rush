@@ -17,6 +17,7 @@ using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Rush.Tests.Visual
 {
+
     public partial class TestSceneTouchInputHandling : OsuManualInputManagerTestScene
     {
         protected override Ruleset CreateRuleset() => new RushRuleset();
@@ -27,20 +28,26 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
         private TouchRegion groundRegion;
         private TouchRegion feverRegion;
 
-        private KeyCounterDisplay keyCounters;
+        //private KeyCounterDisplay keyCounters;
         private RushInputManager rushInputManager;
+
+        //[Cached]
+        //private InputCountController controller = null!;
 
         [BackgroundDependencyLoader]
         private void load()
         {
+            rushInputManager = new RushInputManager(Ruleset.Value);
+
             Children = new Drawable[]
             {
+                //controller = new InputCountController(),
                 airRegion = new TouchRegion
                 {
                     RelativeSizeAxes = Axes.Both,
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
-                    Size = new Vector2(1,0.5f),
+                    Size = new Vector2(1, 0.5f),
 
                     Action = RushActionTarget.Air,
                     Colour = Color4.Aqua,
@@ -51,7 +58,7 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
                     RelativeSizeAxes = Axes.Both,
                     Anchor = Anchor.BottomCentre,
                     Origin = Anchor.BottomCentre,
-                    Size = new Vector2(1,0.5f),
+                    Size = new Vector2(1, 0.5f),
 
                     Action = RushActionTarget.Ground,
                     Colour = Color4.Red,
@@ -68,15 +75,13 @@ namespace osu.Game.Rulesets.Rush.Tests.Visual
                     Colour = Color4.Purple,
                     Alpha = 0.8f,
                 },
-                keyCounters = new DefaultKeyCounterDisplay()
+                /*keyCounters = new DefaultKeyCounterDisplay()
                 {
                     Origin = Anchor.BottomRight,
                     Anchor = Anchor.BottomRight,
-                }
+                }*/
             };
 
-            rushInputManager = new RushInputManager(Ruleset.Value);
-            rushInputManager.Attach(keyCounters);
 
             var tmpChild = InputManager.Child;
             InputManager.Clear(false);
