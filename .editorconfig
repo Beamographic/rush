@@ -198,7 +198,7 @@ dotnet_diagnostic.IDE0068.severity = none
 dotnet_diagnostic.IDE0069.severity = none
 
 #Redundant usings
-dotnet_diagnostic.IDE0005.severity = error
+dotnet_diagnostic.IDE0005.severity = silent
 
 # Banned APIs
 dotnet_diagnostic.RS0030.severity = error
