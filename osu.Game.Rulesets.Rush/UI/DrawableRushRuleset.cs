@@ -38,13 +38,12 @@ namespace osu.Game.Rulesets.Rush.UI
 
         protected override bool UserScrollSpeedAdjustment => true;
 
-        protected override ScrollVisualisationMethod VisualisationMethod => ScrollVisualisationMethod.Constant;
-
         public DrawableRushRuleset(RushRuleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod> mods = null)
             : base(ruleset, beatmap, mods)
         {
             Direction.Value = ScrollingDirection.Left;
             TimeRange.Value = 800;
+            VisualisationMethod = ScrollVisualisationMethod.Constant;
         }
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
