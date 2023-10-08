@@ -98,7 +98,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
             // Tests don't have scrolling info yet
             if (scrollingInfo is null) return;
 
-            var groundX = scrollingInfo.Algorithm.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth - RushPlayfield.HIT_TARGET_OFFSET) % slats_spacing;
+            var groundX = scrollingInfo.Algorithm.Value.PositionAt(0f, Time.Current, scrollingInfo.TimeRange.Value, DrawWidth - RushPlayfield.HIT_TARGET_OFFSET) % slats_spacing;
 
             // This is to ensure that the ground is still visible before the start of the track
             if (groundX > 0)

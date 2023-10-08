@@ -25,6 +25,9 @@ namespace osu.Game.Rulesets.Rush.Judgements
         /// <returns>The numeric health points increase of <paramref name="result"/> and <paramref name="playerCollided"/>.</returns>
         protected virtual double HealthPointIncreaseFor(HitResult result, bool playerCollided) => 0.0;
 
-        protected sealed override double HealthIncreaseFor(HitResult result) => throw new NotSupportedException($"Use the Rush!-specific version: {nameof(HealthPointIncreaseFor)}");
+        // Temporary measure to prevent crashes due to HealthDisplay using this method
+        // No miss animation though.
+        protected sealed override double HealthIncreaseFor(HitResult result) => 0.0;
+        // protected sealed override double HealthIncreaseFor(HitResult result) => throw new NotSupportedException($"Use the Rush!-specific version: {nameof(HealthPointIncreaseFor)}");
     }
 }
