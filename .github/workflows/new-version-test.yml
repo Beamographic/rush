@@ -1,0 +1,24 @@
+name: Breakage Test
+
+on:
+  push:
+    branches:  ['*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Debug --no-restore
+    - uses: dsaltares/fetch-gh-release-asset@master
+      with:
+        file: 'osu.Game.Rulesets.Rush.dll'
+        target: 'osu.Game.Rulesets.Rush.Tests/bin/Debug/net6.0/osu.Game.Rulesets.Rush.dll'
+    - name: Test
+      run: dotnet test --no-restore --no-build --verbosity normal
