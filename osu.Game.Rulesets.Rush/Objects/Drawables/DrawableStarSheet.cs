@@ -172,6 +172,16 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             ApplyResult(r => r.Type = r.Judgement.MaxResult);
         }
 
+        private bool iHandledPressed = false;
+
+        protected override void OnApply()
+        {
+            base.OnApply();
+
+            iHandledPressed = false;
+        }
+
+
         public override bool OnPressed(KeyBindingPressEvent<RushAction> e)
         {
             if (!e.Action.IsLaneAction())
@@ -184,13 +194,15 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return false;
 
             UpdateResult(true);
-            return Head.Judged;
+
+            return iHandledPressed = Head.Judged;
         }
 
         public override void OnReleased(KeyBindingReleaseEvent<RushAction> e)
         {
-            // TODO: HACK FIX FOR HOTFIX, NEEDS FURTHER INVESTIGATION
-            if (!IsInUse)
+            // This is necessary to ensure that holds don't handle releases before handling the press
+            // TODO: Get rid when things are fixed osu side.
+            if (!iHandledPressed)
                 return;
 
             if (AllJudged)
