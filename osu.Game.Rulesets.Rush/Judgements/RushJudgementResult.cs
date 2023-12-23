@@ -33,6 +33,6 @@ namespace osu.Game.Rulesets.Rush.Judgements
         {
         }
 
-        public override string ToString() => $"{Type} (Score:{Judgement.NumericResultFor(this)} HP:{Judgement.HealthPointIncreaseFor(this)} {Judgement})";
+        public override string ToString() => $"{Type} (HP:{Judgement.HealthPointIncreaseFor(this)} {Judgement})";
     }
 }
