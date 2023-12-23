@@ -156,7 +156,28 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
             if (result.Judgement is RushIgnoreJudgement || result.Judgement is RushFeverJudgement)
                 return 0;
 
-            return (float)result.Judgement.NumericResultFor(result) / result.Judgement.MaxNumericResult / perfect_hits_to_fill;
+            return (float)NumericResultFor(result.Type) / NumericResultFor(HitResult.Great) / perfect_hits_to_fill;
+        }
+
+        public static int NumericResultFor(HitResult result)
+        {
+            switch (result)
+            {
+                default:
+                    return 0;
+
+                case HitResult.Good:
+                    return 200;
+
+                case HitResult.Great:
+                    return 300;
+
+                case HitResult.SmallBonus:
+                    return 10;
+
+                case HitResult.LargeBonus:
+                    return 50;
+            }
         }
     }
 }
