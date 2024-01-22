@@ -12,23 +12,23 @@ namespace osu.Game.Rulesets.Rush.Tests.Beatmaps
     {
         [Test]
         public void TestCraftedTagCreatesCrafter()
-            => Assert.IsTrue(converterForTag("crafted") is RushCraftedBeatmapConverter);
+            => Assert.That(converterForTag("crafted") is RushCraftedBeatmapConverter, Is.True);
 
         [Test]
         public void TestWrongCasedCraftedTagCreatesCrafter()
-            => Assert.IsTrue(converterForTag("cRafTeD") is RushCraftedBeatmapConverter);
+            => Assert.That(converterForTag("cRafTeD") is RushCraftedBeatmapConverter, Is.True);
 
         [Test]
         public void TestWordContainingCraftedTagCreatesGenerator()
-            => Assert.IsTrue(converterForTag("handcraftedison") is RushGeneratedBeatmapConverter);
+            => Assert.That(converterForTag("handcraftedison") is RushGeneratedBeatmapConverter, Is.True);
 
         [Test]
         public void TestRandomTagCreatesGenerator()
-            => Assert.IsTrue(converterForTag("one two something") is RushGeneratedBeatmapConverter);
+            => Assert.That(converterForTag("one two something") is RushGeneratedBeatmapConverter, Is.True);
 
         [Test]
         public void TestNullTagCreatesGenerator()
-            => Assert.IsTrue(converterForTag(null) is RushGeneratedBeatmapConverter);
+            => Assert.That(converterForTag(null) is RushGeneratedBeatmapConverter, Is.True);
 
         private IBeatmapConverter converterForTag(string tags)
         {
