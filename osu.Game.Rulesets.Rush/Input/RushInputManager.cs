@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Rush.Input
         /// <summary>
         /// Retrieves all actions in a currenty pressed states.
         /// </summary>
-        public SlimReadOnlyListWrapper<RushAction> PressedActions => ((List<RushAction>)KeyBindingContainer.PressedActions).AsSlimReadOnly();
+        public SlimReadOnlyListWrapper<RushAction> PressedActions => KeyBindingContainer.PressedActions;
 
         public RushInputManager(RulesetInfo ruleset)
             : base(ruleset, 0, SimultaneousBindingMode.Unique)

@@ -17,6 +17,7 @@ using osu.Game.Rulesets.Rush.Input;
 using osu.Game.Rulesets.Rush.Judgements;
 using osu.Game.Rulesets.Rush.UI;
 using osu.Game.Rulesets.Rush.UI.Fever;
+using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK.Graphics;
 
@@ -75,7 +76,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
             if (timeOffset >= 0)
-                ApplyResult(r => r.Type = r.Judgement.MaxResult);
+                ApplyResult(Result.Judgement.MaxResult);
         }
 
         public virtual bool OnPressed(KeyBindingPressEvent<RushAction> e) => false;
@@ -106,24 +107,19 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
         protected override JudgementResult CreateResult(Judgement judgement) => new RushJudgementResult(HitObject, (RushJudgement)judgement);
 
-        protected new void ApplyResult(Action<JudgementResult> application)
+        protected new void ApplyResult(HitResult result)
         {
             // This is the only point to correctly apply values to the judgement
             // result in correct time, check whether the player collided now.
-            void rushApplication(JudgementResult br)
-            {
-                var r = (RushJudgementResult)br;
+            var r = (RushJudgementResult)Result;
+            r.PlayerCollided = drawableRuleset.PlayerCollidesWith(r.HitObject);
 
-                application?.Invoke(r);
-                r.PlayerCollided = drawableRuleset.PlayerCollidesWith(r.HitObject);
-            };
-
-            base.ApplyResult(rushApplication);
+            base.ApplyResult(result);
 
             foreach (var bonus in feverBonusContainer)
             {
                 bool eligible = IsHit && feverProcessor.InFeverMode.Value;
-                bonus.ApplyResult(result => result.Type = eligible ? result.Judgement.MaxResult : result.Judgement.MinResult);
+                bonus.ApplyResult(eligible ? bonus.Result.Judgement.MaxResult : bonus.Result.Judgement.MinResult);
             }
         }
 

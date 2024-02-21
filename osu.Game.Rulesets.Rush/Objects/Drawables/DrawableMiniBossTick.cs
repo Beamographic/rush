@@ -27,7 +27,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         public void TriggerResult(HitResult type)
         {
             HitObject.StartTime = Time.Current;
-            ApplyResult(r => r.Type = type);
+            ApplyResult(type);
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)

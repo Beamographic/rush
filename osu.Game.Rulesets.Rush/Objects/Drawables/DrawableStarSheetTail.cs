@@ -30,7 +30,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             // Apply tail miss at its time when the entire star sheet has already been judged as missed.
             if (overallMissed && timeOffset >= 0)
             {
-                ApplyResult(r => r.Type = r.Judgement.MinResult);
+                ApplyResult(Result.Judgement.MinResult);
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!userTriggered)
             {
                 if (timeOffset >= 0)
-                    ApplyResult(r => r.Type = r.Judgement.MaxResult);
+                    ApplyResult(Result.Judgement.MaxResult);
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 return;
 
             // ...and an automatic perfect if they release within any "hit" judged period
-            ApplyResult(r => r.Type = r.Judgement.MaxResult);
+            ApplyResult(Result.Judgement.MaxResult);
         }
     }
 }
