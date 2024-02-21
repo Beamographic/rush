@@ -32,11 +32,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                 if (result == HitResult.None)
                     return;
 
-                ApplyResult(r => r.Type = result);
+                ApplyResult(result);
             }
             else if (!HitObject.HitWindows.CanBeHit(timeOffset))
             {
-                ApplyResult(r => r.Type = r.Judgement.MinResult);
+                ApplyResult(Result.Judgement.MinResult);
             }
         }
     }

@@ -54,7 +54,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (userTriggered)
             {
                 if (result != HitResult.None)
-                    ApplyResult(r => r.Type = r.Judgement.MaxResult);
+                    ApplyResult(Result.Judgement.MaxResult);
 
                 return;
             }
@@ -65,11 +65,11 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             // if we've passed the object and can longer hit it, miss
             if (result == HitResult.None)
-                ApplyResult(r => r.Type = r.Judgement.MinResult);
+                ApplyResult(Result.Judgement.MinResult);
 
             // else if we're still able to hit it, check if the player is in the correct lane
             else if (playfield.PlayerSprite.CollidesWith(HitObject))
-                ApplyResult(r => r.Type = r.Judgement.MaxResult);
+                ApplyResult(Result.Judgement.MaxResult);
         }
     }
 }

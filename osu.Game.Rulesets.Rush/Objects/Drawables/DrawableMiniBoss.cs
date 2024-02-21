@@ -131,7 +131,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
                         ? HitResult.Good
                         : HitResult.Miss;
 
-                ApplyResult(r => r.Type = hitResult);
+                ApplyResult(hitResult);
             }
         }
 

@@ -87,7 +87,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
 
             // We can judge this object the instant the nested objects are judged
             if (Air.AllJudged && Ground.AllJudged)
-                ApplyResult(r => r.Type = (Air.IsHit && Ground.IsHit) ? r.Judgement.MaxResult : r.Judgement.MinResult);
+                ApplyResult((Air.IsHit && Ground.IsHit) ? Result.Judgement.MaxResult : Result.Judgement.MinResult);
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)

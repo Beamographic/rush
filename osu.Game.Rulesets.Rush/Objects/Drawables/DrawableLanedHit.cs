@@ -78,7 +78,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (!userTriggered)
             {
                 if (!HitObject.HitWindows.CanBeHit(timeOffset))
-                    ApplyResult(r => r.Type = r.Judgement.MinResult);
+                    ApplyResult(Result.Judgement.MinResult);
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
             if (result == HitResult.None)
                 return;
 
-            ApplyResult(r => r.Type = result);
+            ApplyResult(result);
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)

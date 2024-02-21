@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Debug/net6.0/osu.Game.Rulesets.Rush.Tests.dll"
+                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Debug/net8.0/osu.Game.Rulesets.Rush.Tests.dll"
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build tests (Debug)",
@@ -19,7 +19,7 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Release/net6.0/osu.Game.Rulesets.Rush.Tests.dll"
+                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Release/net8.0/osu.Game.Rulesets.Rush.Tests.dll"
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build tests (Release)",
@@ -31,7 +31,7 @@
             "request": "launch",
             "program": "dotnet",
             "args": [
-                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Development/net6.0/osu.Game.Rulesets.Rush.Tests.dll"
+                "${workspaceRoot}/osu.Game.Rulesets.Rush.Tests/bin/Development/net8.0/osu.Game.Rulesets.Rush.Tests.dll"
             ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build tests (Development)",

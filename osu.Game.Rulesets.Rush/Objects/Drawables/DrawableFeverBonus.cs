@@ -3,6 +3,7 @@
 
 using System;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Scoring;
 
 namespace osu.Game.Rulesets.Rush.Objects.Drawables
 {
@@ -21,10 +22,10 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         {
         }
 
-        public new void ApplyResult(Action<JudgementResult> application)
+        public new void ApplyResult(HitResult result)
         {
             if (!Result.HasResult)
-                base.ApplyResult(application);
+                base.ApplyResult(result);
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
