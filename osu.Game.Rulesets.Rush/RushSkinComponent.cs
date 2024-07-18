@@ -11,8 +11,5 @@ namespace osu.Game.Rulesets.Rush
             : base(component)
         {
         }
-
-        protected override string RulesetPrefix => RushRuleset.SHORT_NAME;
-        protected override string ComponentName => Component.ToString().ToLower();
     }
 }
