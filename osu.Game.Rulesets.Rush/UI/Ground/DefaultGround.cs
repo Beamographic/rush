@@ -109,7 +109,7 @@ namespace osu.Game.Rulesets.Rush.UI.Ground
 
         protected override bool OnInvalidate(Invalidation invalidation, InvalidationSource source)
         {
-            if (invalidation.HasFlagFast(Invalidation.DrawSize))
+            if (invalidation.HasFlag(Invalidation.DrawSize))
             {
                 slats.Clear(false);
 

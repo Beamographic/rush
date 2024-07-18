@@ -70,7 +70,7 @@ namespace osu.Game.Rulesets.Rush.Replays
             return new LegacyReplayFrame(Time, flags, 0f, getFeverActivationButtonState(FeverActivationMode));
         }
 
-        private static FeverActivationMode getFeverActivationMode(ReplayButtonState buttonState) => buttonState.HasFlagFast(ReplayButtonState.Smoke) switch
+        private static FeverActivationMode getFeverActivationMode(ReplayButtonState buttonState) => buttonState.HasFlag(ReplayButtonState.Smoke) switch
         {
             true => FeverActivationMode.Automatic,
             false => FeverActivationMode.Manual

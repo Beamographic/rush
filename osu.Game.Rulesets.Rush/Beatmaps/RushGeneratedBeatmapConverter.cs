@@ -117,23 +117,23 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             var kiaiMultiplier = original.Kiai ? kiai_multiplier : 1;
 
             // try to get a lane from the force flags
-            if (flags.HasFlagFast(HitObjectFlags.ForceSameLane) || flags.HasFlagFast(HitObjectFlags.SuggestSameLane) && random.NextDouble() < suggest_probability)
+            if (flags.HasFlag(HitObjectFlags.ForceSameLane) || flags.HasFlag(HitObjectFlags.SuggestSameLane) && random.NextDouble() < suggest_probability)
                 lane = previousLane;
-            else if (flags.HasFlagFast(HitObjectFlags.ForceNotSameLane) || flags.HasFlagFast(HitObjectFlags.SuggestNotSameLane) && random.NextDouble() < suggest_probability)
+            else if (flags.HasFlag(HitObjectFlags.ForceNotSameLane) || flags.HasFlag(HitObjectFlags.SuggestNotSameLane) && random.NextDouble() < suggest_probability)
                 lane = previousLane?.Opposite();
 
             // get the lane from the object
             lane ??= laneForHitObject(original);
 
             // if we should end a sheet, try to
-            if (currentStarSheets.Count > 0 && (flags.HasFlagFast(HitObjectFlags.ForceEndStarSheet) || flags.HasFlagFast(HitObjectFlags.SuggestEndStarSheet) && random.NextDouble() < starsheet_end_probability))
+            if (currentStarSheets.Count > 0 && (flags.HasFlag(HitObjectFlags.ForceEndStarSheet) || flags.HasFlag(HitObjectFlags.SuggestEndStarSheet) && random.NextDouble() < starsheet_end_probability))
             {
                 // TODO: for now we'll end both sheets where they are and ignore snapping logic
                 currentStarSheets.Clear();
             }
 
             // if we should start a starsheet...
-            if (flags.HasFlagFast(HitObjectFlags.ForceStartStarSheet) || flags.HasFlagFast(HitObjectFlags.SuggestStartStarSheet) && random.NextDouble() < starsheet_start_probability)
+            if (flags.HasFlag(HitObjectFlags.ForceStartStarSheet) || flags.HasFlag(HitObjectFlags.SuggestStartStarSheet) && random.NextDouble() < starsheet_start_probability)
             {
                 // TODO: for now, end all existing sheets
                 currentStarSheets.Clear();
@@ -202,7 +202,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
                 currentStarSheets.Remove(LanedHitLane.Ground);
 
             // if it's low probability, potentially skip this object
-            if (flags.HasFlagFast(HitObjectFlags.LowProbability) && random.NextDouble() < skip_probability)
+            if (flags.HasFlag(HitObjectFlags.LowProbability) && random.NextDouble() < skip_probability)
             {
                 updatePrevious(lane ?? previousLane);
                 yield break;
@@ -210,7 +210,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
 
             // if not too close to a sawblade, allow adding a double hit
             if (original.StartTime - lastSawbladeTime >= sawblade_same_lane_safety_time
-                && flags.HasFlagFast(HitObjectFlags.AllowDoubleHit)
+                && flags.HasFlag(HitObjectFlags.AllowDoubleHit)
                 && original.StartTime >= nextDualHitTime
                 && random.NextDouble() < dualhit_probability)
             {
@@ -281,7 +281,7 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             //   we didn't add a sawblade, or
             //   we added a sawblade and are allowed to replace the hit entirely, or
             //   we added a sawblade that was in the opposite lane
-            if (finalLane != blockedLane && !tooCloseToLastSawblade && (!sawbladeAdded || !flags.HasFlagFast(HitObjectFlags.AllowSawbladeReplace)))
+            if (finalLane != blockedLane && !tooCloseToLastSawblade && (!sawbladeAdded || !flags.HasFlag(HitObjectFlags.AllowSawbladeReplace)))
                 yield return createNormalHit(original, finalLane);
 
             updatePrevious(finalLane);

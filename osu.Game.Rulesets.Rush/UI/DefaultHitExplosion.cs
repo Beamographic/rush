@@ -153,7 +153,7 @@ namespace osu.Game.Rulesets.Rush.UI
                 {
                     var scale = 0.8f + random.NextDouble() * 0.2f;
                     var duration = average_duration * (0.8f + random.NextDouble() * 0.4f);
-                    var radians = MathUtils.DegreesToRadians(triangle.Rotation + 90);
+                    var radians = float.DegreesToRadians(triangle.Rotation + 90);
                     var distance = DrawWidth * (0.8f + random.NextDouble() * 0.2f);
                     var target = new Vector2(MathF.Cos(radians), MathF.Sin(radians)) * (float)distance;
                     triangle.Scale = new Vector2((float)scale);
