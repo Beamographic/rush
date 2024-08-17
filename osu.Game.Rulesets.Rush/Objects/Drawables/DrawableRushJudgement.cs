@@ -13,12 +13,6 @@ namespace osu.Game.Rulesets.Rush.Objects.Drawables
         private const float judgement_movement = 300;
 
         public DrawableRushJudgement()
-            : this(null, null)
-        {
-        }
-
-        public DrawableRushJudgement(JudgementResult result, DrawableRushHitObject judgedObject)
-            : base(result, judgedObject)
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
