@@ -18,6 +18,8 @@ using osu.Game.Rulesets.Rush.Objects;
 using osu.Game.Rulesets.Rush.Objects.Drawables;
 using osu.Game.Rulesets.Rush.UI.Fever;
 using osu.Game.Rulesets.Rush.UI.Ground;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UI.Scrolling;
 using osuTK;
 
@@ -62,7 +64,7 @@ namespace osu.Game.Rulesets.Rush.UI
             }
         }
 
-        private DrawablePool<DrawableRushJudgement> judgementPool;
+        private JudgementPooler<DrawableRushJudgement> judgementPool;
         private DrawablePool<DefaultHitExplosion> explosionPool;
         private DrawablePool<StarSheetHitExplosion> sheetExplosionPool;
         private DrawablePool<HeartHitExplosion> heartExplosionPool;
@@ -126,7 +128,11 @@ namespace osu.Game.Rulesets.Rush.UI
 
             AddRangeInternal(new Drawable[]
             {
-                judgementPool = new DrawablePool<DrawableRushJudgement>(5),
+                judgementPool = new JudgementPooler<DrawableRushJudgement>(new[]{
+                    HitResult.Great,
+                    HitResult.Good,
+                    HitResult.Miss
+                }),
                 explosionPool = new DrawablePool<DefaultHitExplosion>(15),
                 sheetExplosionPool = new DrawablePool<StarSheetHitExplosion>(10),
                 heartExplosionPool = new DrawablePool<HeartHitExplosion>(2),
@@ -201,7 +207,7 @@ namespace osu.Game.Rulesets.Rush.UI
             // Display judgement results in a drawable for objects that allow it.
             if (rushJudgedObject.DisplayResult)
             {
-                DrawableRushJudgement judgementDrawable = judgementPool.Get(j => j.Apply(result, judgedObject));
+                DrawableRushJudgement judgementDrawable = judgementPool.Get(result.Type, j => j.Apply(result, judgedObject));
                 LanedHitLane judgementLane = LanedHitLane.Air;
 
                 // TODO: showing judgements based on the judged object suggests that
