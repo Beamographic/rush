@@ -21,7 +21,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Rush (dev build)
-        path: osu.Game.Rulesets.Rush/bin/Development/net6.0/osu.Game.Rulesets.Rush-dev.dll
+        path: osu.Game.Rulesets.Rush/bin/Development/net8.0/osu.Game.Rulesets.Rush-dev.dll
