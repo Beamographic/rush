@@ -5,7 +5,7 @@ using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Rush
 {
-    public class RushSkinComponent : GameplaySkinComponentLookup<RushSkinComponents>
+    public class RushSkinComponent : SkinComponentLookup<RushSkinComponents>
     {
         public RushSkinComponent(RushSkinComponents component)
             : base(component)
