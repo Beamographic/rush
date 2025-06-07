@@ -1,6 +1,7 @@
 // Copyright (c) Shane Woolcock. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Graphics;
@@ -22,43 +23,51 @@ namespace osu.Game.Rulesets.Rush.Beatmaps
             int minibosses = HitObjects.Count(s => s is MiniBoss);
             int hearts = HitObjects.Count(s => s is Heart);
 
+            float total = Math.Max(minions + starsheets + sawblades + dualhits + minibosses + hearts, 1);
+
             return new[]
             {
                 new BeatmapStatistic
                 {
-                    Name = @"Minion Count",
+                    Name = @"Minions",
                     Content = minions.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Regular.Angry),
+                    BarDisplayLength = minions / total
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Star Sheet Count",
+                    Name = @"Star Sheets",
                     Content = starsheets.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Regular.Star),
+                    BarDisplayLength = starsheets / total
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Dual Hit Count",
+                    Name = @"Dual Hits",
                     Content = dualhits.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Solid.Cog),
+                    BarDisplayLength = dualhits / total
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Sawblade Count",
+                    Name = @"Sawblades",
                     Content = sawblades.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Solid.Sun),
+                    BarDisplayLength = sawblades / total
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Miniboss Count",
+                    Name = @"Minibosses",
                     Content = minibosses.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Solid.Mitten),
+                    BarDisplayLength = minibosses / total
                 },
                 new BeatmapStatistic
                 {
-                    Name = @"Heart Count",
+                    Name = @"Hearts",
                     Content = hearts.ToString(),
                     CreateIcon = () => createIcon(FontAwesome.Solid.Heart),
+                    BarDisplayLength = hearts / total
                 }
             };
         }
