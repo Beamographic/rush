@@ -33,6 +33,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="NUnit" Version="4.5.0" />
     <PackageReference Include="ppy.osu.Game" Version="2025.710.0-lazer" />
   </ItemGroup>
 </Project>
