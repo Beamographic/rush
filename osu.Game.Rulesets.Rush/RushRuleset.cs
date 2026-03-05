@@ -116,14 +116,15 @@ namespace osu.Game.Rulesets.Rush
 
         public override Drawable CreateIcon() => new RushIcon();
 
-        protected override IEnumerable<HitResult> GetValidHitResults()
+        public override IEnumerable<HitResult> GetValidHitResults()
         {
             return new[]
             {
                 HitResult.Great,
                 HitResult.Good,
                 HitResult.SmallBonus,
-                HitResult.LargeBonus
+                HitResult.LargeBonus,
+                HitResult.Miss
             };
         }
 
