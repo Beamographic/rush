@@ -33,6 +33,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ppy.osu.Game" Version="2026.303.0" />
+    <PackageReference Include="ppy.osu.Game" Version="2026.315.0" />
   </ItemGroup>
 </Project>
