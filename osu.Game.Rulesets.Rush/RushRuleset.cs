@@ -58,6 +58,8 @@ namespace osu.Game.Rulesets.Rush
 
         public override ScoreProcessor CreateScoreProcessor() => new RushScoreProcessor(this);
 
+        public override ScoreMultiplierCalculator CreateScoreMultiplierCalculator(ScoreMultiplierContext context) => new RushScoreMultiplierCalculator(context);
+
         public override IEnumerable<Mod> GetModsFor(ModType type)
         {
             switch (type)
