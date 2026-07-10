@@ -15,8 +15,6 @@ namespace osu.Game.Rulesets.Rush.Mods
 {
     public partial class RushModFlashlight : ModFlashlight<RushHitObject>
     {
-        public override double ScoreMultiplier => 1.12;
-
         public override float DefaultFlashlightSize => 330;
 
         [SettingSource("Flashlight size", "Multiplier applied to the default flashlight size.")]

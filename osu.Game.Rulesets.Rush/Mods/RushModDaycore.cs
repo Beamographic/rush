@@ -5,8 +5,5 @@ using osu.Game.Rulesets.Mods;
 
 namespace osu.Game.Rulesets.Rush.Mods
 {
-    public class RushModDaycore : ModDaycore
-    {
-        public override double ScoreMultiplier => 0.3;
-    }
+    public class RushModDaycore : ModDaycore { }
 }
