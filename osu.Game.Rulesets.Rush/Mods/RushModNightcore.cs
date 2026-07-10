@@ -6,8 +6,5 @@ using osu.Game.Rulesets.Rush.Objects;
 
 namespace osu.Game.Rulesets.Rush.Mods
 {
-    public class RushModNightcore : ModNightcore<RushHitObject>
-    {
-        public override double ScoreMultiplier => 1.12;
-    }
+    public class RushModNightcore : ModNightcore<RushHitObject> { }
 }

@@ -5,8 +5,5 @@ using osu.Game.Rulesets.Mods;
 
 namespace osu.Game.Rulesets.Rush.Mods
 {
-    public class RushModHalfTime : ModHalfTime
-    {
-        public override double ScoreMultiplier => 0.3;
-    }
+    public class RushModHalfTime : ModHalfTime { }
 }
