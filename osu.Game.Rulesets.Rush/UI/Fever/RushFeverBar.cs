@@ -130,8 +130,7 @@ namespace osu.Game.Rulesets.Rush.UI.Fever
                 FinishTransforms(true); // Force the animations to finish immediately when rewinding
         }
 
-        private RushInputManager rushActionInputManager;
-        internal RushInputManager RushActionInputManager => rushActionInputManager ??= GetContainingInputManager() as RushInputManager;
+        internal RushInputManager RushActionInputManager => field ??= GetContainingInputManager() as RushInputManager;
 
         public RushActionTarget ActionTargetForTouchPosition(Vector2 screenSpaceTouchPos) => RushActionTarget.Fever;
 
