@@ -68,20 +68,18 @@ namespace osu.Game.Rulesets.Rush.UI
 
         private double runResetTime;
 
-        private PlayerTargetLane target;
-
         public PlayerTargetLane Target
         {
-            get => target;
+            get;
             set
             {
                 if (value == PlayerTargetLane.MiniBoss)
                     playAnimation(PlayerAnimation.AirAttack);
 
-                if (value == target)
+                if (value == field)
                     return;
 
-                target = value;
+                field = value;
 
                 switch (value)
                 {

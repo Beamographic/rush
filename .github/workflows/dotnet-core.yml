@@ -24,4 +24,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Rush (dev build)
-        path: osu.Game.Rulesets.Rush/bin/Development/net8.0/osu.Game.Rulesets.Rush-dev.dll
+        path: osu.Game.Rulesets.Rush/bin/Development/net10.0/osu.Game.Rulesets.Rush-dev.dll

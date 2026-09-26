@@ -96,23 +96,28 @@ namespace osu.Game.Rulesets.Rush
             }
         }
 
-        public override IEnumerable<KeyBinding> GetDefaultKeyBindings(int variant = 0) => new[]
+        public override IEnumerable<KeyBinding> GetDefaultKeyBindings(int variant = 0)
         {
-            new KeyBinding(InputKey.J, RushAction.GroundPrimary),
-            new KeyBinding(InputKey.K, RushAction.GroundSecondary),
-            new KeyBinding(InputKey.L, RushAction.GroundTertiary),
-            new KeyBinding(InputKey.Semicolon, RushAction.GroundQuaternary),
+            if (variant == EDITOR_VARIANT)
+                return [];
 
-            new KeyBinding(InputKey.F, RushAction.AirPrimary),
-            new KeyBinding(InputKey.D, RushAction.AirSecondary),
-            new KeyBinding(InputKey.S, RushAction.AirTertiary),
-            new KeyBinding(InputKey.A, RushAction.AirQuaternary),
+            return [
+                new KeyBinding(InputKey.J, RushAction.GroundPrimary),
+                new KeyBinding(InputKey.K, RushAction.GroundSecondary),
+                new KeyBinding(InputKey.L, RushAction.GroundTertiary),
+                new KeyBinding(InputKey.Semicolon, RushAction.GroundQuaternary),
 
-            new KeyBinding(InputKey.MouseRight, RushAction.GroundPrimary),
-            new KeyBinding(InputKey.MouseLeft, RushAction.AirPrimary),
+                new KeyBinding(InputKey.F, RushAction.AirPrimary),
+                new KeyBinding(InputKey.D, RushAction.AirSecondary),
+                new KeyBinding(InputKey.S, RushAction.AirTertiary),
+                new KeyBinding(InputKey.A, RushAction.AirQuaternary),
 
-            new KeyBinding(InputKey.Space, RushAction.Fever),
-        };
+                new KeyBinding(InputKey.MouseRight, RushAction.GroundPrimary),
+                new KeyBinding(InputKey.MouseLeft, RushAction.AirPrimary),
+
+                new KeyBinding(InputKey.Space, RushAction.Fever),
+            ];
+        }
 
         public override IConvertibleReplayFrame CreateConvertibleReplayFrame() => new RushReplayFrame();
 
